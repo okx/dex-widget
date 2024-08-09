@@ -1,6 +1,7 @@
 .vscode
 
 dist
+lib
 node_modules
 yarn-error.log
 yarn.lock

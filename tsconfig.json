@@ -5,16 +5,13 @@
         "noImplicitAny": false,
         "allowJs": true,
         "baseUrl": ".",
-        "rootDir": ".",
+        "rootDir": "./src",
         "experimentalDecorators": true,
         "outDir": "./dist",
         "moduleResolution": "node",
         "esModuleInterop": true,
         "declaration": true,
-        "declarationDir": "dist/types",
-        "jsx": "react",
-        "typeRoots": ["./global.d.ts"]
+        "declarationDir": "dist"
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+    "include": ["src"]
 }
