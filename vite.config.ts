@@ -22,6 +22,34 @@ export default defineConfig({
             fileName: (format, name) => `${name}-${format}.js`,
         },
         rollupOptions: {
+            // output: [
+            //   {
+            //     format: 'esm',
+            //     entryFileNames: '[name].mjs',
+            //     chunkFileNames: '[name]-[hash].mjs',
+            //     assetFileNames: '[name].[ext]',
+            //     dir: 'dist/esm',
+            //     manualChunks: {
+            //       'react-vendor': ['react-dom', 'react'],
+            //       'bs58': ['bs58'],
+            //       'web3': ['web3'],
+            //       '@solana/web3.js': ['@solana/web3.js']
+            //     }
+            //   },
+            //   {
+            //     format: 'cjs',
+            //     entryFileNames: '[name].cjs',
+            //     chunkFileNames: '[name].cjs',
+            //     assetFileNames: '[name].[ext]',
+            //     dir: 'dist/cjs',
+            //     manualChunks: {
+            //       'react-vendor': ['react-dom', 'react'],
+            //       'bs58': ['bs58'],
+            //       'web3': ['web3'],
+            //       '@solana/web3.js': ['@solana/web3.js']
+            //     }
+            //   }
+            // ],
             external: ['react', 'react-dom', 'web3', '@solana/web3.js'],
             output: {
                 globals: {
