@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ESNext",
+        "noImplicitAny": false,
+        "allowJs": true,
+        "baseUrl": ".",
+        "rootDir": ".",
+        "experimentalDecorators": true,
+        "outDir": "./dist",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "declaration": true,
+        "declarationDir": "dist/types",
+        "jsx": "react",
+        "typeRoots": ["./global.d.ts"]
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+}
