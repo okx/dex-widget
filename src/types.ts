@@ -1,6 +1,7 @@
 /* eslint-disable */
 import type { SupportedChainId } from './common';
 import { CowEventListeners, CowEventPayloadMap, CowEvents } from './events';
+
 export { SupportedChainId } from './common';
 
 export enum WidgetMethodsEmit {
@@ -62,6 +63,8 @@ export interface EthereumProvider {
      * @returns A promise that resolves once permission is granted.
      */
     enable(): Promise<void>;
+
+    removeAllListeners?: () => void;
 }
 
 export type CowSwapTheme = 'dark' | 'light';
@@ -363,9 +366,10 @@ export interface UpdateParamsPayload {
 }
 
 export interface UpdateProviderParams {
-    chainName: ChainName;
-    chainId: SupportedChainId;
+    providerType: ProviderType;
     walletType: WalletType;
+    chainId: string | number;
+    address: string,
 }
 
 export interface UpdateProviderPayload {
@@ -470,4 +474,82 @@ export interface ProviderOnEventPayload {
 export interface ProviderOnWalletEventPayload {
     event: string;
     params: unknown;
+}
+
+// new
+export interface IFeeConfig {
+    [key: string]: {
+        feePercent?: string | number;
+        referrerAddress?: {
+            [key: string]: {
+                feePercent: string | number;
+            };
+        };
+    };
+}
+
+export interface ITokenPair {
+    fromChain: string | number;
+    toChain: string | number;
+    fromToken?: string;
+    toToken?: string;
+}
+
+export interface IFormattedTokenPair {
+    inputChain?: string | number;
+    outputChain?: string | number;
+    inputCurrency?: string;
+    outputCurrency?: string;
+}
+
+export enum ProviderType {
+    EVM = 'EVM',
+    SOLANA = 'SOLANA',
+    WALLET_CONNECT = 'WALLET_CONNECT',
+}
+
+export type TWalletTypeRecord = Record<ProviderType, WalletType>;
+
+export interface IWidgetProps {
+    widgetVersion: string,
+    tradeType: TradeType[],
+    feeConfig: IFeeConfig,
+    theme: THEME,
+    providerType: ProviderType;
+    walletType: WalletType,
+    tokenPair?: IFormattedTokenPair,
+    lang?: string,
+    chainIds?: string[],
+}
+
+export interface IFormattedWidgetProps {
+    url: string,
+    data: IWidgetProps,
+}
+
+export interface IWidgetParams {
+    width?: string;
+
+    baseUrl?: string;
+    // Swap, Bridget or Auto
+    tradeType?: TradeType;
+
+    feeConfig?: IFeeConfig;
+
+    // The theme of the widget. Default: 'light'
+    theme?: THEME;
+
+    providerType: ProviderType;
+
+    tokenPair?: ITokenPair;
+
+    lang?: string,
+
+    chainIds?: string[],
+}
+export interface IWidgetConfig {
+    params: IWidgetParams;
+    provider?: EthereumProvider;
+    listeners?: CowEventListeners;
+    connectWalletHandle?: () => void;
 }

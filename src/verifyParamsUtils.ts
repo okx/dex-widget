@@ -1,4 +1,5 @@
 import { WALLET_TYPE } from './widgetHelp';
+import { IFeeConfig, ITokenPair } from './types';
 
 export const ERROR_MSG = {
     INVALID_FEE_CONFIG: 'FeeConfig MUST be an object',
@@ -26,17 +27,6 @@ export const verifyPercent = (feePercent: string | number) => {
     return isNumberOrNumberString(feePercent) && Number(feePercent) >= 0 && Number(feePercent) <= 3;
 };
 
-interface IFeeConfig {
-    [key: string]: {
-        feePercent?: string | number;
-        referrerAddress?: {
-            [key: string]: {
-                feePercent: string | number;
-            };
-        };
-    };
-}
-
 export const checkFeeConfig = (feeConfig: IFeeConfig) => {
     if (!isObject(feeConfig)) {
         return ERROR_MSG.INVALID_FEE_CONFIG;
@@ -61,22 +51,21 @@ export const checkFeeConfig = (feeConfig: IFeeConfig) => {
 };
 
 export const verifyChainId = (chainId: string | number) => {
-    return Number(chainId) >= 0;
+    return (typeof chainId === 'string' || typeof chainId === 'number') && Number(chainId) >= 0;
 };
 
-interface ITokenPair {
-    fromChain: string | number;
-    toChain: string | number;
-    fromToken?: string;
-    toToken?: string;
+export const isSameChain = (tokenPair: ITokenPair): boolean => {
+    const legalChains = verifyChainId(tokenPair?.fromChain) && verifyChainId(tokenPair?.toChain);
+    return Number(tokenPair?.fromChain) === Number(tokenPair?.toChain) && legalChains;
 }
 
-export const checkTokenPair = (tokenPair: ITokenPair) => {
+export const checkTokenPairChain = (tokenPair: ITokenPair) => {
     return verifyChainId(tokenPair?.fromChain) && verifyChainId(tokenPair?.toChain);
 };
 
-export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, chainName }) => {
-    const walletType = WALLET_TYPE[chainName];
+
+export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, providerType }) => {
+    const walletType = WALLET_TYPE[providerType];
 
     if (!widgetVersion) {
         throw new Error(ERROR_MSG.INVALID_WIDGET_VERSION);
@@ -84,7 +73,7 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, c
     if (!walletType) {
         throw new Error(ERROR_MSG.INVALID_CHAIN_NAME);
     }
-    if (tokenPair && !checkTokenPair(tokenPair)) {
+    if (tokenPair && !checkTokenPairChain(tokenPair)) {
         throw new Error(ERROR_MSG.INVALID_TOKEN_PAIR);
     }
     const errorTips = checkFeeConfig(feeConfig);

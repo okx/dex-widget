@@ -11,36 +11,31 @@ import {
     stopListeningWindowListener,
 } from './messages';
 import {
-    ChainName,
-    CowSwapWidgetParams,
-    CowSwapWidgetProps,
     EthereumProvider,
-    TradeType,
+    IWidgetConfig,
+    IWidgetParams,
+    ProviderType,
     UpdateProviderParams,
     WidgetMethodsEmit,
     WidgetMethodsListen,
 } from './types';
-import { buildWidgetPath, buildWidgetUrl, buildWidgetUrlQuery } from './urlUtils';
-import { getAddress, getChainId, getTradeType, WALLET_TYPE } from './widgetHelp';
+import {
+    createWidgetParams,
+    getAddress,
+    getChainId,
+    WALLET_TYPE,
+} from './widgetHelp';
 
 const DEFAULT_HEIGHT = '487px';
 const DEFAULT_WIDTH = 450;
 
 /**
- * Reference: IframeResizer (apps/cowswap-frontend/src/modules/injectedWidget/updaters/IframeResizer.ts)
- * Sometimes MutationObserver doesn't trigger when the height of the widget changes and the widget displays with a scrollbar.
- * To avoid this we add a threshold to the height.
- * 20px
- */
-const HEIGHT_THRESHOLD = 20;
-
-/**
  * Callback function signature for updating the CoW Swap Widget.
  */
 export interface CowSwapWidgetHandler {
-    updateParams: (params: CowSwapWidgetParams) => void;
+    updateParams: (params: IWidgetParams) => void;
     updateListeners: (newListeners?: CowEventListeners) => void;
-    updateProvider: (newProvider: EthereumProvider, chainName: ChainName) => void;
+    updateProvider: (newProvider: EthereumProvider, providerType: ProviderType) => void;
     destroy: () => void;
 }
 
@@ -52,19 +47,20 @@ export interface CowSwapWidgetHandler {
  */
 export function createCowSwapWidget(
     container: HTMLElement,
-    props: CowSwapWidgetProps,
+    config: IWidgetConfig,
 ): CowSwapWidgetHandler {
-    console.log('createCowSwapWidget====>', container, props);
-    const { params, provider: providerAux, listeners, connectWalletHandle } = props;
+    console.log('createCowSwapWidget====>', container, config);
+    const { params, provider: providerAux, listeners, connectWalletHandle } = config;
     let provider = providerAux;
-    let currentParams = params;
+    let { data: currentParams, url } = createWidgetParams(params);
 
-    if (provider) currentParams.walletType = WALLET_TYPE[currentParams.chainName];
-    // if (provider) currentParams.walletType = WALLET_TYPE.walletconnect;
-    currentParams.chainId = getChainId(provider, currentParams.chainName);
+    // todo: check
+    // if (provider) currentParams.walletType = WALLET_TYPE[currentParams.chainName];
+    // // if (provider) currentParams.walletType = WALLET_TYPE.walletconnect;
+    // currentParams.chainId = getChainId(provider, currentParams.chainName);
 
     // 1. Create a brand new iframe
-    const iframe = createIframe(currentParams);
+    const iframe = createIframe(params, url);
 
     // 2. Clear the content (delete any previous iFrame if it exists)
     container.innerHTML = '';
@@ -78,10 +74,12 @@ export function createCowSwapWidget(
 
     // 3. Send appCode (once the widget posts the ACTIVATE message)
     const windowListeners: WindowListener[] = [];
-    windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode));
+    // todo: check this
+    // windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode));
 
     // 4. Handle widget height changes
-    windowListeners.push(...listenToHeightChanges(iframe, params.height));
+    // todo: check this
+    // windowListeners.push(...listenToHeightChanges(iframe, params.height));
 
     // 5. Intercept deeplinks navigation in the iframe
     windowListeners.push(interceptDeepLinks());
@@ -94,15 +92,15 @@ export function createCowSwapWidget(
         iframeWindow,
         null,
         provider,
-        currentParams.chainName,
+        params.providerType,
         connectWalletHandle,
     );
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
-        updateParams(iframeWindow, currentParams, provider);
+        updateParams(iframeWindow, params, provider);
 
-        const updateProviderParams = getConnectWalletParams(provider, currentParams.chainName);
+        const updateProviderParams = getConnectWalletParams(provider, params.providerType);
 
         updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
     });
@@ -112,21 +110,20 @@ export function createCowSwapWidget(
 
     // 10. Return the handler, so the widget, listeners, and provider can be updated
     return {
-        updateParams: (newParams: CowSwapWidgetParams) => {
-            currentParams = newParams;
-            // if you want update tradeType, you need to convert it to TradeType Array;
-            currentParams.tradeType = getTradeType(currentParams.tradeType as TradeType);
-            updateParams(iframeWindow, currentParams, provider);
+        updateParams: (newParams: IWidgetParams) => {
+            // const params = createWidgetParams(newParams).data ;
+            // todo: check this;
+            updateParams(iframeWindow, newParams, provider);
         },
         updateListeners: (newListeners?: CowEventListeners) =>
             iFrameCowEventEmitter.updateListeners(newListeners),
-        updateProvider: async (newProvider, chainName: ChainName) => {
+        updateProvider: async (newProvider, providerType: ProviderType) => {
             iframeRpcProviderBridge.disconnect();
             provider?.removeAllListeners?.();
 
             provider = newProvider;
 
-            const updateProviderParams = getConnectWalletParams(provider, chainName);
+            const updateProviderParams = getConnectWalletParams(provider, providerType);
 
             currentParams = { ...currentParams, ...updateProviderParams };
 
@@ -134,7 +131,7 @@ export function createCowSwapWidget(
                 iframeWindow,
                 iframeRpcProviderBridge,
                 newProvider,
-                chainName,
+                providerType,
                 connectWalletHandle,
             );
 
@@ -176,14 +173,14 @@ function updateProvider(
     iframe: Window,
     iframeRpcProviderBridge: IframeRpcProviderBridge | null,
     newProvider: EthereumProvider,
-    chainName: ChainName,
+    providerType: ProviderType,
     connectWalletHandle?: () => void,
 ): IframeRpcProviderBridge {
     // Verify the params
-    const Types = Object.values(ChainName);
+    const Types = Object.values(ProviderType);
 
-    if (!Types.includes(chainName)) {
-        throw new Error('chainName is required');
+    if (!Types.includes(providerType)) {
+        throw new Error('providerType is required');
     }
 
     // TODO: check provider
@@ -193,7 +190,7 @@ function updateProvider(
         iframeRpcProviderBridge.disconnect();
     }
 
-    const providerBridge = new IframeRpcProviderBridge(iframe, chainName, connectWalletHandle);
+    const providerBridge = new IframeRpcProviderBridge(iframe, providerType, connectWalletHandle);
 
     // Connect to the new provider
     if (newProvider) {
@@ -208,30 +205,31 @@ function updateProvider(
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
-function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
-    const { width, height = DEFAULT_HEIGHT } = params;
+function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
+    // todo: check this
+    const { width } = params;
 
     const newWidth = window.innerWidth < DEFAULT_WIDTH ? window.innerWidth : DEFAULT_WIDTH;
 
     const iframe = document.createElement('iframe');
 
-    iframe.src = buildWidgetUrl(params);
+    iframe.src = url;
     console.log('log-iframe.src', iframe.src);
     iframe.width = `${newWidth}px`;
-    iframe.height = height;
+    iframe.height = DEFAULT_HEIGHT;
     iframe.style.border = '0';
     iframe.style.width = `${newWidth}px`;
-    iframe.style.height = height;
+    iframe.style.height = DEFAULT_HEIGHT;
     iframe.scrolling = 'no';
     return iframe;
 }
 
-function getConnectWalletParams(provider, chainName) {
+function getConnectWalletParams(provider, providerType) {
     const updateProviderParams = {
-        chainName,
-        walletType: WALLET_TYPE[chainName],
-        chainId: getChainId(provider, chainName),
-        address: getAddress(provider, chainName),
+        providerType,
+        walletType: WALLET_TYPE[providerType],
+        chainId: getChainId(provider, providerType),
+        address: getAddress(provider, providerType),
     };
 
     console.log('log-333', updateProviderParams);
@@ -268,26 +266,18 @@ function updateProviderEmitEvent(
  */
 function updateParams(
     contentWindow: Window,
-    params: CowSwapWidgetParams,
+    params: IWidgetParams,
     provider: EthereumProvider | undefined,
 ) {
     const hasProvider = !!provider;
 
-    const pathname = buildWidgetPath(params);
-    const search = buildWidgetUrlQuery(params).toString();
-    const tradeType = params.tradeType ? getTradeType(params.tradeType as TradeType) : undefined;
-    const appParams = {
-        ...params,
-        tradeType,
-    };
-
-    // Omit theme from appParams
-    // const { theme: _theme, ...appParams } = params
+    const appParams = createWidgetParams(params).data;
 
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
+        // todo: check this
         urlParams: {
-            pathname,
-            search,
+            // pathname,
+            // search,
         },
         appParams: appParams,
         hasProvider,

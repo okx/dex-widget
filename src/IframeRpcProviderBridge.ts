@@ -8,12 +8,11 @@ import {
     stopListeningToMessageFromWindow,
 } from './messages';
 import {
-    ChainName,
     EthereumProvider,
     JsonRpcRequestMessage,
     ProviderEventMessage,
     ProviderOnEventPayload,
-    ProviderRpcResponsePayload,
+    ProviderRpcResponsePayload, ProviderType,
     WidgetMethodsListen,
     WidgetProviderEvents,
 } from './types';
@@ -58,7 +57,7 @@ export class IframeRpcProviderBridge {
     /** Ticker for ensuring only use once on EVENTS_TO_FORWARD_TO_IFRAME */
     private isAllowAtomicForward = false;
 
-    private chainName: ChainName;
+    private providerType: ProviderType;
 
     private connectWalletHandle: () => void;
 
@@ -69,10 +68,10 @@ export class IframeRpcProviderBridge {
      */
     constructor(
         private iframeWindow: Window,
-        chainName: ChainName,
+        providerType: ProviderType,
         connectWalletHandle?: () => void,
     ) {
-        this.chainName = chainName;
+        this.providerType = providerType;
         if (connectWalletHandle) {
             this.connectWalletHandle = connectWalletHandle;
         }
@@ -154,7 +153,7 @@ export class IframeRpcProviderBridge {
         // cancel the register of all listener
         newProvider?.removeAllListeners?.();
 
-        if (this.chainName === ChainName.SOLANA) {
+        if (this.providerType === ProviderType.SOLANA) {
             // Register in the provider, the events that need to be forwarded to the iFrame window
             EVENTS_TO_FORWARD_TO_IFRAME_SOLANA.forEach(event => {
                 newProvider.on(event, (params: unknown) => {
