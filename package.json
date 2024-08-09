@@ -2,11 +2,10 @@
     "name": "bridge",
     "version": "1.0.0",
     "description": "## Prequilification",
-    "main": "dist/index-cjs.js",
-    "module": "dist/index-es.js",
-    "types": "dist/types/src/index.d.ts",
+    "main": "lib/index.cjs",
+    "module": "lib/index.mjs",
+    "types": "lib/index.d.ts",
     "scripts": {
-        "dev": "vite --host 127.0.0.1 --port 7001",
         "build": "vite build",
         "pub:beta": "npm run release -- --prerelease beta && npm publish --tag beta",
         "pub:patch": "npm run release -- --release-as patch && npm publish",
@@ -25,23 +24,25 @@
         "@types/react-dom": "^18.3.0",
         "@typescript-eslint/eslint-plugin": "5.53.0",
         "@typescript-eslint/parser": "5.53.0",
-        "bootstrap": "5.3.3",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "sass": "^1.77.8",
-        "vite": "^5.3.1",
-        "vite-plugin-dts": "^4.0.1",
         "eslint": "^7.29.0",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-import": "2.24.1",
         "eslint-plugin-no-only-tests": "3.0.0",
         "eslint-plugin-prettier": "3.4.0",
+        "less": "^4.2.0",
         "prettier": "2.4.1",
-        "typescript": "~4.7.4"
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "typescript": "~4.7.4",
+        "vite": "^5.3.1",
+        "vite-plugin-dts": "^4.0.1"
     },
     "dependencies": {
         "@solana/web3.js": "^1.44.1",
         "bs58": "5.0.0",
-        "web3": "1.8.1"
+        "web3": "1.8.1",
+        "@tanstack/react-query": "^5.51.21",
+        "wagmi": "^2.12.2",
+        "@rainbow-me/rainbowkit": "^2.1.4"
     }
 }
