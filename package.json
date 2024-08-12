@@ -1,6 +1,6 @@
 {
     "name": "@ok/widget-bridge",
-    "version": "1.0.1-beta.0",
+    "version": "1.0.1-beta.1",
     "description": "## Prequilification",
     "main": "lib/index.cjs",
     "module": "lib/index.mjs",
