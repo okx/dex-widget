@@ -1,6 +1,6 @@
 {
-    "name": "bridge",
-    "version": "1.0.0",
+    "name": "@ok/widget-bridge",
+    "version": "1.0.1-beta.0",
     "description": "## Prequilification",
     "main": "lib/index.cjs",
     "module": "lib/index.mjs",
@@ -11,6 +11,7 @@
         "pub:patch": "npm run release -- --release-as patch && npm publish",
         "pub:minor": "npm run release -- --release-as minor && npm publish",
         "pub:major": "npm run release -- --release-as major && npm publish",
+        "release": "standard-version",
         "lint": "eslint --config .eslintrc . --cache --debug",
         "lint:fix": "eslint --fix .",
         "prettier": "prettier --ignore-path .gitignore --write \"**/*.{ts,js,md,json}\""
@@ -33,16 +34,17 @@
         "prettier": "2.4.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "standard-version": "^9.5.0",
         "typescript": "~4.7.4",
         "vite": "^5.3.1",
         "vite-plugin-dts": "^4.0.1"
     },
     "dependencies": {
+        "@rainbow-me/rainbowkit": "^2.1.4",
         "@solana/web3.js": "^1.44.1",
-        "bs58": "5.0.0",
-        "web3": "1.8.1",
         "@tanstack/react-query": "^5.51.21",
+        "bs58": "5.0.0",
         "wagmi": "^2.12.2",
-        "@rainbow-me/rainbowkit": "^2.1.4"
+        "web3": "1.8.1"
     }
 }
