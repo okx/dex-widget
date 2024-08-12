@@ -1,5 +1,4 @@
 import {
-    ChainName,
     TradeType,
     IWidgetParams,
     ITokenPair,
