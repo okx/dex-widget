@@ -25,15 +25,10 @@ export const WALLET_TYPE: TWalletTypeRecord = {
 export const SOLANA_CHAIN_ID = 501;
 
 
-export function getSupportTradeTypeAndRoute(tradeType: TradeType): TradeType[];
-export function getSupportTradeTypeAndRoute(
-    tradeType: TradeType,
-    tokenPair: ITokenPair,
-): { supportTradeType: TradeType[]; route: string };
 export function getSupportTradeTypeAndRoute(
     tradeType: TradeType,
     tokenPair?: ITokenPair,
-): TradeType[] | { supportTradeType: TradeType[]; route: string } {
+): { supportTradeType: TradeType[]; route: string } {
     let supportTradeType = [];
     let route = '';
     if (tradeType === TradeType.SWAP) {
@@ -46,11 +41,8 @@ export function getSupportTradeTypeAndRoute(
         supportTradeType = [TradeType.SWAP, TradeType.BRIDGE];
 
         route = isSameChain(tokenPair)
-            ? WIDGET_ROUTE_CONSTANTS.BRIDGE
-            : WIDGET_ROUTE_CONSTANTS.SWAP;
-    }
-    if (!tokenPair) {
-        return supportTradeType;
+            ? WIDGET_ROUTE_CONSTANTS.SWAP
+            : WIDGET_ROUTE_CONSTANTS.BRIDGE;
     }
     return {
         supportTradeType,
