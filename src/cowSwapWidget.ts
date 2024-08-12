@@ -26,7 +26,7 @@ import {
     WALLET_TYPE,
 } from './widgetHelp';
 
-const DEFAULT_HEIGHT = '487px';
+const DEFAULT_HEIGHT = '555px';
 const DEFAULT_WIDTH = 450;
 
 /**
@@ -54,11 +54,6 @@ export function createCowSwapWidget(
     let provider = providerAux;
     let { data: currentParams, url } = createWidgetParams(params);
 
-    // todo: check
-    // if (provider) currentParams.walletType = WALLET_TYPE[currentParams.chainName];
-    // // if (provider) currentParams.walletType = WALLET_TYPE.walletconnect;
-    // currentParams.chainId = getChainId(provider, currentParams.chainName);
-
     // 1. Create a brand new iframe
     const iframe = createIframe(params, url);
 
@@ -79,10 +74,10 @@ export function createCowSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    // windowListeners.push(...listenToHeightChanges(iframe, params.height));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height));
 
     // 5. Intercept deeplinks navigation in the iframe
-    windowListeners.push(interceptDeepLinks());
+    // windowListeners.push(interceptDeepLinks());
 
     // 6. Handle and forward widget events to the listeners
     const iFrameCowEventEmitter = new IframeEventEmitter(window, listeners);
@@ -111,9 +106,16 @@ export function createCowSwapWidget(
     // 10. Return the handler, so the widget, listeners, and provider can be updated
     return {
         updateParams: (newParams: IWidgetParams) => {
-            // const params = createWidgetParams(newParams).data ;
-            // todo: check this;
-            updateParams(iframeWindow, newParams, provider);
+            // todo: 这里是不是应该过滤provider相关的内容？
+            const nextParams = {
+                ...currentParams,
+                ...newParams,
+            }
+            if (nextParams.width && nextParams.width > DEFAULT_WIDTH) {
+                iframe.style.width = `${nextParams.width}px`;
+                iframe.width = `${nextParams.width}px`;
+            }
+            updateParams(iframeWindow, nextParams, provider);
         },
         updateListeners: (newListeners?: CowEventListeners) =>
             iFrameCowEventEmitter.updateListeners(newListeners),
@@ -209,7 +211,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     // todo: check this
     const { width } = params;
 
-    const newWidth = window.innerWidth < DEFAULT_WIDTH ? window.innerWidth : DEFAULT_WIDTH;
+    const newWidth = (width && width > DEFAULT_WIDTH) ? width : DEFAULT_WIDTH;
 
     const iframe = document.createElement('iframe');
 
@@ -219,7 +221,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     iframe.height = DEFAULT_HEIGHT;
     iframe.style.border = '0';
     iframe.style.width = `${newWidth}px`;
-    iframe.style.height = DEFAULT_HEIGHT;
+    iframe.style.minHeight = DEFAULT_HEIGHT;
     iframe.scrolling = 'no';
     return iframe;
 }

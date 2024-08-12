@@ -190,141 +190,7 @@ export interface CowSwapWidgetContent {
     feeTooltipMarkdown?: string;
 }
 
-export enum ChainName {
-    ETHEREUM = 'ethereum',
-    SOLANA = 'solana',
-    WALLET_CONNECT = 'walletconnect',
-}
-
 export type WalletType = 'metamask' | 'phantom' | 'walletconnect';
-
-export type WalletTypeMap = Record<ChainName, WalletType>;
-
-export interface CowSwapWidgetParams {
-    /**
-     * The unique identifier of the widget consumer.
-     * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
-     */
-    appCode: string;
-
-    /**
-     * The width of the widget in pixels. Default: 400px
-     */
-    width?: string;
-    /**
-     * The height of the widget in pixels. Default: 600px
-     */
-    height?: string;
-
-    /**
-     * Network ID.
-     */
-    // TODO Number?
-    chainId?: Number;
-    /**
-     * The token lists urls to use in the widget
-     */
-    tokenLists?: string[];
-    /**
-     * Swap, Limit or Advanced (Twap).
-     */
-    tradeType?: TradeType | TradeType[];
-
-    /**
-     * The base url of the widget implementation
-     * The parameter can have the URL directly, or an object with the environment property,
-     * The base URL will default to the production environment if not specified, so it will use https://swap.cow.fi by default.
-     */
-    baseUrl?: string;
-
-    /**
-     * Sell token, and optionally the amount.
-     */
-    sell?: TradeAsset;
-
-    /**
-     * Buy token, and optionally the amount.
-     */
-    buy?: TradeAsset;
-
-    /**
-     * Enables the ability to switch between trade types in the widget.
-     */
-    enabledTradeTypes?: TradeType[];
-
-    /**
-     * The partner fee
-     *
-     * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
-     */
-    partnerFee?: PartnerFee;
-
-    /**
-     * Disables showing the confirmation modal you get after posting an order.
-     * Defaults to false.
-     */
-    disablePostedOrderConfirmationModal?: boolean;
-
-    /**
-     * Disables showing the toast messages.
-     * Some UI might want to disable it and subscribe to WidgetMethodsEmit.ON_TOAST_MESSAGE event to handle the toast messages itself.
-     * Defaults to false.
-     */
-    disableToastMessages?: boolean;
-
-    /**
-     * Option to hide the logo in the widget.
-     */
-    hideLogo?: boolean;
-
-    /**
-     * Option to hide the network selector in the widget.
-     */
-    hideNetworkSelector?: boolean;
-
-    /**
-     * Defines the widget mode.
-     *  - `true` (standalone mode): The widget is standalone, so it will use its own Ethereum provider. The user can connect from within the widget.
-     *  - `false` (dapp mode): The widget is embedded in a dapp which is responsible of providing the Ethereum provider. Therefore, there won't be a connect button in the widget as this should happen in the host app.
-     *
-     * Defaults to standalone.
-     */
-    standaloneMode?: boolean;
-
-    /**
-     * The theme of the widget UI.
-     */
-    theme?: CowSwapTheme | CowSwapWidgetPalette;
-
-    /**
-     * Customizable images for the widget.
-     */
-    images?: CowSwapWidgetImages;
-
-    /**
-     * Sounds configuration for the app.
-     */
-    sounds?: CowSwapWidgetSounds;
-
-    /**
-     * Flags to control the display of banners in the widget.
-     */
-    banners?: CowSwapWidgetBanners;
-
-    /**
-     * In case when widget does not support some tokens, you can provide a list of tokens to be used in the widget
-     */
-    customTokens?: TokenInfo[];
-
-    /**
-     * Customizable labels and content for the widget.
-     */
-    content?: CowSwapWidgetContent;
-
-    walletType?: WalletType;
-
-    chainName: ChainName;
-}
 
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
@@ -354,16 +220,6 @@ export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethod
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen];
 
 // export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
-
-export interface UpdateParamsPayload {
-    urlParams: {
-        pathname: string;
-        // Contains theme and other query params
-        search: string;
-    };
-    appParams: CowSwapWidgetParams;
-    hasProvider: boolean;
-}
 
 export interface UpdateProviderParams {
     providerType: ProviderType;
@@ -528,7 +384,12 @@ export interface IFormattedWidgetProps {
 }
 
 export interface IWidgetParams {
-    width?: string;
+    // todo: check this
+    appCode?: string;
+
+    width?: number;
+
+    height?: string;
 
     baseUrl?: string;
     // Swap, Bridget or Auto
@@ -552,4 +413,9 @@ export interface IWidgetConfig {
     provider?: EthereumProvider;
     listeners?: CowEventListeners;
     connectWalletHandle?: () => void;
+}
+
+export interface UpdateParamsPayload {
+    appParams: IWidgetParams;
+    hasProvider: boolean;
 }
