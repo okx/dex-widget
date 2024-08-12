@@ -12,6 +12,7 @@ export default defineConfig({
         },
     },
     build: {
+        sourcemap: true,
         minify: 'esbuild',
         outDir: 'lib',
         assetsInlineLimit: 0,
