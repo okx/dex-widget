@@ -1,5 +1,7 @@
 export { createCowSwapWidget } from './cowSwapWidget';
-export type { CowSwapWidgetHandler } from './cowSwapWidget';
+import type { CowSwapWidgetHandler } from './cowSwapWidget';
+
+export { CowSwapWidgetHandler };
 
 export * from './events';
 export * from './common';
