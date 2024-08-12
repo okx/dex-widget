@@ -5,7 +5,7 @@ export const ERROR_MSG = {
     INVALID_FEE_CONFIG: 'FeeConfig MUST be an object',
     INVALID_FEE_PERCENT: 'FeePercent MUST be a number between 0 and 3',
     INVALID_TOKEN_PAIR: 'Invalid tokenPair',
-    INVALID_CHAIN_NAME: 'Invalid chainName',
+    INVALID_PROVIDER_TYPE: 'Invalid providerType',
     INVALID_WIDGET_VERSION: 'WIDGET_VERSION IS REQUIRED',
 };
 
@@ -71,7 +71,7 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, p
         throw new Error(ERROR_MSG.INVALID_WIDGET_VERSION);
     }
     if (!walletType) {
-        throw new Error(ERROR_MSG.INVALID_CHAIN_NAME);
+        throw new Error(ERROR_MSG.INVALID_PROVIDER_TYPE);
     }
     if (tokenPair && !checkTokenPairChain(tokenPair)) {
         throw new Error(ERROR_MSG.INVALID_TOKEN_PAIR);

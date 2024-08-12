@@ -16,10 +16,6 @@ export const WIDGET_ROUTE_CONSTANTS = {
     BRIDGE: 'web3/dex-widget/bridge',
 };
 
-export const WIDGET_VERSION_MAP = {
-    '1.0.0': '1',
-};
-
 export const WALLET_TYPE: TWalletTypeRecord = {
     [ProviderType.EVM]: 'metamask',
     [ProviderType.SOLANA]: 'phantom',
@@ -74,7 +70,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
         chainIds,
     } = widgetParams;
 
-    const widgetVersion = WIDGET_VERSION_MAP[process.env.WIDGET_VERSION];
+    const widgetVersion = process.env.WIDGET_VERSION;
     // verify widget params, if invalid, throw error
     verifyWidgetParams({
         widgetVersion,

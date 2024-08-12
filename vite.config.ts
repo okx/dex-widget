@@ -1,14 +1,10 @@
-import { readFileSync } from 'fs';
 import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vite';
-import path from 'path';
-
-const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 export default defineConfig({
     define: {
         'process.env': {
-            WIDGET_VERSION: pkg.version,
+            WIDGET_VERSION: '1',
         },
     },
     build: {
