@@ -57,12 +57,11 @@ export const verifyChainId = (chainId: string | number) => {
 export const isSameChain = (tokenPair: ITokenPair): boolean => {
     const legalChains = verifyChainId(tokenPair?.fromChain) && verifyChainId(tokenPair?.toChain);
     return Number(tokenPair?.fromChain) === Number(tokenPair?.toChain) && legalChains;
-}
+};
 
 export const checkTokenPairChain = (tokenPair: ITokenPair) => {
     return verifyChainId(tokenPair?.fromChain) && verifyChainId(tokenPair?.toChain);
 };
-
 
 export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, providerType }) => {
     const walletType = WALLET_TYPE[providerType];

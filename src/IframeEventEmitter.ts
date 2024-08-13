@@ -1,6 +1,6 @@
 import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from './events';
 import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages';
-import { WidgetMethodsEmit } from './types';
+import { WidgetMethodsEmit, WidgetProviderEvents } from './types';
 
 export class IframeEventEmitter {
     private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter();
@@ -12,16 +12,29 @@ export class IframeEventEmitter {
         this.updateListeners(listeners);
 
         // Listen to iFrame, and forward to local event emitter
+        // this.widgetListener = listenToMessageFromWindow(
+        //     this.contentWindow,
+        //     WidgetMethodsEmit.EMIT_COW_EVENT,
+        //     cowEvent => {
+        //         console.log('eventEmitter:', {
+        //             cowEvent,
+        //             event: cowEvent.event,
+        //             payload: cowEvent.payload,
+        //         });
+        //         this.eventEmitter.emit(cowEvent.event, cowEvent.payload);
+        //     },
+        // );
+
         this.widgetListener = listenToMessageFromWindow(
             this.contentWindow,
-            WidgetMethodsEmit.EMIT_COW_EVENT,
+            WidgetProviderEvents.NO_WALLET_CONNECT,
             cowEvent => {
                 console.log('eventEmitter:', {
                     cowEvent,
-                    event: cowEvent.event,
-                    payload: cowEvent.payload,
+                    event: cowEvent.method,
+                    payload: cowEvent.params,
                 });
-                this.eventEmitter.emit(cowEvent.event, cowEvent.payload);
+                this.eventEmitter.emit(cowEvent.method, cowEvent.params);
             },
         );
     }

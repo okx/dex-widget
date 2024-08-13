@@ -1,3 +1,5 @@
+import { ProviderEventMessage } from 'src/types';
+
 import {
     OnFulfilledOrderPayload,
     OnPostedOrderPayload,
@@ -18,6 +20,7 @@ export enum CowEvents {
     ON_PRESIGNED_ORDER = 'ON_PRESIGNED_ORDER',
     ON_ONCHAIN_TRANSACTION = 'ON_ONCHAIN_TRANSACTION',
     ON_CHANGE_TRADE_PARAMS = 'ON_CHANGE_TRADE_PARAMS',
+    NO_WALLET_CONNECT = "NO_WALLET_CONNECT",
 }
 
 // Define types for event payloads
@@ -30,6 +33,7 @@ export interface CowEventPayloadMap {
     [CowEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload;
     [CowEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload;
     [CowEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
+    [CowEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
 }
 
 export type CowEventPayloads = CowEventPayloadMap[CowEvents];

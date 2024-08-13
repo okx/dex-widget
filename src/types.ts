@@ -29,6 +29,9 @@ export enum WidgetProviderEvents {
     NO_WALLET_CONNECT = 'NO_WALLET_CONNECT',
 }
 
+
+type CowSwapWidgetParams = any;
+
 export interface CowSwapWidgetProps {
     params: CowSwapWidgetParams;
     provider?: EthereumProvider;
@@ -209,6 +212,7 @@ export interface WidgetMethodsListenPayloadMap {
     [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload;
     [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload;
     [WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SATUS]: ProviderOnWalletEventPayload;
+    [WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SOLANA_SATUS]: ProviderOnWalletEventPayload;
 }
 
 export interface WidgetProviderEventPayloadMap {
@@ -225,7 +229,7 @@ export interface UpdateProviderParams {
     providerType: ProviderType;
     walletType: WalletType;
     chainId: string | number;
-    address: string,
+    address: string;
 }
 
 export interface UpdateProviderPayload {
@@ -364,23 +368,25 @@ export enum ProviderType {
     WALLET_CONNECT = 'WALLET_CONNECT',
 }
 
+export const ChainName = ProviderType;
+
 export type TWalletTypeRecord = Record<ProviderType, WalletType>;
 
 export interface IWidgetProps {
-    widgetVersion: string,
-    tradeType: TradeType[],
-    feeConfig: IFeeConfig,
-    theme: THEME,
+    widgetVersion: string;
+    tradeType: TradeType[];
+    feeConfig: IFeeConfig;
+    theme: THEME;
     providerType: ProviderType;
-    walletType: WalletType,
-    tokenPair?: IFormattedTokenPair,
-    lang?: string,
-    chainIds?: string[],
+    walletType: WalletType;
+    tokenPair?: IFormattedTokenPair;
+    lang?: string;
+    chainIds?: string[];
 }
 
 export interface IFormattedWidgetProps {
-    url: string,
-    data: IWidgetProps,
+    url: string;
+    data: IWidgetProps;
 }
 
 export interface IWidgetParams {
@@ -406,9 +412,9 @@ export interface IWidgetParams {
 
     tokenPair?: ITokenPair;
 
-    lang?: string,
+    lang?: string;
 
-    chainIds?: string[],
+    chainIds?: string[];
 }
 export interface IWidgetConfig {
     params: IWidgetParams;
@@ -421,3 +427,4 @@ export interface UpdateParamsPayload {
     appParams: IWidgetParams;
     hasProvider: boolean;
 }
+

@@ -24,7 +24,6 @@ export const WALLET_TYPE: TWalletTypeRecord = {
 
 export const SOLANA_CHAIN_ID = 501;
 
-
 export function getSupportTradeTypeAndRoute(
     tradeType: TradeType,
     tokenPair?: ITokenPair,
@@ -51,16 +50,8 @@ export function getSupportTradeTypeAndRoute(
 }
 
 export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidgetProps => {
-    const {
-        baseUrl,
-        feeConfig,
-        tokenPair,
-        providerType,
-        tradeType,
-        theme,
-        lang,
-        chainIds,
-    } = widgetParams;
+    const { baseUrl, feeConfig, tokenPair, providerType, tradeType, theme, lang, chainIds } =
+        widgetParams;
 
     const widgetVersion = process.env.WIDGET_VERSION;
     // verify widget params, if invalid, throw error
@@ -77,11 +68,11 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     // trans token pair params for dex
     const tokenPairParams: IFormattedTokenPair = tokenPair
         ? {
-            inputChain: tokenPair.fromChain,
-            outputChain: tokenPair.toChain,
-            inputCurrency: tokenPair.fromToken,
-            outputCurrency: tokenPair.toToken,
-        }
+              inputChain: tokenPair.fromChain,
+              outputChain: tokenPair.toChain,
+              inputCurrency: tokenPair.fromToken,
+              outputCurrency: tokenPair.toToken,
+          }
         : {};
 
     // define initial params
@@ -92,7 +83,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
         walletType: WALLET_TYPE[providerType],
         widgetVersion,
         chainIds,
-    }
+    };
 
     // add token info to url params
     const urlParams = {

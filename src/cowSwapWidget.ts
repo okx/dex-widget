@@ -49,7 +49,7 @@ export function createCowSwapWidget(
     config: IWidgetConfig,
 ): CowSwapWidgetHandler {
     console.log('createCowSwapWidget====>', container, config);
-    const { params, provider: providerAux, listeners, connectWalletHandle } = config;
+    const { params, provider: providerAux, listeners } = config;
     let provider = providerAux;
     let { data: currentParams, url } = createWidgetParams(params);
 
@@ -87,7 +87,6 @@ export function createCowSwapWidget(
         null,
         provider,
         params.providerType,
-        connectWalletHandle,
     );
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
@@ -135,7 +134,6 @@ export function createCowSwapWidget(
                 iframeRpcProviderBridge,
                 newProvider,
                 providerType,
-                connectWalletHandle,
             );
 
             updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
@@ -182,7 +180,6 @@ function updateProvider(
     iframeRpcProviderBridge: IframeRpcProviderBridge | null,
     newProvider: EthereumProvider,
     providerType: ProviderType,
-    connectWalletHandle?: () => void,
 ): IframeRpcProviderBridge {
     // Verify the params
     const Types = Object.values(ProviderType);
@@ -198,7 +195,7 @@ function updateProvider(
         iframeRpcProviderBridge.disconnect();
     }
 
-    const providerBridge = new IframeRpcProviderBridge(iframe, providerType, connectWalletHandle);
+    const providerBridge = new IframeRpcProviderBridge(iframe, providerType);
 
     // Connect to the new provider
     if (newProvider) {
@@ -285,44 +282,6 @@ function updateParams(
         appParams: appParams,
         hasProvider,
     });
-}
-
-/**
- * Sends appCode to the contentWindow of the widget once the widget is activated.
- *
- * @param contentWindow - Window object of the widget's iframe.
- * @param appCode - A unique identifier for the app.
- */
-function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-    const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
-        // Stop listening for the ACTIVATE (once is enough)
-        stopListeningWindowListener(window, listener);
-
-        // Update the appData
-        postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
-            metaData: appCode ? { appCode } : undefined,
-        });
-    });
-
-    return listener;
-}
-
-/**
- * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
- */
-function interceptDeepLinks() {
-    return listenToMessageFromWindow(
-        window,
-        WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-        ({ href, rel, target }) => {
-            const url = href.toString();
-
-            if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
-                window.open(url, target, rel);
-                return;
-            }
-        },
-    );
 }
 
 /**
