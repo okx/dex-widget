@@ -92,6 +92,12 @@ export class IframeRpcProviderBridge {
                     this.connectWalletHandle?.();
                     return;
                 }
+
+                if (method === 'token_change') {
+                    console.log('TOKEN_CHANGE =====>', args);
+                    // this.connectWalletHandle?.();
+                    // return;
+                }
             },
         );
     }
