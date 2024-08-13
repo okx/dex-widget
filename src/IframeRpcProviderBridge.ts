@@ -54,8 +54,6 @@ export class IframeRpcProviderBridge {
 
     private providerType: ProviderType;
 
-    private connectWalletHandle: () => void;
-
     /**
      * Creates an instance of IframeRpcProviderBridge.
      * @param iframeWindow - The iFrame window that will post up general RPC messages and to which the IframeRpcProviderBridge will forward the RPC result.
@@ -64,37 +62,8 @@ export class IframeRpcProviderBridge {
     constructor(
         private iframeWindow: Window,
         providerType: ProviderType,
-        connectWalletHandle?: () => void,
     ) {
         this.providerType = providerType;
-        if (connectWalletHandle) {
-            this.connectWalletHandle = connectWalletHandle;
-        }
-        this.listenerIframeEventNotConnect();
-    }
-
-    listenerIframeEventNotConnect() {
-        this.noProviderListener = listenToMessageFromWindow(
-            window,
-            WidgetProviderEvents.NO_WALLET_CONNECT,
-            (args: ProviderEventMessage) => {
-                console.log('NO_WALLET_CONNECT===>', args);
-
-                const { method } = args?.params?.[0] || { method: null };
-
-                if (method === 'connect_wallet') {
-                    console.log('connect_wallet =====>');
-                    this.connectWalletHandle?.();
-                    return;
-                }
-
-                if (method === 'token_change') {
-                    console.log('TOKEN_CHANGE =====>', args);
-                    // this.connectWalletHandle?.();
-                    // return;
-                }
-            },
-        );
     }
 
     /**
@@ -113,12 +82,6 @@ export class IframeRpcProviderBridge {
             window,
             WidgetProviderEvents.PROVIDER_ON_EVENT,
             this.listener,
-        );
-
-        stopListeningToMessageFromWindow(
-            window,
-            WidgetProviderEvents.NO_WALLET_CONNECT,
-            this.noProviderListener,
         );
     }
 

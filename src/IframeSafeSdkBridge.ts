@@ -1,14 +1,19 @@
+import Idempotence from "./Idempetence";
+
 export class IframeSafeSdkBridge {
     forwardSdkMessage: (event: MessageEvent<unknown>) => void;
 
     constructor(private appWindow: Window, private iframeWidow: Window) {
         this.forwardSdkMessage = (event: MessageEvent<unknown>) => {
             const data = event.data;
+            const isSameOeigin = event.origin === window.location.origin;
+            const isDevPort = window.location.port === '3000';
+
             if (!isSafeMessage(data)) {
                 return;
             }
 
-            if (event.origin === window.location.origin) {
+            if (isSameOeigin && !isDevPort) {
                 return;
             }
 
@@ -23,11 +28,13 @@ export class IframeSafeSdkBridge {
                 const isAddition = isSafeMessageAddition(data);
                 if (isAddition) {
                     const isIframe = data.mode === 'iframe';
-                    console.log('rece:', data, data.mode, isIframe);
+
                     if (isIframe) {
-                        this.iframeWidow.postMessage(data, '*');
+                        Idempotence.getInstance().handlePostMessage(data.id, data, this.iframeWidow);
+                        // this.iframeWidow.postMessage(data, '*');
                     } else {
-                        this.appWindow.postMessage(data, '*');
+                        Idempotence.getInstance().handlePostMessage(data.id, data, this.appWindow);
+                        // this.appWindow.postMessage(data, '*');
                     }
                 }
             }
@@ -46,7 +53,7 @@ export class IframeSafeSdkBridge {
 }
 
 function isSafeMessage(obj: unknown): obj is SafeMessage {
-    return typeof obj === 'object' && obj !== null && 'id' in obj && typeof obj.id === 'string';
+    return typeof obj === 'object' && obj !== null && 'id' in obj;
 }
 
 function isSafeMessageAddition(message: SafeMessage): message is SafeMessageAddition {

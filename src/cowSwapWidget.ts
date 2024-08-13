@@ -45,7 +45,7 @@ export function createCowSwapWidget(
     config: IWidgetConfig,
 ): CowSwapWidgetHandler {
     console.log('createCowSwapWidget====>', container, config);
-    const { params, provider: providerAux, listeners, connectWalletHandle } = config;
+    const { params, provider: providerAux, listeners } = config;
     let provider = providerAux;
     let { data: currentParams, url } = createWidgetParams(params);
 
@@ -83,7 +83,6 @@ export function createCowSwapWidget(
         null,
         provider,
         params.providerType,
-        connectWalletHandle,
     );
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
@@ -129,7 +128,6 @@ export function createCowSwapWidget(
                 iframeRpcProviderBridge,
                 newProvider,
                 providerType,
-                connectWalletHandle,
             );
 
             updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
@@ -171,7 +169,6 @@ function updateProvider(
     iframeRpcProviderBridge: IframeRpcProviderBridge | null,
     newProvider: EthereumProvider,
     providerType: ProviderType,
-    connectWalletHandle?: () => void,
 ): IframeRpcProviderBridge {
     // Verify the params
     const Types = Object.values(ProviderType);
@@ -187,7 +184,7 @@ function updateProvider(
         iframeRpcProviderBridge.disconnect();
     }
 
-    const providerBridge = new IframeRpcProviderBridge(iframe, providerType, connectWalletHandle);
+    const providerBridge = new IframeRpcProviderBridge(iframe, providerType);
 
     // Connect to the new provider
     if (newProvider) {
