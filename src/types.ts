@@ -391,7 +391,9 @@ export interface IWidgetParams {
 
     height?: string;
 
+    // only for developer
     baseUrl?: string;
+
     // Swap, Bridget or Auto
     tradeType?: TradeType;
 

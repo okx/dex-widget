@@ -40,7 +40,7 @@ export function getSupportTradeTypeAndRoute(
     } else {
         supportTradeType = [TradeType.SWAP, TradeType.BRIDGE];
 
-        route = isSameChain(tokenPair)
+        route = !tokenPair || isSameChain(tokenPair)
             ? WIDGET_ROUTE_CONSTANTS.SWAP
             : WIDGET_ROUTE_CONSTANTS.BRIDGE;
     }

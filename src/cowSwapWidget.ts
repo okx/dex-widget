@@ -26,8 +26,7 @@ import {
     WALLET_TYPE,
 } from './widgetHelp';
 
-const DEFAULT_HEIGHT = '555px';
-const DEFAULT_WIDTH = 450;
+import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
  * Callback function signature for updating the CoW Swap Widget.
@@ -106,15 +105,17 @@ export function createCowSwapWidget(
     // 10. Return the handler, so the widget, listeners, and provider can be updated
     return {
         updateParams: (newParams: IWidgetParams) => {
-            // todo: 这里是不是应该过滤provider相关的内容？
+            // width, lang, theme
+            const { width, lang, theme } = newParams;
+
+            updateIframeStyle(iframe, { width });
+
             const nextParams = {
                 ...currentParams,
-                ...newParams,
-            }
-            if (nextParams.width && nextParams.width > DEFAULT_WIDTH) {
-                iframe.style.width = `${nextParams.width}px`;
-                iframe.width = `${nextParams.width}px`;
-            }
+                lang,
+                theme,
+            };
+
             updateParams(iframeWindow, nextParams, provider);
         },
         updateListeners: (newListeners?: CowEventListeners) =>
@@ -155,7 +156,12 @@ export function createCowSwapWidget(
             iframeSafeSdkBridge.stopListening();
 
             // Destroy the iframe
-            container.removeChild(iframe);
+            try {
+                container.removeChild(iframe);
+            } catch (e) {
+                console.error('Error removing iframe, maybe iframe is removed', e);
+            }
+            destroyStyleElement();
         },
     };
 }
@@ -211,18 +217,13 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     // todo: check this
     const { width } = params;
 
-    const newWidth = (width && width > DEFAULT_WIDTH) ? width : DEFAULT_WIDTH;
-
     const iframe = document.createElement('iframe');
 
     iframe.src = url;
     console.log('log-iframe.src', iframe.src);
-    iframe.width = `${newWidth}px`;
-    iframe.height = DEFAULT_HEIGHT;
-    iframe.style.border = '0';
-    iframe.style.width = `${newWidth}px`;
-    iframe.style.minHeight = DEFAULT_HEIGHT;
-    iframe.scrolling = 'no';
+    // update iframe style
+    updateIframeStyle(iframe, { width });
+
     return iframe;
 }
 
