@@ -35,6 +35,7 @@ export default defineConfig({
         dts({
             insertTypesEntry: true,
             outDir: 'lib',
+            include: './src/**/*',
         }),
     ],
 });

@@ -29,6 +29,9 @@ export enum WidgetProviderEvents {
     NO_WALLET_CONNECT = 'NO_WALLET_CONNECT',
 }
 
+
+type CowSwapWidgetParams = any;
+
 export interface CowSwapWidgetProps {
     params: CowSwapWidgetParams;
     provider?: EthereumProvider;
@@ -209,6 +212,7 @@ export interface WidgetMethodsListenPayloadMap {
     [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload;
     [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload;
     [WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SATUS]: ProviderOnWalletEventPayload;
+    [WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SOLANA_SATUS]: ProviderOnWalletEventPayload;
 }
 
 export interface WidgetProviderEventPayloadMap {
@@ -364,6 +368,8 @@ export enum ProviderType {
     WALLET_CONNECT = 'WALLET_CONNECT',
 }
 
+export const ChainName = ProviderType;
+
 export type TWalletTypeRecord = Record<ProviderType, WalletType>;
 
 export interface IWidgetProps {
@@ -419,3 +425,4 @@ export interface UpdateParamsPayload {
     appParams: IWidgetParams;
     hasProvider: boolean;
 }
+
