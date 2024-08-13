@@ -211,7 +211,6 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     const iframe = document.createElement('iframe');
 
     iframe.src = url;
-    console.log('log-iframe.src', iframe.src);
     iframe.width = `${newWidth}px`;
     iframe.height = DEFAULT_HEIGHT;
     iframe.style.border = '0';
@@ -279,44 +278,6 @@ function updateParams(
         appParams: appParams,
         hasProvider,
     });
-}
-
-/**
- * Sends appCode to the contentWindow of the widget once the widget is activated.
- *
- * @param contentWindow - Window object of the widget's iframe.
- * @param appCode - A unique identifier for the app.
- */
-function sendAppCodeOnActivation(contentWindow: Window, appCode: string | undefined) {
-    const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.ACTIVATE, () => {
-        // Stop listening for the ACTIVATE (once is enough)
-        stopListeningWindowListener(window, listener);
-
-        // Update the appData
-        postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_APP_DATA, {
-            metaData: appCode ? { appCode } : undefined,
-        });
-    });
-
-    return listener;
-}
-
-/**
- * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
- */
-function interceptDeepLinks() {
-    return listenToMessageFromWindow(
-        window,
-        WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-        ({ href, rel, target }) => {
-            const url = href.toString();
-
-            if (!url.startsWith('http') && url.match(/^[a-zA-Z0-9]+:\/\//)) {
-                window.open(url, target, rel);
-                return;
-            }
-        },
-    );
 }
 
 /**
