@@ -45,12 +45,6 @@ export class IframeRpcProviderBridge {
         [key: string]: JsonRpcRequestMessage;
     } = {};
 
-    /** Ticker for ensuring atomic processing of events */
-    private processingEvent = false;
-
-    /** Set to track processed requests for idempotency */
-    private processedRequests = new Set<string>();
-
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
     private noProviderListener: (...args) => void;
@@ -179,12 +173,6 @@ export class IframeRpcProviderBridge {
     }
 
     private prcessProviderEventFromWindow = async (args: ProviderEventMessage) => {
-        if (this.processingEvent || this.processedRequests.has(args.id)) {
-            return;
-        }
-
-        this.processingEvent = true;
-        this.processedRequests.add(args.id);
         const { id, mode, params, path, type } = args || {
             params: null,
             mode: null,
@@ -412,8 +400,6 @@ export class IframeRpcProviderBridge {
                 type,
                 success: false,
             });
-        } finally {
-            this.processingEvent = false;
         }
     };
 
