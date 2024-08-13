@@ -14,5 +14,7 @@
         "declarationDir": "dist",
         "sourceMap": true
     },
-    "include": ["src"]
+    "include": [
+        "src"
+    ]
 }
