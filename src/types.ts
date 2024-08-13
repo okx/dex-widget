@@ -225,7 +225,7 @@ export interface UpdateProviderParams {
     providerType: ProviderType;
     walletType: WalletType;
     chainId: string | number;
-    address: string,
+    address: string;
 }
 
 export interface UpdateProviderPayload {
@@ -367,20 +367,20 @@ export enum ProviderType {
 export type TWalletTypeRecord = Record<ProviderType, WalletType>;
 
 export interface IWidgetProps {
-    widgetVersion: string,
-    tradeType: TradeType[],
-    feeConfig: IFeeConfig,
-    theme: THEME,
+    widgetVersion: string;
+    tradeType: TradeType[];
+    feeConfig: IFeeConfig;
+    theme: THEME;
     providerType: ProviderType;
-    walletType: WalletType,
-    tokenPair?: IFormattedTokenPair,
-    lang?: string,
-    chainIds?: string[],
+    walletType: WalletType;
+    tokenPair?: IFormattedTokenPair;
+    lang?: string;
+    chainIds?: string[];
 }
 
 export interface IFormattedWidgetProps {
-    url: string,
-    data: IWidgetProps,
+    url: string;
+    data: IWidgetProps;
 }
 
 export interface IWidgetParams {
@@ -404,9 +404,9 @@ export interface IWidgetParams {
 
     tokenPair?: ITokenPair;
 
-    lang?: string,
+    lang?: string;
 
-    chainIds?: string[],
+    chainIds?: string[];
 }
 export interface IWidgetConfig {
     params: IWidgetParams;

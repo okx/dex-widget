@@ -12,7 +12,8 @@ import {
     JsonRpcRequestMessage,
     ProviderEventMessage,
     ProviderOnEventPayload,
-    ProviderRpcResponsePayload, ProviderType,
+    ProviderRpcResponsePayload,
+    ProviderType,
     WidgetMethodsListen,
     WidgetProviderEvents,
 } from './types';
@@ -184,236 +185,233 @@ export class IframeRpcProviderBridge {
 
         this.processingEvent = true;
         this.processedRequests.add(args.id);
+        const { id, mode, params, path, type } = args || {
+            params: null,
+            mode: null,
+            id: null,
+            path: null,
+            type: null,
+        };
 
         try {
-            const { id, mode, params, path, type } = args || {
-                params: null,
-                mode: null,
-                id: null,
-                path: null,
-                type: null,
-            };
-
             if (!this.ethereumProvider || mode === 'iframe') {
+                throw new Error('No Provider');
+            }
+
+            const {
+                method,
+                params: requestArgs,
+                autoConnect,
+            } = params[0] || { method: null, autoConnect: null };
+
+            const ALLOW_ATOMIC_FORWARD = ['wallet_switchEthereumChain'];
+            // Avoid the multiple call of the same method, especially the event emitter of EVENTS_TO_FORWARD_TO_IFRAME
+            if (ALLOW_ATOMIC_FORWARD.includes(method)) this.isAllowAtomicForward = true;
+
+            console.log(
+                `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
+            );
+
+            // Solana
+            if (type === 'solana') {
+                if (window && this.ethereumProvider) {
+                    const solana = this.ethereumProvider;
+                    const publicKey = solana?.publicKey;
+
+                    if (!publicKey && autoConnect)
+                        throw new Error(`Please connect wallet first: ${publicKey}`);
+
+                    if (method === 'connect') {
+                        solana
+                            .connect()
+                            .then(key => {
+                                const publicKey = key.publicKey;
+                                this.forwardProviderEventToIframe({
+                                    id,
+                                    mode: 'iframe',
+                                    data: publicKey.toBase58(),
+                                    path,
+                                    type,
+                                    success: true,
+                                });
+                            })
+                            .catch(error => {
+                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
+
+                                this.forwardProviderEventToIframe({
+                                    id,
+                                    mode: 'iframe',
+                                    error: JSON.stringify(error),
+                                    path,
+                                    type,
+                                    success: false,
+                                });
+                            });
+                    } else {
+                        console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestArgs);
+
+                        const solanaTransactionArgs = Array.isArray(requestArgs)
+                            ? requestArgs
+                            : [requestArgs];
+
+                        if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
+
+                        const message: MessageV0Args = solanaTransactionArgs[0]?.message;
+                        const signatures = solanaTransactionArgs[0]?.signatures;
+                        const onlyIfTrusted = solanaTransactionArgs[0]?.onlyIfTrusted;
+                        const okxArgs = solanaTransactionArgs[0]?.okxArgs;
+                        const transaction = solanaTransactionArgs[0]?.transaction;
+                        const okxType = solanaTransactionArgs[0]?.type;
+
+                        if (message?.addressTableLookups) {
+                            message.addressTableLookups?.forEach(item => {
+                                item.accountKey = new PublicKey(item.accountKey);
+                            });
+                        }
+
+                        if (message?.staticAccountKeys) {
+                            const staticAccountKeys = message.staticAccountKeys?.map(item => {
+                                return new PublicKey(item);
+                            });
+                            message.staticAccountKeys = [...staticAccountKeys];
+                        }
+
+                        if (message && signatures) {
+                            const versionedTransaction = new VersionedTransaction(
+                                new MessageV0(message),
+                                signatures,
+                            );
+                            solanaTransactionArgs[0] = versionedTransaction;
+                        }
+
+                        if (onlyIfTrusted) {
+                            solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                        }
+
+                        if (okxArgs && okxType && transaction) {
+                            const deserializeTransaction = VersionedTransaction.deserialize(
+                                bs58.decode(transaction),
+                            );
+                            const options = solanaTransactionArgs[0]?.options;
+
+                            solanaTransactionArgs[0] = deserializeTransaction;
+                            solanaTransactionArgs[1] = options;
+                            solanaTransactionArgs[2] = okxArgs;
+                        }
+
+                        console.log(
+                            'solana transaction solanaTransactionArgs:',
+                            solanaTransactionArgs,
+                        );
+
+                        solana[method](...solanaTransactionArgs)
+                            .then(data => {
+                                console.log('solana request:', data);
+
+                                this.forwardProviderEventToIframe({
+                                    id,
+                                    mode: 'iframe',
+                                    data,
+                                    path,
+                                    type,
+                                    success: true,
+                                });
+                            })
+                            .catch(error => {
+                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
+
+                                this.forwardProviderEventToIframe({
+                                    id,
+                                    mode: 'iframe',
+                                    error: JSON.stringify(error),
+                                    path,
+                                    type,
+                                    success: false,
+                                });
+                            });
+                    }
+
+                    return;
+                }
+            }
+
+            // EVM
+            const requestPara = { method, id: Number(id), params: requestArgs };
+            console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestPara);
+            // Firstly, check the connection of business. If not connect, iframe needn't connect this wallet, and throw a error.
+            const isConneted =
+                this.ethereumProvider.selectedAddress || this.ethereumProvider?.accounts?.[0];
+            // console.log('isConneted:', isConneted, 'autoConnect:', autoConnect)
+            if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
+
+            if (method === 'eth_sendTransaction') {
+                try {
+                    // const web3Provider = new window.Web3(this.ethereumProvider);
+                    const web3Provider = new Web3(this.ethereumProvider);
+                    console.log('log-2', web3Provider);
+                    web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
+                        console.log('log-4', error, hash);
+                        this.forwardProviderEventToIframe({
+                            id,
+                            mode: 'iframe',
+                            data: hash,
+                            error,
+                            path,
+                            type,
+                            success: !!error,
+                        });
+                    });
+                } catch (error) {
+                    this.forwardProviderEventToIframe({
+                        id,
+                        mode: 'iframe',
+                        error: JSON.stringify(error),
+                        path,
+                        type,
+                        success: false,
+                    });
+                }
                 return;
             }
 
-            try {
-                const {
-                    method,
-                    params: requestArgs,
-                    autoConnect,
-                } = params[0] || { method: null, autoConnect: null };
+            const requestPromise = this.ethereumProvider.request(requestPara);
+            console.log('requestPromise:', requestPromise, requestPara, this.ethereumProvider);
+            requestPromise
+                .then(data => {
+                    console.log('request Promise:', data);
 
-                const ALLOW_ATOMIC_FORWARD = ['wallet_switchEthereumChain'];
-                // Avoid the multiple call of the same method, especially the event emitter of EVENTS_TO_FORWARD_TO_IFRAME
-                if (ALLOW_ATOMIC_FORWARD.includes(method)) this.isAllowAtomicForward = true;
-
-                console.log(
-                    `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
-                );
-
-                // Solana
-                if (type === 'solana') {
-                    if (window && this.ethereumProvider) {
-                        const solana = this.ethereumProvider;
-                        const publicKey = solana?.publicKey;
-
-                        if (!publicKey && autoConnect)
-                            throw new Error(`Please connect wallet first: ${publicKey}`);
-
-                        if (method === 'connect') {
-                            solana
-                                .connect()
-                                .then(key => {
-                                    const publicKey = key.publicKey;
-                                    this.forwardProviderEventToIframe({
-                                        id,
-                                        mode: 'iframe',
-                                        data: publicKey.toBase58(),
-                                        path,
-                                        type,
-                                        success: true,
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
-
-                                    this.forwardProviderEventToIframe({
-                                        id,
-                                        mode: 'iframe',
-                                        error: JSON.stringify(error),
-                                        path,
-                                        type,
-                                        success: false,
-                                    });
-                                });
-                        } else {
-                            console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestArgs);
-
-                            const solanaTransactionArgs = Array.isArray(requestArgs)
-                                ? requestArgs
-                                : [requestArgs];
-
-                            if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
-
-                            const message: MessageV0Args = solanaTransactionArgs[0]?.message;
-                            const signatures = solanaTransactionArgs[0]?.signatures;
-                            const onlyIfTrusted = solanaTransactionArgs[0]?.onlyIfTrusted;
-                            const okxArgs = solanaTransactionArgs[0]?.okxArgs;
-                            const transaction = solanaTransactionArgs[0]?.transaction;
-                            const okxType = solanaTransactionArgs[0]?.type;
-
-                            if (message?.addressTableLookups) {
-                                message.addressTableLookups?.forEach(item => {
-                                    item.accountKey = new PublicKey(item.accountKey);
-                                });
-                            }
-
-                            if (message?.staticAccountKeys) {
-                                const staticAccountKeys = message.staticAccountKeys?.map(item => {
-                                    return new PublicKey(item);
-                                });
-                                message.staticAccountKeys = [...staticAccountKeys];
-                            }
-
-                            if (message && signatures) {
-                                const versionedTransaction = new VersionedTransaction(
-                                    new MessageV0(message),
-                                    signatures,
-                                );
-                                solanaTransactionArgs[0] = versionedTransaction;
-                            }
-
-                            if (onlyIfTrusted) {
-                                solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
-                            }
-
-                            if (okxArgs && okxType && transaction) {
-                                const deserializeTransaction = VersionedTransaction.deserialize(
-                                    bs58.decode(transaction),
-                                );
-                                const options = solanaTransactionArgs[0]?.options;
-
-                                solanaTransactionArgs[0] = deserializeTransaction;
-                                solanaTransactionArgs[1] = options;
-                                solanaTransactionArgs[2] = okxArgs;
-                            }
-
-                            console.log(
-                                'solana transaction solanaTransactionArgs:',
-                                solanaTransactionArgs,
-                            );
-
-                            solana[method](...solanaTransactionArgs)
-                                .then(data => {
-                                    console.log('solana request:', data);
-
-                                    this.forwardProviderEventToIframe({
-                                        id,
-                                        mode: 'iframe',
-                                        data,
-                                        path,
-                                        type,
-                                        success: true,
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
-
-                                    this.forwardProviderEventToIframe({
-                                        id,
-                                        mode: 'iframe',
-                                        error: JSON.stringify(error),
-                                        path,
-                                        type,
-                                        success: false,
-                                    });
-                                });
-                        }
-
-                        return;
-                    }
-                }
-
-                // EVM
-                const requestPara = { method, id: Number(id), params: requestArgs };
-                console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestPara);
-                // Firstly, check the connection of business. If not connect, iframe needn't connect this wallet, and throw a error.
-                const isConneted =
-                    this.ethereumProvider.selectedAddress || this.ethereumProvider?.accounts?.[0];
-                // console.log('isConneted:', isConneted, 'autoConnect:', autoConnect)
-                if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
-
-                if (method === 'eth_sendTransaction') {
-                    try {
-                        // const web3Provider = new window.Web3(this.ethereumProvider);
-                        const web3Provider = new Web3(this.ethereumProvider);
-                        console.log('log-2', web3Provider);
-                        web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
-                            console.log('log-4', error, hash);
-                            this.forwardProviderEventToIframe({
-                                id,
-                                mode: 'iframe',
-                                data: hash,
-                                error,
-                                path,
-                                type,
-                                success: !!error,
-                            });
-                        });
-                    } catch (error) {
-                        this.forwardProviderEventToIframe({
-                            id,
-                            mode: 'iframe',
-                            error: JSON.stringify(error),
-                            path,
-                            type,
-                            success: false,
-                        });
-                    }
-                    return;
-                }
-
-                const requestPromise = this.ethereumProvider.request(requestPara);
-                console.log('requestPromise:', requestPromise, requestPara, this.ethereumProvider);
-                requestPromise
-                    .then(data => {
-                        console.log('request Promise:', data);
-
-                        this.forwardProviderEventToIframe({
-                            id,
-                            mode: 'iframe',
-                            data,
-                            path,
-                            type,
-                            success: true,
-                        });
-                    })
-                    .catch(error => {
-                        console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
-
-                        this.forwardProviderEventToIframe({
-                            id,
-                            mode: 'iframe',
-                            error: JSON.stringify(error?.message),
-                            path,
-                            type,
-                            success: false,
-                        });
+                    this.forwardProviderEventToIframe({
+                        id,
+                        mode: 'iframe',
+                        data,
+                        path,
+                        type,
+                        success: true,
                     });
-            } catch (error) {
-                console.error('\x1b[45m\x1b[37mError:\x1b[0m\x1b[0m', error);
+                })
+                .catch(error => {
+                    console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
 
-                this.forwardProviderEventToIframe({
-                    id,
-                    mode: 'iframe',
-                    error: JSON.stringify(error),
-                    path,
-                    type,
-                    success: false,
+                    this.forwardProviderEventToIframe({
+                        id,
+                        mode: 'iframe',
+                        error: JSON.stringify(error?.message),
+                        path,
+                        type,
+                        success: false,
+                    });
                 });
-            }
+        } catch (error) {
+            console.error('\x1b[45m\x1b[37mError:\x1b[0m\x1b[0m', error);
+
+            this.forwardProviderEventToIframe({
+                id,
+                mode: 'iframe',
+                error: JSON.stringify(error),
+                path,
+                type,
+                success: false,
+            });
         } finally {
             this.processingEvent = false;
         }

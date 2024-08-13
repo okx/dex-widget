@@ -19,12 +19,7 @@ import {
     WidgetMethodsEmit,
     WidgetMethodsListen,
 } from './types';
-import {
-    createWidgetParams,
-    getAddress,
-    getChainId,
-    WALLET_TYPE,
-} from './widgetHelp';
+import { createWidgetParams, getAddress, getChainId, WALLET_TYPE } from './widgetHelp';
 
 const DEFAULT_HEIGHT = '555px';
 const DEFAULT_WIDTH = 450;
@@ -110,7 +105,7 @@ export function createCowSwapWidget(
             const nextParams = {
                 ...currentParams,
                 ...newParams,
-            }
+            };
             if (nextParams.width && nextParams.width > DEFAULT_WIDTH) {
                 iframe.style.width = `${nextParams.width}px`;
                 iframe.width = `${nextParams.width}px`;
@@ -211,7 +206,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     // todo: check this
     const { width } = params;
 
-    const newWidth = (width && width > DEFAULT_WIDTH) ? width : DEFAULT_WIDTH;
+    const newWidth = width && width > DEFAULT_WIDTH ? width : DEFAULT_WIDTH;
 
     const iframe = document.createElement('iframe');
 
