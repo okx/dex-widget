@@ -27,6 +27,7 @@ function updateStyleTagInnerHTML(styleElement: HTMLStyleElement, { defaultClassN
     styleElement.innerHTML = `
         .${defaultClassName} {
             width: ${DEFAULT_WIDTH}px;
+            min-height: ${DEFAULT_HEIGHT};
         }
         @media (max-width: 767px) {
             .${defaultClassName} {
@@ -36,11 +37,12 @@ function updateStyleTagInnerHTML(styleElement: HTMLStyleElement, { defaultClassN
         }
         .${specifiedClassName} {
             width: ${width}px;
+            min-height: ${DEFAULT_HEIGHT};
         }
     `;
 }
 
-function importWidthStyle(width: number) {
+function importWidthHeightStyle(width: number) {
     const { id, defaultClassName, specifiedClassName } = getStyleElementIdentifier();
 
     const existStyleElement = document.getElementById(id);
@@ -59,10 +61,10 @@ function updateIframeWidth(iframe: HTMLIFrameElement, width?: number) {
     const newWidth = Number(width);
     const { defaultClassName, specifiedClassName } = getStyleElementIdentifier();
     if (width === undefined) {
-        importWidthStyle(DEFAULT_WIDTH);
+        importWidthHeightStyle(DEFAULT_WIDTH);
         iframe.className = defaultClassName;
     } else {
-        importWidthStyle(newWidth < MIN_WIDTH ? MIN_WIDTH : newWidth);
+        importWidthHeightStyle(newWidth < MIN_WIDTH ? MIN_WIDTH : newWidth);
         iframe.className = specifiedClassName;
     }
 }
