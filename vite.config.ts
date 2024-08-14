@@ -14,7 +14,10 @@ export default defineConfig({
         assetsInlineLimit: 0,
         chunkSizeWarningLimit: 1024,
         lib: {
-            entry: 'src/index.ts',
+            entry: {
+                index: 'src/index.ts',
+                react: 'src/react.tsx',
+            },
             name: 'Dex-Widget',
             formats: ['es', 'cjs'],
             fileName: (format, name) => `${name}.${format === 'es' ? 'mjs' : format}`,

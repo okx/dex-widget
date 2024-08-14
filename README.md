@@ -16,3 +16,44 @@ Only use 2 origin: `localhost:4000` and `127.0.0.1:7001`
    - Build files: `vite build`.
    - Dev mode to inquire locally: `vite --host 127.0.0.1 --port 7001`.
    - Perform production mode locally: `vite preview`.
+
+
+
+### 2. React
+
+Usage:
+```tsx
+import React, { useRef } from 'react';
+import { DexWidgetProvider, useDexWidget } from '@ok/widget-bridge/lib/react';
+
+const App = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const config = {
+    params: {
+      appCode: 'my-app-code',
+      height: 500,
+      providerType: 'wallet',
+    },
+    provider: null,
+    listeners: {},
+  };
+
+  return (
+    <DexWidgetProvider config={config}>
+      <YourComponent />
+    </DexWidgetProvider>
+  );
+};
+
+const YourComponent = () => {
+  const widgetHandler = useDexWidget();
+
+  const updateParams = () => {
+    widgetHandler?.updateParams({ width: '500px', lang: 'en', theme: 'dark' });
+  };
+
+  return <button onClick={updateParams}>Update Widget Params</button>;
+};
+
+export default App;
+```
