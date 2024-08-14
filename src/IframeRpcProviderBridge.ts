@@ -17,6 +17,7 @@ import {
     WidgetMethodsListen,
     WidgetProviderEvents,
 } from './types';
+import { SOLANA_CHAIN_ID, WALLET_TYPE } from './widgetHelp';
 
 const EVENTS_TO_FORWARD_TO_IFRAME = [
     'connect',
@@ -236,7 +237,8 @@ export class IframeRpcProviderBridge {
                         }
 
                         if (onlyIfTrusted) {
-                            solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            return;
                         }
 
                         if (okxArgs && okxType && transaction) {
@@ -382,7 +384,11 @@ export class IframeRpcProviderBridge {
             WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SOLANA_SATUS,
             {
                 event,
-                params: address,
+                params: {
+                    address,
+                    chainId: SOLANA_CHAIN_ID,
+                    walletType: WALLET_TYPE.SOLANA
+                },
             },
         );
     }

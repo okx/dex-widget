@@ -69,9 +69,9 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, p
     if (!widgetVersion) {
         throw new Error(ERROR_MSG.INVALID_WIDGET_VERSION);
     }
-    if (!walletType) {
-        throw new Error(ERROR_MSG.INVALID_PROVIDER_TYPE);
-    }
+    // if (!walletType) {
+    //     throw new Error(ERROR_MSG.INVALID_PROVIDER_TYPE);
+    // }
     if (tokenPair && !checkTokenPairChain(tokenPair)) {
         throw new Error(ERROR_MSG.INVALID_TOKEN_PAIR);
     }
