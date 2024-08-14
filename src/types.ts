@@ -409,7 +409,7 @@ export interface IWidgetParams {
     // The theme of the widget. Default: 'light'
     theme?: THEME;
 
-    providerType: ProviderType;
+    providerType?: ProviderType;
 
     tokenPair?: ITokenPair;
 
