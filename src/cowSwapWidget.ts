@@ -13,7 +13,7 @@ import {
 import {
     EthereumProvider,
     IWidgetConfig,
-    IWidgetParams,
+    IWidgetParams, IWidgetProps,
     ProviderType,
     UpdateProviderParams,
     WidgetMethodsEmit,
@@ -91,7 +91,7 @@ export function createCowSwapWidget(
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
-        updateParams(iframeWindow, params, provider);
+        updateParams(iframeWindow, currentParams, provider);
 
         const updateProviderParams = getConnectWalletParams(provider, params.providerType);
 
@@ -110,12 +110,13 @@ export function createCowSwapWidget(
             updateIframeStyle(iframe, { width });
 
             const nextParams = {
-                ...currentParams,
+                ...params,
                 lang,
                 theme,
             };
+            currentParams = createWidgetParams(nextParams).data;
 
-            updateParams(iframeWindow, nextParams, provider);
+            updateParams(iframeWindow, currentParams, provider);
         },
         updateListeners: (newListeners?: CowEventListeners) =>
             iFrameCowEventEmitter.updateListeners(newListeners),
@@ -266,20 +267,13 @@ function updateProviderEmitEvent(
  */
 function updateParams(
     contentWindow: Window,
-    params: IWidgetParams,
+    props: IWidgetProps,
     provider: EthereumProvider | undefined,
 ) {
     const hasProvider = !!provider;
 
-    const appParams = createWidgetParams(params).data;
-
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
-        // todo: check this
-        urlParams: {
-            // pathname,
-            // search,
-        },
-        appParams: appParams,
+        appParams: props,
         hasProvider,
     });
 }
