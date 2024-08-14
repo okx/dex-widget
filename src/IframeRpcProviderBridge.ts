@@ -236,7 +236,8 @@ export class IframeRpcProviderBridge {
                         }
 
                         if (onlyIfTrusted) {
-                            solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            console.log('onlyIfTrusted:', onlyIfTrusted);
                         }
 
                         if (okxArgs && okxType && transaction) {
