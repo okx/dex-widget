@@ -12,29 +12,18 @@ export class IframeEventEmitter {
         this.updateListeners(listeners);
 
         // Listen to iFrame, and forward to local event emitter
-        // this.widgetListener = listenToMessageFromWindow(
-        //     this.contentWindow,
-        //     WidgetMethodsEmit.EMIT_COW_EVENT,
-        //     cowEvent => {
-        //         console.log('eventEmitter:', {
-        //             cowEvent,
-        //             event: cowEvent.event,
-        //             payload: cowEvent.payload,
-        //         });
-        //         this.eventEmitter.emit(cowEvent.event, cowEvent.payload);
-        //     },
-        // );
-
         this.widgetListener = listenToMessageFromWindow(
             this.contentWindow,
-            WidgetProviderEvents.NO_WALLET_CONNECT,
+            WidgetMethodsEmit.EMIT_COW_EVENT,
             cowEvent => {
+                const payload = cowEvent.payload || cowEvent?.params
                 console.log('eventEmitter:', {
                     cowEvent,
-                    event: cowEvent.method,
-                    payload: cowEvent.params,
+                    event: cowEvent.event,
+                    payload,
                 });
-                this.eventEmitter.emit(cowEvent.method, cowEvent.params);
+
+                this.eventEmitter.emit(cowEvent.event, payload);
             },
         );
     }

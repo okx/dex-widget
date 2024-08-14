@@ -61,11 +61,7 @@ function isSafeMessageAddition(message: SafeMessage): message is SafeMessageAddi
         'mode' in message &&
         typeof message.mode === 'string' &&
         'params' in message &&
-        Array.isArray(message.params) &&
-        'path' in message &&
-        typeof message.path === 'string' &&
-        'type' in message &&
-        typeof message.type === 'string'
+        Array.isArray(message.params)
     );
 }
 
@@ -97,8 +93,6 @@ interface SafeMessage {
 interface SafeMessageAddition extends SafeMessage {
     mode: 'iframe' | 'window';
     params: Object[];
-    path: string;
-    type: string;
 }
 
 interface SafeMessageRequest extends SafeMessage {

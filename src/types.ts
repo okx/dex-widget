@@ -218,6 +218,7 @@ export interface WidgetMethodsListenPayloadMap {
 export interface WidgetProviderEventPayloadMap {
     [WidgetProviderEvents.PROVIDER_ON_EVENT]: ProviderEventMessage;
     [WidgetProviderEvents.PROVIDER_ONEVENT_WALLET_SATUS]: ProviderOnWalletEventPayload;
+    [WidgetProviderEvents.NO_WALLET_CONNECT]: ProviderOnWalletEventPayload;
 }
 
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit];
