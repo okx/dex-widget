@@ -122,7 +122,7 @@ export function createCowSwapWidget(
             iFrameCowEventEmitter.updateListeners(newListeners),
         updateProvider: async (newProvider, providerType: ProviderType) => {
             console.log('updateProvider =====>', newProvider, providerType);
-            iframeRpcProviderBridge.disconnect();
+            iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
 
             provider = newProvider;
@@ -145,7 +145,7 @@ export function createCowSwapWidget(
 
         destroy: () => {
             // Disconnet rpc provider and unsubscribe to events
-            iframeRpcProviderBridge.disconnect();
+            iframeRpcProviderBridge?.disconnect();
             // Stop listening for cow events
             iFrameCowEventEmitter.stopListeningIframe();
 
@@ -184,11 +184,15 @@ function updateProvider(
     providerType: ProviderType,
 ): IframeRpcProviderBridge {
     // Verify the params
+    if (!newProvider) {
+        return;
+    }
+
     const Types = Object.values(ProviderType);
 
-    // if (!Types.includes(providerType)) {
-    //     throw new Error('providerType is required');
-    // }
+    if (!Types.includes(providerType)) {
+        throw new Error('providerType is required');
+    }
 
     // TODO: check provider
 

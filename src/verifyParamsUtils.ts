@@ -3,7 +3,7 @@ import { IFeeConfig, ITokenPair } from './types';
 
 export const ERROR_MSG = {
     INVALID_FEE_CONFIG: 'FeeConfig MUST be an object',
-    INVALID_FEE_PERCENT: 'FeePercent MUST be a number between 0 and 3',
+    INVALID_FEE_PERCENT: 'FeePercent MUST be a number > 0 and <= 3',
     INVALID_TOKEN_PAIR: 'Invalid tokenPair',
     INVALID_PROVIDER_TYPE: 'Invalid providerType',
     INVALID_WIDGET_VERSION: 'WIDGET_VERSION IS REQUIRED',
@@ -24,7 +24,7 @@ export const isNumberOrNumberString = (val: any) => {
 };
 
 export const verifyPercent = (feePercent: string | number) => {
-    return isNumberOrNumberString(feePercent) && Number(feePercent) >= 0 && Number(feePercent) <= 3;
+    return isNumberOrNumberString(feePercent) && Number(feePercent) > 0 && Number(feePercent) <= 3;
 };
 
 export const checkFeeConfig = (feeConfig: IFeeConfig) => {
@@ -33,11 +33,14 @@ export const checkFeeConfig = (feeConfig: IFeeConfig) => {
     }
     const errorFeeConfig = Object.values(feeConfig).some(fee => {
         const commonFeePercent = fee?.feePercent;
-        if (commonFeePercent) {
+        if (!isObject(fee?.referrerAddress)) {
             return !verifyPercent(commonFeePercent);
         }
         if (isObject(fee?.referrerAddress)) {
             const errorFee = Object.values(fee?.referrerAddress).some(item => {
+                if (!isNumberOrNumberString(item.feePercent)) {
+                    return !verifyPercent(commonFeePercent);
+                }
                 return !verifyPercent(item?.feePercent);
             });
             return !!errorFee;
@@ -69,9 +72,9 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, p
     if (!widgetVersion) {
         throw new Error(ERROR_MSG.INVALID_WIDGET_VERSION);
     }
-    // if (!walletType) {
-    //     throw new Error(ERROR_MSG.INVALID_PROVIDER_TYPE);
-    // }
+    if (providerType && !walletType) {
+        throw new Error(ERROR_MSG.INVALID_PROVIDER_TYPE);
+    }
     if (tokenPair && !checkTokenPairChain(tokenPair)) {
         throw new Error(ERROR_MSG.INVALID_TOKEN_PAIR);
     }
