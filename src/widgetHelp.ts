@@ -68,11 +68,11 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     // trans token pair params for dex
     const tokenPairParams: IFormattedTokenPair = tokenPair
         ? {
-              inputChain: tokenPair.fromChain,
-              outputChain: tokenPair.toChain,
-              inputCurrency: tokenPair.fromToken,
-              outputCurrency: tokenPair.toToken,
-          }
+            inputChain: tokenPair.fromChain,
+            outputChain: tokenPair.toChain,
+            inputCurrency: tokenPair.fromToken,
+            outputCurrency: tokenPair.toToken,
+        }
         : {};
 
     // define initial params
@@ -113,11 +113,6 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
         feeConfig,
         providerType,
     };
-    console.log('log-createWidgetParams', {
-        url,
-        urlParams,
-        data,
-    });
 
     return {
         url,
@@ -140,12 +135,6 @@ export const getChainId = (provider: any, providerType: ProviderType) => {
         chainId = SOLANA_CHAIN_ID;
     }
 
-    console.log('log-getChainId', {
-        ProviderType,
-        chainId,
-        providerChainId: provider?.chainId,
-    });
-
     return chainId;
 };
 
@@ -156,7 +145,6 @@ export const getAddress = (provider: any, providerType: ProviderType) => {
     ) {
         const accounts =
             providerType === ProviderType.EVM ? provider.selectedAddress : provider.accounts[0];
-        console.log('log-111', accounts);
         return accounts;
     }
     if (providerType === ProviderType.SOLANA) {

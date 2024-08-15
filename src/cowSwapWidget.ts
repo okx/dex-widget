@@ -62,7 +62,6 @@ export function createCowSwapWidget(
 
     const { contentWindow: iframeWindow } = iframe;
 
-    console.log('log-iframeWindow', iframeWindow);
 
     if (!iframeWindow) {
         console.error('Iframe does not contain a window', iframe);
@@ -94,8 +93,6 @@ export function createCowSwapWidget(
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
-
-        console.log('log-load', currentParams);
 
         updateParams(iframeWindow, currentParams, provider);
 
@@ -229,7 +226,6 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     const iframe = document.createElement('iframe');
 
     iframe.src = url;
-    console.log('log-iframe.src', iframe.src);
     // update iframe style
     updateIframeStyle(iframe, { width });
 
@@ -243,9 +239,6 @@ function getConnectWalletParams(provider, providerType) {
         chainId: getChainId(provider, providerType),
         address: getAddress(provider, providerType),
     };
-
-    console.log('log-333', updateProviderParams);
-
     return updateProviderParams;
 }
 
@@ -280,10 +273,6 @@ function updateParams(
     contentWindow: Window,
     props: IWidgetProps,
 ) {
-    console.trace('log-updateParams', {
-        appParams: props,
-        contentWindow,
-    })
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
         appParams: props,
     });
@@ -316,6 +305,6 @@ function listenToDexLoadReady(
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, data => {
         updateParams(iframe.contentWindow, params);
         stopListeningWindowListener(window, listener);
-    })
+    });
     return listener;
 }

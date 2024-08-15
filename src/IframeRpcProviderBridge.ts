@@ -301,9 +301,7 @@ export class IframeRpcProviderBridge {
                 try {
                     // const web3Provider = new window.Web3(this.ethereumProvider);
                     const web3Provider = new Web3(this.ethereumProvider);
-                    console.log('log-2', web3Provider);
                     web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
-                        console.log('log-4', error, hash);
                         this.forwardProviderEventToIframe({
                             id,
                             mode: 'iframe',
@@ -387,7 +385,7 @@ export class IframeRpcProviderBridge {
                 params: {
                     address,
                     chainId: SOLANA_CHAIN_ID,
-                    walletType: WALLET_TYPE.SOLANA
+                    walletType: WALLET_TYPE.SOLANA,
                 },
             },
         );
