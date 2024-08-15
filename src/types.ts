@@ -11,6 +11,7 @@ export enum WidgetMethodsEmit {
     EMIT_COW_EVENT = 'EMIT_COW_EVENT',
     PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
     INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
+    LOAD_READY = 'LOAD_READY',
 }
 
 export enum WidgetMethodsListen {
@@ -203,6 +204,7 @@ export interface WidgetMethodsEmitPayloadMap {
     [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload;
     [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload;
     [WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN]: WindowOpenPayload;
+    [WidgetMethodsEmit.LOAD_READY]: UpdateParamsPayload
 }
 
 export interface WidgetMethodsListenPayloadMap {
@@ -425,7 +427,6 @@ export interface IWidgetConfig {
 }
 
 export interface UpdateParamsPayload {
-    appParams: IWidgetParams;
-    hasProvider: boolean;
+    appParams: IWidgetProps;
 }
 

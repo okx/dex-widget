@@ -61,6 +61,9 @@ export function createCowSwapWidget(
     container.appendChild(iframe);
 
     const { contentWindow: iframeWindow } = iframe;
+
+    console.log('log-iframeWindow', iframeWindow);
+
     if (!iframeWindow) {
         console.error('Iframe does not contain a window', iframe);
         throw new Error('Iframe does not contain a window!');
@@ -73,7 +76,7 @@ export function createCowSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    windowListeners.push(...listenToHeightChanges(iframe, params.height));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, currentParams));
 
     // 5. Intercept deeplinks navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
@@ -91,6 +94,9 @@ export function createCowSwapWidget(
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
+
+        console.log('log-load', currentParams);
+
         updateParams(iframeWindow, currentParams, provider);
 
         const updateProviderParams = getConnectWalletParams(provider, params.providerType);
@@ -273,13 +279,13 @@ function updateProviderEmitEvent(
 function updateParams(
     contentWindow: Window,
     props: IWidgetProps,
-    provider: EthereumProvider | undefined,
 ) {
-    const hasProvider = !!provider;
-
+    console.trace('log-updateParams', {
+        appParams: props,
+        contentWindow,
+    })
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
         appParams: props,
-        hasProvider,
     });
 }
 
@@ -301,4 +307,15 @@ function listenToHeightChanges(
             iframe.style.height = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`;
         }),
     ];
+}
+
+function listenToDexLoadReady(
+    iframe: HTMLIFrameElement,
+    params: IWidgetProps,
+): WindowListener {
+    const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, data => {
+        updateParams(iframe.contentWindow, params);
+        stopListeningWindowListener(window, listener);
+    })
+    return listener;
 }
