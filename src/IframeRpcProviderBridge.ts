@@ -46,6 +46,10 @@ export class IframeRpcProviderBridge {
         [key: string]: JsonRpcRequestMessage;
     } = {};
 
+
+    /** Filter mutiple request id */
+    private requestIdSet = new Set();
+
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
     private noProviderListener: (...args) => void;
@@ -164,6 +168,9 @@ export class IframeRpcProviderBridge {
                 `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
             );
 
+            if (this.requestIdSet.has(id)) return
+            else this.requestIdSet.add(id);
+
             // Solana
             if (type === 'solana') {
                 if (window && this.ethereumProvider) {
@@ -171,6 +178,7 @@ export class IframeRpcProviderBridge {
                     const publicKey = solana?.publicKey;
 
                     if (!publicKey && autoConnect) {
+                        // throw new Error('Please connect wallet first');
                         this.forwardProviderEventToIframe({
                             id,
                             mode: 'iframe',

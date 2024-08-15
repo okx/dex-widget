@@ -19,6 +19,10 @@ class Idempotence {
 
     // method to handle postMessage with idempotence
     public handlePostMessage(id: number | string, data: unknown, container: Window): void {
+        const hasId = this.messageQueue.has(id);
+
+        console.log('handlePostMessage:', hasId, id, data);
+
         if (this.messageQueue.has(id)) {
             console.log(`Message with id ${id} has already been sent.`);
             return;
