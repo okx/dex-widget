@@ -170,8 +170,17 @@ export class IframeRpcProviderBridge {
                     const solana = this.ethereumProvider;
                     const publicKey = solana?.publicKey;
 
-                    if (!publicKey && autoConnect)
-                        throw new Error(`Please connect wallet first: ${publicKey}`);
+                    if (!publicKey && autoConnect) {
+                        this.forwardProviderEventToIframe({
+                            id,
+                            mode: 'iframe',
+                            error: 'Please connect wallet first',
+                            path,
+                            type,
+                            success: false,
+                        });
+                        return;
+                    }
 
                     if (method === 'connect') {
                         solana
