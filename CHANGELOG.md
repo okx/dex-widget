@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.11](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.6...v1.1.0-beta.11) (2024-08-16)
+
+
+### Bug Fixes
+
+* feePercent check and default provider type can be undefinedOC ([16f7911](https://gitlab.okg.com/okfe/tests/dex-widget/commit/16f791113e0405894fb280756e88c510300cdb4a))
+
 ## [1.1.0-beta.10](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.9...v1.1.0-beta.10) (2024-08-15)
 
 ## [1.1.0-beta.9](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.8...v1.1.0-beta.9) (2024-08-15)
