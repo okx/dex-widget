@@ -182,7 +182,7 @@ export class IframeRpcProviderBridge {
                         this.forwardProviderEventToIframe({
                             id,
                             mode: 'iframe',
-                            error: 'Please connect wallet first',
+                            error: JSON.stringify({ message: 'Please connect wallet first' }),
                             path,
                             type,
                             success: false,
