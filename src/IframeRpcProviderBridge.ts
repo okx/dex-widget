@@ -177,18 +177,18 @@ export class IframeRpcProviderBridge {
                     const solana = this.ethereumProvider;
                     const publicKey = solana?.publicKey;
 
-                    if (!publicKey && autoConnect) {
-                        // throw new Error('Please connect wallet first');
-                        this.forwardProviderEventToIframe({
-                            id,
-                            mode: 'iframe',
-                            error: JSON.stringify({ message: 'Please connect wallet first' }),
-                            path,
-                            type,
-                            success: false,
-                        });
-                        return;
-                    }
+                    // if (!publicKey && autoConnect) {
+                    //     // throw new Error('Please connect wallet first');
+                    //     this.forwardProviderEventToIframe({
+                    //         id,
+                    //         mode: 'iframe',
+                    //         error: JSON.stringify({ message: 'Please connect wallet first' }),
+                    //         path,
+                    //         type,
+                    //         success: false,
+                    //     });
+                    //     return;
+                    // }
 
                     if (method === 'connect') {
                         solana
@@ -312,7 +312,15 @@ export class IframeRpcProviderBridge {
             const isConneted =
                 this.ethereumProvider.selectedAddress || this.ethereumProvider?.accounts?.[0];
             // console.log('isConneted:', isConneted, 'autoConnect:', autoConnect)
-            if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
+            // if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
+            if (!isConneted) {
+                await this.ethereumProvider.request({
+                    method: 'eth_requestAccounts',
+                    id: Date.now(),
+                    params: []
+                });
+            }
+
 
             if (method === 'eth_sendTransaction') {
                 try {
