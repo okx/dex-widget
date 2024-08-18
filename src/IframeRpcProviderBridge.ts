@@ -363,7 +363,7 @@ export class IframeRpcProviderBridge {
                     this.forwardProviderEventToIframe({
                         id,
                         mode: 'iframe',
-                        error: JSON.stringify(error?.message),
+                        error: JSON.stringify(error),
                         path,
                         type,
                         success: false,
