@@ -24,24 +24,8 @@ class Idempotence {
         console.log('handlePostMessage:', hasId, id, data);
 
         if (this.messageQueue.has(id)) {
-            // check if the message has been sent twice
-            if (this.messageQueue.get(id)) {
-                console.log(`Message with id ${id} has already been sent.`);
-                return;
-            } else {
-                // Mark the message as sent twice
-                this.messageQueue.set(id, true);
-
-                // Send the message here
-                container.postMessage(data, "*");
-
-                // check size
-                if (this.messageQueue.size > 100) {
-                    this.messageQueue.clear();
-                }
-
-                return;
-            }
+            console.log(`Message with id ${id} has already been sent.`);
+            return;
         }
 
         // Send the message here
@@ -53,7 +37,7 @@ class Idempotence {
         }
 
         // Mark the message as sent
-        this.messageQueue.set(id, false);
+        this.messageQueue.set(id, true);
     }
 
     // method to reset the processed ids and message queue
