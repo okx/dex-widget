@@ -1,4 +1,4 @@
-import { VersionedTransaction, MessageV0, PublicKey, MessageV0Args } from '@solana/web3.js';
+import { VersionedTransaction, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 import Web3 from 'web3';
 
@@ -217,37 +217,31 @@ export class IframeRpcProviderBridge {
 
                         if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
 
-                        const message: MessageV0Args = solanaTransactionArgs[0]?.message;
-                        const signatures = solanaTransactionArgs[0]?.signatures;
+                        const message = solanaTransactionArgs[0];
                         const onlyIfTrusted = solanaTransactionArgs[0]?.onlyIfTrusted;
                         const okxArgs = solanaTransactionArgs[0]?.okxArgs;
                         const transaction = solanaTransactionArgs[0]?.transaction;
                         const okxType = solanaTransactionArgs[0]?.type;
 
-                        if (message?.addressTableLookups) {
-                            message.addressTableLookups?.forEach(item => {
-                                item.accountKey = new PublicKey(item.accountKey);
-                            });
-                        }
-
-                        if (message?.staticAccountKeys) {
-                            const staticAccountKeys = message.staticAccountKeys?.map(item => {
-                                return new PublicKey(item);
-                            });
-                            message.staticAccountKeys = [...staticAccountKeys];
-                        }
-
-                        if (message && signatures) {
-                            const versionedTransaction = new VersionedTransaction(
-                                new MessageV0(message),
-                                signatures,
-                            );
-                            solanaTransactionArgs[0] = versionedTransaction;
-                        }
-
                         if (onlyIfTrusted) {
                             // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
                             return;
+                        }
+
+                        if (typeof message === 'string') {
+                            try {
+                                const deserializeTransaction = Transaction.from(
+                                    bs58.decode(message),
+                                );
+                                console.log('deserializeTransaction:', deserializeTransaction);
+                                solanaTransactionArgs[0] = deserializeTransaction
+                            } catch (err) {
+                                const deserializeTransaction = VersionedTransaction.deserialize(
+                                    bs58.decode(message),
+                                );
+                                console.log('new version deserializeTransaction:', deserializeTransaction);
+                                solanaTransactionArgs[0] = deserializeTransaction
+                            }
                         }
 
                         if (okxArgs && okxType && transaction) {
