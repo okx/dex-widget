@@ -18,6 +18,7 @@ import {
     WidgetProviderEvents,
 } from './types';
 import { SOLANA_CHAIN_ID, WALLET_TYPE } from './widgetHelp';
+import Idempotence from './Idempetence';
 
 const EVENTS_TO_FORWARD_TO_IFRAME = [
     'connect',
@@ -45,10 +46,6 @@ export class IframeRpcProviderBridge {
     private requestWaitingForConnection: {
         [key: string]: JsonRpcRequestMessage;
     } = {};
-
-
-    /** Filter mutiple request id */
-    private requestIdSet = new Set();
 
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
@@ -157,7 +154,6 @@ export class IframeRpcProviderBridge {
             const {
                 method,
                 params: requestArgs,
-                autoConnect,
             } = params[0] || { method: null, autoConnect: null };
 
             const ALLOW_ATOMIC_FORWARD = ['wallet_switchEthereumChain'];
@@ -168,8 +164,8 @@ export class IframeRpcProviderBridge {
                 `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
             );
 
-            if (this.requestIdSet.has(id)) return
-            else this.requestIdSet.add(id);
+            if (Idempotence.getInstance().getMessageQueue().has(id)) return
+            else Idempotence.getInstance().getMessageQueue().set(id, true);
 
             // Solana
             if (type === 'solana') {

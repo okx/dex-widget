@@ -127,6 +127,7 @@ export function createCowSwapWidget(
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
+            iframeSafeSdkBridge.stopListening();
 
             provider = newProvider;
 

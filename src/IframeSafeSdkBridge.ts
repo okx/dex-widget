@@ -28,12 +28,11 @@ export class IframeSafeSdkBridge {
                 const isAddition = isSafeMessageAddition(data);
                 if (isAddition) {
                     const isIframe = data.mode === 'iframe';
-
                     if (isIframe) {
-                        Idempotence.getInstance().handlePostMessage(data.id, data, this.iframeWidow);
+                        Idempotence.getInstance().handlePostMessage(data.id, data, 'iframe', this.iframeWidow);
                         // this.iframeWidow.postMessage(data, '*');
                     } else {
-                        Idempotence.getInstance().handlePostMessage(data.id, data, this.appWindow);
+                        Idempotence.getInstance().handlePostMessage(data.id, data, 'window', this.appWindow);
                         // this.appWindow.postMessage(data, '*');
                     }
                 }
