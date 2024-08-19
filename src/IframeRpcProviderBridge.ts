@@ -331,7 +331,7 @@ export class IframeRpcProviderBridge {
                             id,
                             mode: 'iframe',
                             data: hash,
-                            error,
+                            error: JSON.stringify(error),
                             path,
                             type,
                             success: !!error,
@@ -366,7 +366,7 @@ export class IframeRpcProviderBridge {
                     });
                 })
                 .catch(error => {
-                    console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
+                    console.error('Request Error:', error);
 
                     this.forwardProviderEventToIframe({
                         id,
