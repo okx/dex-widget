@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.14](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.13...v1.1.0-beta.14) (2024-08-19)
+
+
+### Bug Fixes
+
+* fixup idempotence on transaction ([8dc0e44](https://gitlab.okg.com/okfe/tests/dex-widget/commit/8dc0e445775f85faebc6e62d2123b06bad06c89e))
+
 ## [1.1.0-beta.13](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.12...v1.1.0-beta.13) (2024-08-19)
 
 ## [1.1.0-beta.12](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.11...v1.1.0-beta.12) (2024-08-18)
