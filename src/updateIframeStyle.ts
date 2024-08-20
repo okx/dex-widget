@@ -1,4 +1,4 @@
-export const DEFAULT_HEIGHT = '555px';
+export const DEFAULT_HEIGHT = '487.5px';
 export const DEFAULT_WIDTH = 450;
 export const MIN_WIDTH = 375;
 
@@ -32,7 +32,6 @@ function updateStyleTagInnerHTML(styleElement: HTMLStyleElement, { defaultClassN
         @media (max-width: 767px) {
             .${defaultClassName} {
                 width: 100%;
-                border: 1px solid;
             }
         }
         .${specifiedClassName} {
