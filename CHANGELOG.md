@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0-beta.18 (2024-08-20)
+
+
+### Features
+
+* add global declare ([04b7a87](https://gitlab.okg.com/okfe/tests/dex-widget/commit/04b7a87a9d9cf4570abc5f77a8bdf6172eedaf70))
+* add token_change ([85e135c](https://gitlab.okg.com/okfe/tests/dex-widget/commit/85e135c9834f9bd923b2d7f538a2362ec0cf70c0))
+
+
+### Bug Fixes
+
+* feePercent check and default provider type can be undefinedOC ([16f7911](https://gitlab.okg.com/okfe/tests/dex-widget/commit/16f791113e0405894fb280756e88c510300cdb4a))
+* fixup idempotence on transaction ([8dc0e44](https://gitlab.okg.com/okfe/tests/dex-widget/commit/8dc0e445775f85faebc6e62d2123b06bad06c89e))
+* remove connecttion check ([6bfa6de](https://gitlab.okg.com/okfe/tests/dex-widget/commit/6bfa6de94ded115ed9e2394d11b611329949d09e))
+* remove err.message ([817e60a](https://gitlab.okg.com/okfe/tests/dex-widget/commit/817e60aa22eaf27caaece7e4a947890974617113))
+* wc return error ([2632925](https://gitlab.okg.com/okfe/tests/dex-widget/commit/263292579b17f657139f44dce765510a8efdadee))
+
 ## [1.1.0-beta.16](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.10...v1.1.0-beta.16) (2024-08-20)
 
 
