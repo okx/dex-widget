@@ -313,7 +313,7 @@ export class IframeRpcProviderBridge {
                             id,
                             mode: 'iframe',
                             data: hash,
-                            error: JSON.stringify(error),
+                            error: error && JSON.stringify(error),
                             path,
                             type,
                             success: !!error,
@@ -323,7 +323,7 @@ export class IframeRpcProviderBridge {
                     this.forwardProviderEventToIframe({
                         id,
                         mode: 'iframe',
-                        error: JSON.stringify(error),
+                        error: error && JSON.stringify(error),
                         path,
                         type,
                         success: false,
