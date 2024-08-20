@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.16](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.10...v1.1.0-beta.16) (2024-08-20)
+
+
+### Bug Fixes
+
+* fixup idempotence on transaction ([8dc0e44](https://gitlab.okg.com/okfe/tests/dex-widget/commit/8dc0e445775f85faebc6e62d2123b06bad06c89e))
+* remove connecttion check ([6bfa6de](https://gitlab.okg.com/okfe/tests/dex-widget/commit/6bfa6de94ded115ed9e2394d11b611329949d09e))
+* remove err.message ([817e60a](https://gitlab.okg.com/okfe/tests/dex-widget/commit/817e60aa22eaf27caaece7e4a947890974617113))
+
 ## [1.1.0-beta.15](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.14...v1.1.0-beta.15) (2024-08-20)
 
 ## [1.1.0-beta.14](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.13...v1.1.0-beta.14) (2024-08-19)
