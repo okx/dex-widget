@@ -1,6 +1,7 @@
-/* eslint-disable */
+import { PublicKey } from '@solana/web3.js';
+
 import type { SupportedChainId } from './common';
-import { CowEventListeners, CowEventPayloadMap, CowEvents } from './events';
+import { OkEventListeners, OkEventPayloadMap, OkEvents } from './events';
 
 export { SupportedChainId } from './common';
 
@@ -8,7 +9,7 @@ export enum WidgetMethodsEmit {
     ACTIVATE = 'ACTIVATE',
     UPDATE_HEIGHT = 'UPDATE_HEIGHT',
     SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
-    EMIT_COW_EVENT = 'EMIT_COW_EVENT',
+    EMIT_OK_EVENT = 'EMIT_OK_EVENT',
     PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
     INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
     LOAD_READY = 'LOAD_READY',
@@ -31,12 +32,12 @@ export enum WidgetProviderEvents {
 }
 
 
-type CowSwapWidgetParams = any;
+type OkSwapWidgetParams = any;
 
-export interface CowSwapWidgetProps {
-    params: CowSwapWidgetParams;
-    provider?: EthereumProvider;
-    listeners?: CowEventListeners;
+export interface OkSwapWidgetProps {
+    params: OkSwapWidgetParams;
+    provider?: EthereumProvider | SolanaProvider;
+    listeners?: OkEventListeners;
     connectWalletHandle?: () => void;
 }
 
@@ -46,32 +47,29 @@ export interface JsonRpcRequest {
     params: unknown[];
 }
 
-// https://eips.ethereum.org/EIPS/ei  p-1193
-export interface EthereumProvider {
-    /**
-     * Subscribes to Ethereum-related events.
-     * @param event - The event to subscribe to.
-     * @param args - Arguments for the event.
-     */
-    on(event: string, args: unknown): void;
-
-    /**
-     * Sends a JSON-RPC request to the Ethereum provider and returns the response.
-     * @param params - JSON-RPC request parameters.
-     * @returns A promise that resolves with the response.
-     */
-    request<T>(params: JsonRpcRequest): Promise<T>;
-
-    /**
-     * Requests permission to connect to the Ethereum provider.
-     * @returns A promise that resolves once permission is granted.
-     */
-    enable(): Promise<void>;
-
-    removeAllListeners?: () => void;
+export interface SolanaProvider {
+    isPhantom?: boolean;
+    connect(): Promise<{ publicKey: { toString(): string; toBase58(): string } }>;
+    disconnect(): Promise<void>;
+    signTransaction(transaction: any): Promise<any>;
+    signAllTransactions(transactions: any[]): Promise<any[]>;
+    signMessage(message: Uint8Array): Promise<any>;
+    on(event: string, listener: (...args: any[]) => void): void;
+    removeListener(event: string, listener: (...args: any[]) => void): void;
+    publicKey: PublicKey;
 }
 
-export type CowSwapTheme = 'dark' | 'light';
+// https://eips.ethereum.org/EIPS/ei  p-1193
+export interface EthereumProvider {
+    on(event: string, args: unknown): void;
+    request<T>(params: JsonRpcRequest): Promise<T>;
+    enable(): Promise<void>;
+    removeAllListeners: () => void;
+    selectedAddress: string;
+    accounts: string[];
+}
+
+export type OkSwapTheme = 'dark' | 'light';
 
 /**
  *Trade asset parameters, for example:
@@ -79,7 +77,7 @@ export type CowSwapTheme = 'dark' | 'light';
  * or
  * { asset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' } // USDC
  */
-interface TradeAsset {
+export interface TradeAsset {
     /** The asset symbol or identifier. */
     asset: string;
     /**
@@ -103,7 +101,7 @@ export enum THEME {
 /**
  * The partner fee
  *
- * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
+ * Please contact https://okprotocol.typeform.com/to/rONXaxHV
  */
 export interface PartnerFee {
     /**
@@ -141,46 +139,46 @@ export const WIDGET_PALETTE_COLORS = [
     'success',
 ] as const;
 
-export type CowSwapWidgetPaletteColors = typeof WIDGET_PALETTE_COLORS[number];
+export type OkSwapWidgetPaletteColors = typeof WIDGET_PALETTE_COLORS[number];
 
-export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: string };
+export type OkSwapWidgetPaletteParams = { [K in OkSwapWidgetPaletteColors]: string };
 
-export type CowSwapWidgetPalette = { baseTheme: CowSwapTheme } & CowSwapWidgetPaletteParams;
+export type OkSwapWidgetPalette = { baseTheme: OkSwapTheme } & OkSwapWidgetPaletteParams;
 
-export interface CowSwapWidgetSounds {
+export interface OkSwapWidgetSounds {
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     postOrder?: string | null;
 
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap happy moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap happy moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     orderExecuted?: string | null;
 
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous CoW Swap unhappy moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap unhappy moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     orderError?: string | null;
 }
 
-export interface CowSwapWidgetImages {
+export interface OkSwapWidgetImages {
     /**
-     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga CoW" image.
+     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga Ok" image.
      * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
      */
     emptyOrders?: string | null;
 }
 
-export interface CowSwapWidgetBanners {
+export interface OkSwapWidgetBanners {
     /**
      * Banner text: "Use Safe web app..."
      *
      * Conditions for displaying the banner:
-     *  - Safe-like app is connected to CoW Swap via WalletConnect
+     *  - Safe-like app is connected to Ok Swap via WalletConnect
      *  - Selling native token via Swap
      *  - Sell token needs approval
      *
@@ -189,7 +187,7 @@ export interface CowSwapWidgetBanners {
     hideSafeWebAppBanner?: boolean;
 }
 
-export interface CowSwapWidgetContent {
+export interface OkSwapWidgetContent {
     feeLabel?: string;
     feeTooltipMarkdown?: string;
 }
@@ -199,7 +197,7 @@ export type WalletType = 'metamask' | 'phantom' | 'walletconnect';
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
     [WidgetMethodsEmit.ACTIVATE]: void;
-    [WidgetMethodsEmit.EMIT_COW_EVENT]: EmitCowEventPayload<CowEvents>;
+    [WidgetMethodsEmit.EMIT_OK_EVENT]: EmitOkEventPayload<OkEvents>;
     [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload;
     [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload;
     [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload;
@@ -226,7 +224,7 @@ export interface WidgetProviderEventPayloadMap {
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit];
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen];
 
-// export type CowSwapWidgetAppParams = Omit<CowSwapWidgetParams, 'theme'>
+// export type OkSwapWidgetAppParams = Omit<OkSwapWidgetParams, 'theme'>
 
 export interface UpdateProviderParams {
     providerType: ProviderType;
@@ -254,9 +252,9 @@ export interface SetWidgetFullHeightPayload {
     isUpToSmall?: boolean;
 }
 
-export interface EmitCowEventPayload<T extends CowEvents> {
+export interface EmitOkEventPayload<T extends OkEvents> {
     event: T;
-    payload: CowEventPayloadMap[T];
+    payload: OkEventPayloadMap[T];
 }
 
 export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
@@ -422,7 +420,7 @@ export interface IWidgetParams {
 export interface IWidgetConfig {
     params: IWidgetParams;
     provider?: EthereumProvider;
-    listeners?: CowEventListeners;
+    listeners?: OkEventListeners;
     connectWalletHandle?: () => void;
 }
 

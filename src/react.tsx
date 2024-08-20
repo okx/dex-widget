@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useRef, useEffect, ReactNode } from 'react';
 
-import { createCowSwapWidget, type CowSwapWidgetHandler, type IWidgetConfig } from './index';
+import { createOkSwapWidget, type OkSwapWidgetHandler, type IWidgetConfig } from './index';
 
 
 // 创建上下文
-const DexWidgetContext = createContext<CowSwapWidgetHandler | null>(null);
+const DexWidgetContext = createContext<OkSwapWidgetHandler | null>(null);
 
 interface DexWidgetProviderProps {
     children: ReactNode;
@@ -13,11 +13,11 @@ interface DexWidgetProviderProps {
 
 export const DexWidgetProvider: React.FC<DexWidgetProviderProps> = ({ children, config }) => {
     const iframeContainerRef = useRef<HTMLDivElement>(null);
-    const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null);
+    const widgetHandlerRef = useRef<OkSwapWidgetHandler | null>(null);
 
     useEffect(() => {
         if (iframeContainerRef.current) {
-            widgetHandlerRef.current = createCowSwapWidget(iframeContainerRef.current, config);
+            widgetHandlerRef.current = createOkSwapWidget(iframeContainerRef.current, config);
         }
 
         return () => {
@@ -37,4 +37,4 @@ export const useDexWidget = () => {
     return useContext(DexWidgetContext);
 };
 
-export { createCowSwapWidget, CowSwapWidgetHandler };
+export { createOkSwapWidget, OkSwapWidgetHandler };

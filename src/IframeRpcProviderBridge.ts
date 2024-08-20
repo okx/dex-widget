@@ -1,4 +1,4 @@
-import { VersionedTransaction, Transaction } from '@solana/web3.js';
+import { VersionedTransaction, Transaction, PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
 import Web3 from 'web3';
 
@@ -10,6 +10,7 @@ import {
 import {
     EthereumProvider,
     JsonRpcRequestMessage,
+    SolanaProvider,
     ProviderEventMessage,
     ProviderOnEventPayload,
     ProviderRpcResponsePayload,
@@ -40,7 +41,7 @@ export class IframeRpcProviderBridge {
      * The Ethereum provider instance.
      * When is null the JSON-RPC bridge is disconnected from the Ethereum provider.
      * */
-    private ethereumProvider: EthereumProvider | null = null;
+    private ethereumProvider: EthereumProvider | SolanaProvider | null = null;
 
     /** Stored JSON-RPC requests, to queue them when disconnected. */
     private requestWaitingForConnection: {
@@ -49,7 +50,6 @@ export class IframeRpcProviderBridge {
 
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
-    private noProviderListener: (...args) => void;
 
     /** Ticker for ensuring only use once on EVENTS_TO_FORWARD_TO_IFRAME */
     private isAllowAtomicForward = false;
@@ -122,7 +122,7 @@ export class IframeRpcProviderBridge {
         if (this.providerType === ProviderType.SOLANA) {
             // Register in the provider, the events that need to be forwarded to the iFrame window
             EVENTS_TO_FORWARD_TO_IFRAME_SOLANA.forEach(event => {
-                newProvider.on(event, (params: unknown) => {
+                newProvider.on(event, (params: PublicKey) => {
                     return this.onSolanaProviderEvent(event, params);
                 });
             });
@@ -170,12 +170,12 @@ export class IframeRpcProviderBridge {
             // Solana
             if (type === 'solana') {
                 if (window && this.ethereumProvider) {
-                    const solana = this.ethereumProvider;
+                    const solana = this.ethereumProvider as SolanaProvider;
                     const publicKey = solana?.publicKey;
 
                     if (!publicKey) {
                         const pbk = await solana.connect()
-                        console.log('pbk:', pbk.toBase58());
+                        console.log('pbk:', pbk.publicKey.toBase58());
                     }
 
                     if (method === 'connect') {
@@ -292,11 +292,11 @@ export class IframeRpcProviderBridge {
             console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestPara);
             // Firstly, check the connection of business. If not connect, iframe needn't connect this wallet, and throw a error.
             const isConneted =
-                this.ethereumProvider.selectedAddress || this.ethereumProvider?.accounts?.[0];
+                (this.ethereumProvider as EthereumProvider).selectedAddress || (this.ethereumProvider as EthereumProvider)?.accounts?.[0];
             // console.log('isConneted:', isConneted, 'autoConnect:', autoConnect)
             // if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
             if (!isConneted) {
-                await this.ethereumProvider.request({
+                await (this.ethereumProvider as EthereumProvider).request({
                     method: 'eth_requestAccounts',
                     id: Date.now(),
                     params: []
@@ -307,7 +307,7 @@ export class IframeRpcProviderBridge {
             if (method === 'eth_sendTransaction') {
                 try {
                     // const web3Provider = new window.Web3(this.ethereumProvider);
-                    const web3Provider = new Web3(this.ethereumProvider);
+                    const web3Provider = new Web3(this.ethereumProvider as unknown as Web3['currentProvider']);
                     web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
                         this.forwardProviderEventToIframe({
                             id,
@@ -332,7 +332,7 @@ export class IframeRpcProviderBridge {
                 return;
             }
 
-            const requestPromise = this.ethereumProvider.request(requestPara);
+            const requestPromise = (this.ethereumProvider as EthereumProvider).request(requestPara);
             console.log('requestPromise:', requestPromise, requestPara, this.ethereumProvider);
             requestPromise
                 .then(data => {
@@ -376,7 +376,7 @@ export class IframeRpcProviderBridge {
     /**
      * Listen the event of wallet changement of Dapp and forward it to the iFrame window.
      */
-    private onSolanaProviderEvent(event: string, params: unknown): void {
+    private onSolanaProviderEvent(event: string, params: PublicKey): void {
         console.log('on solana Provider Event:', event, params, this.isAllowAtomicForward);
         if (this.isAllowAtomicForward) return;
 

@@ -86,7 +86,6 @@ export interface BaseToastMessagePayload<T extends ToastMessageType> {
  *     ... all other toast message types
  *
  * But is defined automatically using some TypeScript magic. To see how we got here, check:
- *    https://github.com/cowprotocol/cowswap/pull/3813#discussion_r1484752100
  */
 export type OnToastMessagePayload = {
     [K in keyof typeof ToastMessageType]: BaseToastMessagePayload<typeof ToastMessageType[K]>;

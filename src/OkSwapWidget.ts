@@ -1,6 +1,4 @@
-/* eslint-disable */
-import { CowEventListeners } from './events';
-
+import { OkEventListeners } from './events';
 import { IframeEventEmitter } from './IframeEventEmitter';
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge';
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge';
@@ -25,32 +23,32 @@ import {
     getChainId,
     WALLET_TYPE,
 } from './widgetHelp';
-
 import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
- * Callback function signature for updating the CoW Swap Widget.
+ * Callback function signature for updating the Ok Swap Widget.
  */
-export interface CowSwapWidgetHandler {
+export interface OkSwapWidgetHandler {
     updateParams: (params: IWidgetParams) => void;
-    updateListeners: (newListeners?: CowEventListeners) => void;
+    updateListeners: (newListeners?: OkEventListeners) => void;
     updateProvider: (newProvider: EthereumProvider, providerType: ProviderType) => void;
     destroy: () => void;
 }
 
 /**
- * Generates and injects a CoW Swap Widget into the provided container.
+ * Generates and injects a Ok Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function createCowSwapWidget(
+export function createOkSwapWidget(
     container: HTMLElement,
     config: IWidgetConfig,
-): CowSwapWidgetHandler {
-    console.log('createCowSwapWidget====>', container, config);
+): OkSwapWidgetHandler {
+    console.log('createOkSwapWidget====>', container, config);
     const { params, provider: providerAux, listeners } = config;
     let provider = providerAux;
+    // eslint-disable-next-line prefer-const
     let { data: currentParams, url } = createWidgetParams(params);
 
     // 1. Create a brand new iframe
@@ -81,7 +79,7 @@ export function createCowSwapWidget(
     // windowListeners.push(interceptDeepLinks());
 
     // 6. Handle and forward widget events to the listeners
-    const iFrameCowEventEmitter = new IframeEventEmitter(window, listeners);
+    const iFrameOkEventEmitter = new IframeEventEmitter(window, listeners);
 
     // 7. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
     let iframeRpcProviderBridge = updateProvider(
@@ -94,7 +92,7 @@ export function createCowSwapWidget(
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
 
-        updateParams(iframeWindow, currentParams, provider);
+        updateParams(iframeWindow, currentParams);
 
         const updateProviderParams = getConnectWalletParams(provider, params.providerType);
 
@@ -119,10 +117,10 @@ export function createCowSwapWidget(
             };
             currentParams = createWidgetParams(nextParams).data;
 
-            updateParams(iframeWindow, currentParams, provider);
+            updateParams(iframeWindow, currentParams);
         },
-        updateListeners: (newListeners?: CowEventListeners) =>
-            iFrameCowEventEmitter.updateListeners(newListeners),
+        updateListeners: (newListeners?: OkEventListeners) =>
+            iFrameOkEventEmitter.updateListeners(newListeners),
         updateProvider: async (newProvider, providerType: ProviderType) => {
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
@@ -150,8 +148,8 @@ export function createCowSwapWidget(
         destroy: () => {
             // Disconnet rpc provider and unsubscribe to events
             iframeRpcProviderBridge?.disconnect();
-            // Stop listening for cow events
-            iFrameCowEventEmitter.stopListeningIframe();
+            // Stop listening for Ok events
+            iFrameOkEventEmitter.stopListeningIframe();
 
             // Disconnect all listeners
             windowListeners.forEach(listener => window.removeEventListener('message', listener));
@@ -216,7 +214,7 @@ function updateProvider(
 }
 
 /**
- * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
+ * Creates an iframe element for the Ok Swap Widget based on provided parameters and settings.
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
@@ -244,7 +242,7 @@ function getConnectWalletParams(provider, providerType) {
 }
 
 /**
- * Updates the CoW Swap Widget based on the new settings provided.
+ * Updates the Ok Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
@@ -266,7 +264,7 @@ function updateProviderEmitEvent(
 }
 
 /**
- * Updates the CoW Swap Widget based on the new settings provided.
+ * Updates the Ok Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
@@ -303,7 +301,7 @@ function listenToDexLoadReady(
     iframe: HTMLIFrameElement,
     params: IWidgetProps,
 ): WindowListener {
-    const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, data => {
+    const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
         updateParams(iframe.contentWindow, params);
         stopListeningWindowListener(window, listener);
     });

@@ -11,7 +11,7 @@ import { OnToastMessagePayload } from './toastMessages';
 import { OnTradeParamsPayload } from './trade';
 import { OnTransactionPayload } from './transactions';
 
-export enum CowEvents {
+export enum OkEvents {
     ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
     ON_POSTED_ORDER = 'ON_POSTED_ORDER',
     ON_FULFILLED_ORDER = 'ON_FULFILLED_ORDER',
@@ -24,16 +24,16 @@ export enum CowEvents {
 }
 
 // Define types for event payloads
-export interface CowEventPayloadMap {
-    [CowEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload;
-    [CowEvents.ON_POSTED_ORDER]: OnPostedOrderPayload;
-    [CowEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload;
-    [CowEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload;
-    [CowEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload;
-    [CowEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload;
-    [CowEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload;
-    [CowEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
-    [CowEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
+export interface OkEventPayloadMap {
+    [OkEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload;
+    [OkEvents.ON_POSTED_ORDER]: OnPostedOrderPayload;
+    [OkEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload;
+    [OkEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload;
+    [OkEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload;
+    [OkEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload;
+    [OkEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload;
+    [OkEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
+    [OkEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
 }
 
-export type CowEventPayloads = CowEventPayloadMap[CowEvents];
+export type OkEventPayloads = OkEventPayloadMap[OkEvents];

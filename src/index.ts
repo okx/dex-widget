@@ -1,7 +1,7 @@
-export { createCowSwapWidget } from './cowSwapWidget';
-import type { CowSwapWidgetHandler } from './cowSwapWidget';
+export { createOkSwapWidget } from './OkSwapWidget';
+import type { OkSwapWidgetHandler } from './OkSwapWidget';
 
-export { CowSwapWidgetHandler };
+export { OkSwapWidgetHandler };
 
 export * from './events';
 export * from './common';

@@ -1,7 +1,7 @@
-import { CowSwapTheme, CowSwapWidgetPalette } from './types';
+import { OkSwapTheme, OkSwapWidgetPalette } from './types';
 
-export function isCowSwapWidgetPalette(
-    palette: CowSwapTheme | CowSwapWidgetPalette | undefined,
-): palette is CowSwapWidgetPalette {
+export function isOkSwapWidgetPalette(
+    palette: OkSwapTheme | OkSwapWidgetPalette | undefined,
+): palette is OkSwapWidgetPalette {
     return Boolean(palette && typeof palette === 'object');
 }

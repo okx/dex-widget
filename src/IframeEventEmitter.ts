@@ -1,29 +1,29 @@
-import { SimpleCowEventEmitter, CowEventListener, CowEventListeners, CowEvents } from './events';
+import { SimpleOkEventEmitter, OkEventListener, OkEventListeners, OkEvents } from './events';
 import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages';
-import { WidgetMethodsEmit, WidgetProviderEvents } from './types';
+import { WidgetMethodsEmit } from './types';
 
 export class IframeEventEmitter {
-    private eventEmitter: SimpleCowEventEmitter = new SimpleCowEventEmitter();
-    private listeners: CowEventListeners = [];
+    private eventEmitter: SimpleOkEventEmitter = new SimpleOkEventEmitter();
+    private listeners: OkEventListeners = [];
     private widgetListener: WindowListener;
 
-    constructor(private contentWindow: Window, listeners: CowEventListeners = []) {
+    constructor(private contentWindow: Window, listeners: OkEventListeners = []) {
         // Subscribe listeners to local event emitter
         this.updateListeners(listeners);
 
         // Listen to iFrame, and forward to local event emitter
         this.widgetListener = listenToMessageFromWindow(
             this.contentWindow,
-            WidgetMethodsEmit.EMIT_COW_EVENT,
-            cowEvent => {
-                const payload = cowEvent.payload || cowEvent?.params
+            WidgetMethodsEmit.EMIT_OK_EVENT,
+            okEvent => {
+                const payload = okEvent.payload || (okEvent as any)?.params
                 console.log('eventEmitter:', {
-                    cowEvent,
-                    event: cowEvent.event,
+                    okEvent,
+                    event: okEvent.event,
                     payload,
                 });
 
-                this.eventEmitter.emit(cowEvent.event, payload);
+                this.eventEmitter.emit(okEvent.event, payload);
             },
         );
     }
@@ -32,16 +32,16 @@ export class IframeEventEmitter {
         stopListeningWindowListener(this.contentWindow, this.widgetListener);
     }
 
-    public updateListeners(listeners?: CowEventListeners): void {
+    public updateListeners(listeners?: OkEventListeners): void {
         // Unsubscribe from previous listeners
         for (const listener of this.listeners) {
-            this.eventEmitter.off(listener as CowEventListener<CowEvents>);
+            this.eventEmitter.off(listener as OkEventListener<OkEvents>);
         }
 
         // Subscribe to events
         this.listeners = listeners || [];
         for (const listener of this.listeners) {
-            this.eventEmitter.on(listener as CowEventListener<CowEvents>);
+            this.eventEmitter.on(listener as OkEventListener<OkEvents>);
         }
     }
 }

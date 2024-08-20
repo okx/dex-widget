@@ -1,10 +1,10 @@
 import Idempotence from "./Idempetence";
 
 export class IframeSafeSdkBridge {
-    forwardSdkMessage: (event: MessageEvent<unknown>) => void;
+    forwardSdkMessage: (event: MessageEvent<any>) => void;
 
     constructor(private appWindow: Window, private iframeWidow: Window) {
-        this.forwardSdkMessage = (event: MessageEvent<unknown>) => {
+        this.forwardSdkMessage = (event: MessageEvent<any>) => {
             const data = event.data;
             const isSameOeigin = event.origin === window.location.origin;
             const isDevPort = window.location.port === '3000';
@@ -51,11 +51,11 @@ export class IframeSafeSdkBridge {
     }
 }
 
-function isSafeMessage(obj: unknown): obj is SafeMessage {
+function isSafeMessage(obj: SafeMessage) {
     return typeof obj === 'object' && obj !== null && 'id' in obj;
 }
 
-function isSafeMessageAddition(message: SafeMessage): message is SafeMessageAddition {
+function isSafeMessageAddition(message: SafeMessageAddition) {
     return (
         'mode' in message &&
         typeof message.mode === 'string' &&
@@ -64,7 +64,7 @@ function isSafeMessageAddition(message: SafeMessage): message is SafeMessageAddi
     );
 }
 
-function isSafeMessageRequest(message: SafeMessage): message is SafeMessageRequest {
+function isSafeMessageRequest(message: SafeMessageRequest) {
     return (
         'method' in message &&
         typeof message.method === 'string' &&
@@ -76,7 +76,7 @@ function isSafeMessageRequest(message: SafeMessage): message is SafeMessageReque
     );
 }
 
-function isSafeMessageResponse(message: SafeMessage): message is SafeMessageResponse {
+function isSafeMessageResponse(message: SafeMessageResponse) {
     return (
         'success' in message &&
         typeof message.success === 'boolean' &&

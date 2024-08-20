@@ -8,9 +8,9 @@ import {
 } from './types';
 
 /**
- * Key for identifying the event associated with the CoW Swap Widget.
+ * Key for identifying the event associated with the Ok Swap Widget.
  */
-const COW_SWAP_WIDGET_EVENT_KEY = 'okxWidget';
+const OK_SWAP_WIDGET_EVENT_KEY = 'okxWidget';
 
 export function postMessageToWindow<T extends WidgetMethodsEmit>(
     contentWindow: Window,
@@ -31,14 +31,14 @@ export function postMessageToWindow<T extends WidgetProviderEvents>(
 export function postMessageToWindow(contentWindow: Window, method: string, payload: unknown) {
     const data = typeof payload === 'object' ? payload : {};
     const postPayload = {
-        key: COW_SWAP_WIDGET_EVENT_KEY,
+        key: OK_SWAP_WIDGET_EVENT_KEY,
         method,
         ...data,
     };
 
     contentWindow.postMessage(
         postPayload,
-        '*', // TODO: Change to CoW specific origin in production. https://github.com/cowprotocol/cowswap/issues/3828
+        '*', // TODO: Change to Ok specific origin in production.
     );
 }
 
@@ -69,12 +69,12 @@ export function listenToMessageFromWindow<T = unknown>(
     const listener = (event: MessageEvent<unknown>) => {
         if (
             !isEventData(event.data) ||
-            event.data.key !== COW_SWAP_WIDGET_EVENT_KEY ||
+            event.data.key !== OK_SWAP_WIDGET_EVENT_KEY ||
             event.data.method !== method
         ) {
             return;
         }
-        callback(event.data as T);
+        callback(event.data as unknown as T);
     };
     contentWindow.addEventListener('message', listener);
 
@@ -86,7 +86,7 @@ interface EventData {
     method: string;
 }
 
-function isEventData(obj: unknown): obj is EventData {
+function isEventData(obj): obj is EventData {
     return (
         typeof obj === 'object' &&
         obj !== null &&
