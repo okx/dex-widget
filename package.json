@@ -1,5 +1,5 @@
 {
-    "name": "@ok/dex-widget",
+    "name": "@okxweb3/dex-widget",
     "version": "1.1.0-beta.19",
     "description": "## Prequilification",
     "main": "lib/index.cjs",
