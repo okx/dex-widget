@@ -8,9 +8,9 @@ import {
 } from './types';
 
 /**
- * Key for identifying the event associated with the Ok Swap Widget.
+ * Key for identifying the event associated with the Okx Swap Widget.
  */
-const OK_SWAP_WIDGET_EVENT_KEY = 'okxWidget';
+const OKX_SWAP_WIDGET_EVENT_KEY = 'okxWidget';
 
 export function postMessageToWindow<T extends WidgetMethodsEmit>(
     contentWindow: Window,
@@ -31,14 +31,14 @@ export function postMessageToWindow<T extends WidgetProviderEvents>(
 export function postMessageToWindow(contentWindow: Window, method: string, payload: unknown) {
     const data = typeof payload === 'object' ? payload : {};
     const postPayload = {
-        key: OK_SWAP_WIDGET_EVENT_KEY,
+        key: OKX_SWAP_WIDGET_EVENT_KEY,
         method,
         ...data,
     };
 
     contentWindow.postMessage(
         postPayload,
-        '*', // TODO: Change to Ok specific origin in production.
+        '*', // TODO: Change to Okx specific origin in production.
     );
 }
 
@@ -69,7 +69,7 @@ export function listenToMessageFromWindow<T = unknown>(
     const listener = (event: MessageEvent<unknown>) => {
         if (
             !isEventData(event.data) ||
-            event.data.key !== OK_SWAP_WIDGET_EVENT_KEY ||
+            event.data.key !== OKX_SWAP_WIDGET_EVENT_KEY ||
             event.data.method !== method
         ) {
             return;

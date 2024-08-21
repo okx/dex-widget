@@ -11,7 +11,7 @@ import { OnToastMessagePayload } from './toastMessages';
 import { OnTradeParamsPayload } from './trade';
 import { OnTransactionPayload } from './transactions';
 
-export enum OkEvents {
+export enum OkxEvents {
     ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
     ON_POSTED_ORDER = 'ON_POSTED_ORDER',
     ON_FULFILLED_ORDER = 'ON_FULFILLED_ORDER',
@@ -26,18 +26,18 @@ export enum OkEvents {
 }
 
 // Define types for event payloads
-export interface OkEventPayloadMap {
-    [OkEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload;
-    [OkEvents.ON_POSTED_ORDER]: OnPostedOrderPayload;
-    [OkEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload;
-    [OkEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload;
-    [OkEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload;
-    [OkEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload;
-    [OkEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload;
-    [OkEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
-    [OkEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
-    [OkEvents.ON_CONNECT_WALLET]: ProviderEventMessage;
-    [OkEvents.ON_TOKEN_CHANGE]: ProviderEventMessage;
+export interface OkxEventPayloadMap {
+    [OkxEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload;
+    [OkxEvents.ON_POSTED_ORDER]: OnPostedOrderPayload;
+    [OkxEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload;
+    [OkxEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload;
+    [OkxEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload;
+    [OkxEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload;
+    [OkxEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload;
+    [OkxEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
+    [OkxEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
+    [OkxEvents.ON_CONNECT_WALLET]: ProviderEventMessage;
+    [OkxEvents.ON_TOKEN_CHANGE]: ProviderEventMessage;
 }
 
-export type OkEventPayloads = OkEventPayloadMap[OkEvents];
+export type OkxEventPayloads = OkxEventPayloadMap[OkxEvents];

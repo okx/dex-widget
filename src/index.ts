@@ -1,7 +1,7 @@
-export { createOkSwapWidget } from './OkSwapWidget';
-import type { OkSwapWidgetHandler } from './OkSwapWidget';
+export { createOkxSwapWidget } from './OkxSwapWidget';
+import type { OkxSwapWidgetHandler } from './OkxSwapWidget';
 
-export { OkSwapWidgetHandler };
+export { OkxSwapWidgetHandler };
 
 export * from './events';
 export * from './common';

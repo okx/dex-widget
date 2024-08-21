@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
 import type { SupportedChainId } from './common';
-import { OkEventListeners, OkEventPayloadMap, OkEvents } from './events';
+import { OkxEventListeners, OkxEventPayloadMap, OkxEvents } from './events';
 
 export { SupportedChainId } from './common';
 
@@ -9,7 +9,7 @@ export enum WidgetMethodsEmit {
     ACTIVATE = 'ACTIVATE',
     UPDATE_HEIGHT = 'UPDATE_HEIGHT',
     SET_FULL_HEIGHT = 'SET_FULL_HEIGHT',
-    EMIT_OK_EVENT = 'EMIT_OK_EVENT',
+    EMIT_OKX_EVENT = 'EMIT_OKX_EVENT',
     PROVIDER_RPC_REQUEST = 'PROVIDER_RPC_REQUEST',
     INTERCEPT_WINDOW_OPEN = 'INTERCEPT_WINDOW_OPEN',
     LOAD_READY = 'LOAD_READY',
@@ -32,12 +32,12 @@ export enum WidgetProviderEvents {
 }
 
 
-type OkSwapWidgetParams = any;
+type OkxSwapWidgetParams = any;
 
-export interface OkSwapWidgetProps {
-    params: OkSwapWidgetParams;
+export interface OkxSwapWidgetProps {
+    params: OkxSwapWidgetParams;
     provider?: EthereumProvider | SolanaProvider;
-    listeners?: OkEventListeners;
+    listeners?: OkxEventListeners;
     connectWalletHandle?: () => void;
 }
 
@@ -69,7 +69,7 @@ export interface EthereumProvider {
     accounts: string[];
 }
 
-export type OkSwapTheme = 'dark' | 'light';
+export type OkxSwapTheme = 'dark' | 'light';
 
 /**
  *Trade asset parameters, for example:
@@ -139,46 +139,46 @@ export const WIDGET_PALETTE_COLORS = [
     'success',
 ] as const;
 
-export type OkSwapWidgetPaletteColors = typeof WIDGET_PALETTE_COLORS[number];
+export type OkxSwapWidgetPaletteColors = typeof WIDGET_PALETTE_COLORS[number];
 
-export type OkSwapWidgetPaletteParams = { [K in OkSwapWidgetPaletteColors]: string };
+export type OkxSwapWidgetPaletteParams = { [K in OkxSwapWidgetPaletteColors]: string };
 
-export type OkSwapWidgetPalette = { baseTheme: OkSwapTheme } & OkSwapWidgetPaletteParams;
+export type OkxSwapWidgetPalette = { baseTheme: OkxSwapTheme } & OkxSwapWidgetPaletteParams;
 
-export interface OkSwapWidgetSounds {
+export interface OkxSwapWidgetSounds {
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Okx Swap moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     postOrder?: string | null;
 
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap happy moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Okx Swap happy moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     orderExecuted?: string | null;
 
     /**
-     * The sound to play when the order is executed. Defaults to world wide famous Ok Swap unhappy moooooooooo!
+     * The sound to play when the order is executed. Defaults to world wide famous Okx Swap unhappy moooooooooo!
      * Alternatively, you can use a URL to a custom sound file, or set to null to disable the sound.
      */
     orderError?: string | null;
 }
 
-export interface OkSwapWidgetImages {
+export interface OkxSwapWidgetImages {
     /**
-     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga Ok" image.
+     * The image to display when the orders table is empty (no orders yet). It defaults to "Yoga Okx" image.
      * Alternatively, you can use a URL to a custom image file, or set to null to disable the image.
      */
     emptyOrders?: string | null;
 }
 
-export interface OkSwapWidgetBanners {
+export interface OkxSwapWidgetBanners {
     /**
      * Banner text: "Use Safe web app..."
      *
      * Conditions for displaying the banner:
-     *  - Safe-like app is connected to Ok Swap via WalletConnect
+     *  - Safe-like app is connected to Okx Swap via WalletConnect
      *  - Selling native token via Swap
      *  - Sell token needs approval
      *
@@ -187,7 +187,7 @@ export interface OkSwapWidgetBanners {
     hideSafeWebAppBanner?: boolean;
 }
 
-export interface OkSwapWidgetContent {
+export interface OkxSwapWidgetContent {
     feeLabel?: string;
     feeTooltipMarkdown?: string;
 }
@@ -197,7 +197,7 @@ export type WalletType = 'metamask' | 'phantom' | 'walletconnect';
 // Define types for event payloads
 export interface WidgetMethodsEmitPayloadMap {
     [WidgetMethodsEmit.ACTIVATE]: void;
-    [WidgetMethodsEmit.EMIT_OK_EVENT]: EmitOkEventPayload<OkEvents>;
+    [WidgetMethodsEmit.EMIT_OKX_EVENT]: EmitOkxEventPayload<OkxEvents>;
     [WidgetMethodsEmit.UPDATE_HEIGHT]: UpdateWidgetHeightPayload;
     [WidgetMethodsEmit.SET_FULL_HEIGHT]: SetWidgetFullHeightPayload;
     [WidgetMethodsEmit.PROVIDER_RPC_REQUEST]: ProviderRpcRequestPayload;
@@ -224,7 +224,7 @@ export interface WidgetProviderEventPayloadMap {
 export type WidgetMethodsEmitPayloads = WidgetMethodsEmitPayloadMap[WidgetMethodsEmit];
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen];
 
-// export type OkSwapWidgetAppParams = Omit<OkSwapWidgetParams, 'theme'>
+// export type OkxSwapWidgetAppParams = Omit<OkxSwapWidgetParams, 'theme'>
 
 export interface UpdateProviderParams {
     providerType: ProviderType;
@@ -252,9 +252,9 @@ export interface SetWidgetFullHeightPayload {
     isUpToSmall?: boolean;
 }
 
-export interface EmitOkEventPayload<T extends OkEvents> {
+export interface EmitOkxEventPayload<T extends OkxEvents> {
     event: T;
-    payload: OkEventPayloadMap[T];
+    payload: OkxEventPayloadMap[T];
 }
 
 export type WidgetMethodsEmitListener<T extends WidgetMethodsEmit> = T extends WidgetMethodsEmit
@@ -420,7 +420,7 @@ export interface IWidgetParams {
 export interface IWidgetConfig {
     params: IWidgetParams;
     provider?: EthereumProvider;
-    listeners?: OkEventListeners;
+    listeners?: OkxEventListeners;
     connectWalletHandle?: () => void;
 }
 

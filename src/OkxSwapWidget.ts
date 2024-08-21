@@ -1,4 +1,4 @@
-import { OkEventListeners } from './events';
+import { OkxEventListeners } from './events';
 import { IframeEventEmitter } from './IframeEventEmitter';
 import { IframeRpcProviderBridge } from './IframeRpcProviderBridge';
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge';
@@ -26,26 +26,26 @@ import {
 import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
- * Callback function signature for updating the Ok Swap Widget.
+ * Callback function signature for updating the Okx Swap Widget.
  */
-export interface OkSwapWidgetHandler {
+export interface OkxSwapWidgetHandler {
     updateParams: (params: IWidgetParams) => void;
-    updateListeners: (newListeners?: OkEventListeners) => void;
+    updateListeners: (newListeners?: OkxEventListeners) => void;
     updateProvider: (newProvider: EthereumProvider, providerType: ProviderType) => void;
     destroy: () => void;
 }
 
 /**
- * Generates and injects a Ok Swap Widget into the provided container.
+ * Generates and injects a Okx Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
  * @param params - Parameters for configuring the widget.
  * @returns A callback function to update the widget with new settings.
  */
-export function createOkSwapWidget(
+export function createOkxSwapWidget(
     container: HTMLElement,
     config: IWidgetConfig,
-): OkSwapWidgetHandler {
-    console.log('createOkSwapWidget====>', container, config);
+): OkxSwapWidgetHandler {
+    console.log('createOkxSwapWidget====>', container, config);
     const { params, provider: providerAux, listeners } = config;
     let provider = providerAux;
     // eslint-disable-next-line prefer-const
@@ -79,7 +79,7 @@ export function createOkSwapWidget(
     // windowListeners.push(interceptDeepLinks());
 
     // 6. Handle and forward widget events to the listeners
-    const iFrameOkEventEmitter = new IframeEventEmitter(window, listeners);
+    const iFrameOkxEventEmitter = new IframeEventEmitter(window, listeners);
 
     // 7. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
     let iframeRpcProviderBridge = updateProvider(
@@ -119,8 +119,8 @@ export function createOkSwapWidget(
 
             updateParams(iframeWindow, currentParams);
         },
-        updateListeners: (newListeners?: OkEventListeners) =>
-            iFrameOkEventEmitter.updateListeners(newListeners),
+        updateListeners: (newListeners?: OkxEventListeners) =>
+            iFrameOkxEventEmitter.updateListeners(newListeners),
         updateProvider: async (newProvider, providerType: ProviderType) => {
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
@@ -148,8 +148,8 @@ export function createOkSwapWidget(
         destroy: () => {
             // Disconnet rpc provider and unsubscribe to events
             iframeRpcProviderBridge?.disconnect();
-            // Stop listening for Ok events
-            iFrameOkEventEmitter.stopListeningIframe();
+            // Stop listening for Okx events
+            iFrameOkxEventEmitter.stopListeningIframe();
 
             // Disconnect all listeners
             windowListeners.forEach(listener => window.removeEventListener('message', listener));
@@ -214,7 +214,7 @@ function updateProvider(
 }
 
 /**
- * Creates an iframe element for the Ok Swap Widget based on provided parameters and settings.
+ * Creates an iframe element for the Okx Swap Widget based on provided parameters and settings.
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
@@ -242,7 +242,7 @@ function getConnectWalletParams(provider, providerType) {
 }
 
 /**
- * Updates the Ok Swap Widget based on the new settings provided.
+ * Updates the Okx Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */
@@ -264,7 +264,7 @@ function updateProviderEmitEvent(
 }
 
 /**
- * Updates the Ok Swap Widget based on the new settings provided.
+ * Updates the Okx Swap Widget based on the new settings provided.
  * @param params - New params for the widget.
  * @param contentWindow - Window object of the widget's iframe.
  */

@@ -1,7 +1,7 @@
-import { OkSwapTheme, OkSwapWidgetPalette } from './types';
+import { OkxSwapTheme, OkxSwapWidgetPalette } from './types';
 
-export function isOkSwapWidgetPalette(
-    palette: OkSwapTheme | OkSwapWidgetPalette | undefined,
-): palette is OkSwapWidgetPalette {
+export function isOkxSwapWidgetPalette(
+    palette: OkxSwapTheme | OkxSwapWidgetPalette | undefined,
+): palette is OkxSwapWidgetPalette {
     return Boolean(palette && typeof palette === 'object');
 }

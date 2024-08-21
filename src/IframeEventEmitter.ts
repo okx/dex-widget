@@ -1,29 +1,29 @@
-import { SimpleOkEventEmitter, OkEventListener, OkEventListeners, OkEvents } from './events';
+import { SimpleOkxEventEmitter, OkxEventListener, OkxEventListeners, OkxEvents } from './events';
 import { WindowListener, listenToMessageFromWindow, stopListeningWindowListener } from './messages';
 import { WidgetMethodsEmit } from './types';
 
 export class IframeEventEmitter {
-    private eventEmitter: SimpleOkEventEmitter = new SimpleOkEventEmitter();
-    private listeners: OkEventListeners = [];
+    private eventEmitter: SimpleOkxEventEmitter = new SimpleOkxEventEmitter();
+    private listeners: OkxEventListeners = [];
     private widgetListener: WindowListener;
 
-    constructor(private contentWindow: Window, listeners: OkEventListeners = []) {
+    constructor(private contentWindow: Window, listeners: OkxEventListeners = []) {
         // Subscribe listeners to local event emitter
         this.updateListeners(listeners);
 
         // Listen to iFrame, and forward to local event emitter
         this.widgetListener = listenToMessageFromWindow(
             this.contentWindow,
-            WidgetMethodsEmit.EMIT_OK_EVENT,
-            okEvent => {
-                const payload = okEvent.payload || (okEvent as any)?.params
+            WidgetMethodsEmit.EMIT_OKX_EVENT,
+            okxEvent => {
+                const payload = okxEvent.payload || (okxEvent as any)?.params
                 console.log('eventEmitter:', {
-                    okEvent,
-                    event: okEvent.event,
+                    okxEvent,
+                    event: okxEvent.event,
                     payload,
                 });
 
-                this.eventEmitter.emit(okEvent.event, payload);
+                this.eventEmitter.emit(okxEvent.event, payload);
             },
         );
     }
@@ -32,16 +32,16 @@ export class IframeEventEmitter {
         stopListeningWindowListener(this.contentWindow, this.widgetListener);
     }
 
-    public updateListeners(listeners?: OkEventListeners): void {
+    public updateListeners(listeners?: OkxEventListeners): void {
         // Unsubscribe from previous listeners
         for (const listener of this.listeners) {
-            this.eventEmitter.off(listener as OkEventListener<OkEvents>);
+            this.eventEmitter.off(listener as OkxEventListener<OkxEvents>);
         }
 
         // Subscribe to events
         this.listeners = listeners || [];
         for (const listener of this.listeners) {
-            this.eventEmitter.on(listener as OkEventListener<OkEvents>);
+            this.eventEmitter.on(listener as OkxEventListener<OkxEvents>);
         }
     }
 }
