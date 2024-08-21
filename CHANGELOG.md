@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.19](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.15...v1.1.0-beta.19) (2024-08-21)
+
+
+### Bug Fixes
+
+* wc return error ([2632925](https://gitlab.okg.com/okfe/tests/dex-widget/commit/263292579b17f657139f44dce765510a8efdadee))
+
 ## 1.1.0-beta.18 (2024-08-20)
 
 
