@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.28](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.27...v1.1.0-beta.28) (2024-08-22)
+
+
+### Bug Fixes
+
+* connect-wallet first ([b11f957](https://gitlab.okg.com/okfe/tests/dex-widget/commit/b11f957564876844f89c21e0187af2df70cf149a))
+
 ## [1.1.0-beta.27](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.26...v1.1.0-beta.27) (2024-08-22)
 
 ## [1.1.0-beta.26](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.25...v1.1.0-beta.26) (2024-08-22)
