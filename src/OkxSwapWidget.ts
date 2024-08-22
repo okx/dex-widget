@@ -104,7 +104,7 @@ export function createOkxSwapWidget(
     });
 
     // 9. Listen for messages from the iframe
-    const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow);
+    // const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow);
 
     // 10. Return the handler, so the widget, listeners, and provider can be updated
     return {
@@ -129,7 +129,7 @@ export function createOkxSwapWidget(
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
-            iframeSafeSdkBridge.stopListening();
+            // iframeSafeSdkBridge.stopListening();
 
             provider = newProvider;
 
@@ -160,7 +160,7 @@ export function createOkxSwapWidget(
             windowListeners.forEach(listener => window.removeEventListener('message', listener));
 
             // Stop listening for SDK messages
-            iframeSafeSdkBridge.stopListening();
+            // iframeSafeSdkBridge.stopListening();
 
             // Destroy the iframe
             try {
@@ -200,6 +200,8 @@ function updateProvider(
     if (!Types.includes(providerType)) {
         throw new Error('providerType is required');
     }
+
+    console.log('updateProvider iframeRpcProviderBridge===>', iframeRpcProviderBridge);
 
     // TODO: check provider
 
