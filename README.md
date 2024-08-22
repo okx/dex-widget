@@ -1,57 +1,80 @@
 # Widget MVP Demo
 
-## Prerequisites
+## Node.js Version
 
-To effectively use this project locally, ensure you have the following tools installed globally:
+This project requires **Node.js version 16.x** or higher.
 
-1. **live-server**: A simple HTTP server for serving static files locally. It’s particularly useful for quickly loading and testing the `dist` HTML file that is generated after building the project.
-   ```bash
-   npm i -g live-server
-   ```
+## Installation
 
-2. **Vite**: A fast, opinionated build tool that improves the development experience with features like hot module replacement (HMR) and optimized builds. Vite resolves common ESM module issues, such as suffix-import issues that are often encountered when dealing with modern JavaScript modules.
-   ```bash
-   npm i -g vite
-   ```
+You can install the necessary dependencies using `yarn`, `npm`, or `pnpm`. Below are the installation commands for each package manager:
 
-## Usage Instructions
+### Using Yarn
 
-This project is designed to run on specific origins. Ensure you are working on either `localhost:4000` or `127.0.0.1:7001` to avoid any potential issues with cross-origin policies.
+```bash
+yarn install
+```
 
-### Steps to Run the Project
+### Using npm
 
-1. **Navigate to the Project Directory**:
-   Change to the directory where the widget source code is located.
-   ```bash
-   cd src/dapp/bridge
-   ```
+```bash
+npm install
+```
 
-2. **Common Commands**:
-   - **Build the Project**:
-     This command compiles your project into static files (HTML, CSS, JS) and places them in the `dist` directory. Use this command when you want to prepare the project for production or for a local preview.
-     ```bash
-     vite build
-     ```
-   - **Run the Project in Development Mode**:
-     This starts a local development server that serves your project with live reloading. It's useful for development because it updates your changes in real-time.
-     ```bash
-     vite --host 127.0.0.1 --port 7001
-     ```
-   - **Preview the Production Build**:
-     This command serves the static files from the `dist` directory on a local server, allowing you to preview the production build locally before deploying it.
-     ```bash
-     vite preview
-     ```
+### Using pnpm
 
-## Using the Widget in a React Application
+```bash
+pnpm install
+```
 
-If you're integrating the widget into a React application, follow the example below:
+## Installing and Using RainbowKit
 
-### Example: React Component Integration
+To integrate RainbowKit into your project, ensure that you have installed the required packages. RainbowKit is already included in the dependencies, but if you need to add it manually, you can use the following commands:
+
+### Installing RainbowKit
+
+If not already installed, you can add RainbowKit using your preferred package manager:
+
+```bash
+# Using Yarn
+yarn add @rainbow-me/rainbowkit wagmi ethers
+
+# Using npm
+npm install @rainbow-me/rainbowkit wagmi ethers
+
+# Using pnpm
+pnpm add @rainbow-me/rainbowkit wagmi ethers
+```
+
+### Integrating RainbowKit with Your Widget
+
+You can use RainbowKit within your React application along with the widget as shown in the following example:
+
+### Example: React Component Integration with RainbowKit
 
 ```tsx
 import React, { useRef } from 'react';
 import { DexWidgetProvider, useDexWidget } from '@ok/widget-bridge/lib/react';
+import { RainbowKitProvider, getDefaultWallets, connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+
+const { chains, provider } = configureChains(
+  [mainnet, polygon, optimism, arbitrum],
+  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: 'My App',
+  chains
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider
+});
 
 const App = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -68,9 +91,13 @@ const App = () => {
   };
 
   return (
-    <DexWidgetProvider config={config}>
-      <YourComponent />
-    </DexWidgetProvider>
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider chains={chains}>
+        <DexWidgetProvider config={config}>
+          <YourComponent />
+        </DexWidgetProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
   );
 };
 
@@ -95,6 +122,7 @@ export default App;
 
 ### Detailed Explanation
 
+- **RainbowKitProvider**: Provides the UI for wallet connections, integrated with the widget for blockchain interactions.
 - **DexWidgetProvider**: This is a React context provider that you wrap around your components. It provides the widget’s configuration and allows other components within the provider’s scope to interact with the widget.
 - **useDexWidget**: A custom React hook that provides access to the widget’s handler. This handler allows you to update the widget’s parameters, provider, and even destroy the widget if needed.
 - **config**: This configuration object includes parameters like `appCode`, `height`, `providerType`, and any necessary listeners. These are passed to the widget to initialize it.
