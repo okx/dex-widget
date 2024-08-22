@@ -73,7 +73,7 @@ export function createOkxSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, provider, currentParams));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, currentParams));
 
     // 5. Intercept deeplinks navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
@@ -95,8 +95,8 @@ export function createOkxSwapWidget(
         console.log('updateProvider====>load', provider, params);
 
         updateParams(iframeWindow, currentParams);
-        if (provider && params.providerType) {
-            const updateProviderParams = getConnectWalletParams(provider, params.providerType);
+        if (provider && currentParams.providerType) {
+            const updateProviderParams = getConnectWalletParams(provider, currentParams.providerType);
             console.log('updateProvider load', updateProviderParams, provider);
 
             updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
@@ -258,7 +258,7 @@ function updateProviderEmitEvent(
 ) {
     const hasProvider = !!provider;
 
-    console.log('updateProviderEmitEvent', params);
+    console.log('updateProviderEmitEvent', params, contentWindow);
 
     postMessageToWindow<WidgetMethodsListen.UPDATE_PROVIDER>(
         contentWindow,
@@ -306,17 +306,10 @@ function listenToHeightChanges(
 
 function listenToDexLoadReady(
     iframe: HTMLIFrameElement,
-    provider: EthereumProvider,
     params: IWidgetProps,
 ): WindowListener {
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
         updateParams(iframe.contentWindow, params);
-        if (provider && params.providerType) {
-            const updateProviderParams = getConnectWalletParams(provider, params.providerType);
-            console.log('updateProvider load', updateProviderParams, provider);
-
-            updateProviderEmitEvent(iframe.contentWindow, updateProviderParams, provider);
-        }
 
         stopListeningWindowListener(window, listener);
     });
