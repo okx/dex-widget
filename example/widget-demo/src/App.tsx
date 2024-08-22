@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -144,6 +144,10 @@ export default function App(props: Props) {
     widgetInstance.current?.destroy();
     widgetRef.current?.renderWidget(data);
   };
+
+  useEffect(() => {
+    onRenderWidget();
+  }, []);
 
   const updateParams = useCallback(() => {
     const { providerFrom, ...data } = handleFormData(store);
