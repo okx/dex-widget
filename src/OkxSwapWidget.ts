@@ -73,7 +73,7 @@ export function createOkxSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, currentParams));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframeWindow, currentParams));
 
     // 5. Intercept deeplinks navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
@@ -309,11 +309,11 @@ function listenToHeightChanges(
 }
 
 function listenToDexLoadReady(
-    iframe: HTMLIFrameElement,
+    iframeWindow: Window,
     params: IWidgetProps,
 ): WindowListener {
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
-        updateParams(iframe.contentWindow, params);
+        updateParams(iframeWindow, params);
 
         stopListeningWindowListener(window, listener);
     });
