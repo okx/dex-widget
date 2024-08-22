@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.24](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.22...v1.1.0-beta.24) (2024-08-22)
+
+
+### Bug Fixes
+
+* demo wallet-connect ([7b8449e](https://gitlab.okg.com/okfe/tests/dex-widget/commit/7b8449e8e88be2560d750b4af55f35e4a2f88d04))
+
 ## [1.1.0-beta.23](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.22...v1.1.0-beta.23) (2024-08-22)
 
 ## [1.1.0-beta.22](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.21...v1.1.0-beta.22) (2024-08-21)
