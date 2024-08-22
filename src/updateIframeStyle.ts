@@ -28,6 +28,7 @@ function updateStyleTagInnerHTML(styleElement: HTMLStyleElement, { defaultClassN
         .${defaultClassName} {
             width: ${DEFAULT_WIDTH}px;
             min-height: ${DEFAULT_HEIGHT};
+            border: none;
         }
         @media (max-width: 767px) {
             .${defaultClassName} {
@@ -37,6 +38,7 @@ function updateStyleTagInnerHTML(styleElement: HTMLStyleElement, { defaultClassN
         .${specifiedClassName} {
             width: ${width}px;
             min-height: ${DEFAULT_HEIGHT};
+            border: none;
         }
     `;
 }

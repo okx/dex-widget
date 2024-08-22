@@ -233,6 +233,8 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     // update iframe style
     updateIframeStyle(iframe, { width });
 
+    iframe.scrolling = 'no';
+
     return iframe;
 }
 
