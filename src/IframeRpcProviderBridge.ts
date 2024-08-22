@@ -173,14 +173,14 @@ export class IframeRpcProviderBridge {
                     const solana = this.ethereumProvider as SolanaProvider;
                     const publicKey = solana?.publicKey;
 
+                    if (!(solana && solana?.connect)) return
                     if (!publicKey) {
-                        const pbk = await solana.connect()
+                        const pbk = await solana?.connect()
                         console.log('pbk:', pbk.publicKey.toBase58());
                     }
 
                     if (method === 'connect') {
-                        solana
-                            .connect()
+                        solana?.connect()
                             .then(key => {
                                 const publicKey = key.publicKey;
                                 this.forwardProviderEventToIframe({
