@@ -13,17 +13,17 @@ interface DexWidgetProviderProps {
 
 export const DexWidgetProvider: React.FC<DexWidgetProviderProps> = ({ children, config }) => {
     const iframeContainerRef = useRef<HTMLDivElement>(null);
-    const [providerState, setProviderState] = useState<OkxSwapWidgetHandler | null>(null);
+    const [providerState, setProviderState] = useState(null);
 
     useEffect(() => {
-        if (iframeContainerRef.current) {
-            setProviderState(createOkxSwapWidget(iframeContainerRef.current, config));
-        }
+        setProviderState(createOkxSwapWidget(iframeContainerRef.current, config))
 
         return () => {
             providerState?.destroy();
         };
     }, [config]);
+
+    console.log('widgetHandlerRef.current', providerState, iframeContainerRef);
 
     return (
         <DexWidgetContext.Provider value={providerState}>

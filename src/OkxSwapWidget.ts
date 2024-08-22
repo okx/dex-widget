@@ -73,7 +73,7 @@ export function createOkxSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, currentParams));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, provider, currentParams));
 
     // 5. Intercept deeplinks navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
@@ -92,11 +92,15 @@ export function createOkxSwapWidget(
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
 
+        console.log('updateProvider====>load', provider, params);
+
         updateParams(iframeWindow, currentParams);
+        if (provider && params.providerType) {
+            const updateProviderParams = getConnectWalletParams(provider, params.providerType);
+            console.log('updateProvider load', updateProviderParams, provider);
 
-        const updateProviderParams = getConnectWalletParams(provider, params.providerType);
-
-        updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
+            updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
+        }
     });
 
     // 9. Listen for messages from the iframe
@@ -132,6 +136,7 @@ export function createOkxSwapWidget(
             const updateProviderParams = getConnectWalletParams(provider, providerType);
 
             currentParams = { ...currentParams, ...updateProviderParams };
+            console.log('updateProvider ===> Params', { updateProviderParams, currentParams });
 
             iframeRpcProviderBridge = updateProvider(
                 iframeWindow,
@@ -253,6 +258,8 @@ function updateProviderEmitEvent(
 ) {
     const hasProvider = !!provider;
 
+    console.log('updateProviderEmitEvent', params);
+
     postMessageToWindow<WidgetMethodsListen.UPDATE_PROVIDER>(
         contentWindow,
         WidgetMethodsListen.UPDATE_PROVIDER,
@@ -299,10 +306,18 @@ function listenToHeightChanges(
 
 function listenToDexLoadReady(
     iframe: HTMLIFrameElement,
+    provider: EthereumProvider,
     params: IWidgetProps,
 ): WindowListener {
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
         updateParams(iframe.contentWindow, params);
+        if (provider && params.providerType) {
+            const updateProviderParams = getConnectWalletParams(provider, params.providerType);
+            console.log('updateProvider load', updateProviderParams, provider);
+
+            updateProviderEmitEvent(iframe.contentWindow, updateProviderParams, provider);
+        }
+
         stopListeningWindowListener(window, listener);
     });
     return listener;
