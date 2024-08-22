@@ -173,7 +173,6 @@ export default function App(props: Props) {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
       <List>
         <ListItem>
             <Button variant="contained" onClick={updateParams}>
