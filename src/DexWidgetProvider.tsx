@@ -16,7 +16,9 @@ export const DexWidgetProvider: React.FC<DexWidgetProviderProps> = ({ children, 
     const [providerState, setProviderState] = useState(null);
 
     useEffect(() => {
-        setProviderState(createOkxSwapWidget(iframeContainerRef.current, config))
+        if (iframeContainerRef.current) {
+            setProviderState(createOkxSwapWidget(iframeContainerRef.current, config))
+        }
 
         return () => {
             providerState?.destroy();
