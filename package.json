@@ -16,7 +16,7 @@
         "lint": "eslint --config .eslintrc . --cache --debug",
         "lint:fix": "eslint --fix .",
         "prettier": "prettier --ignore-path .gitignore --write \"**/*.{ts,js,md,json}\"",
-        "postinstall": "npm run build"
+        "prepack": "npm run build"
     },
     "keywords": [],
     "author": "",
