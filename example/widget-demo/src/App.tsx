@@ -25,6 +25,7 @@ import WidgetRender from './components/WidgetRender';
 import { useStore } from './store';
 import { getProviderMap } from './constant';
 import { ProviderType } from '@okxweb3/dex-widget';
+import BaseUrlControls from './components/controls/BaseUrlControls';
 
 const drawerWidth = 360;
 
@@ -189,6 +190,7 @@ export default function App(props: Props) {
         <WidthControls />
         <ThemeControls />
         <LanguageControls />
+        <BaseUrlControls />
         <ChainConfigControls />
         <CommissionControls />
         <TokenPairControls />

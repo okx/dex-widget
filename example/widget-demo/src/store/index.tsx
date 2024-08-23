@@ -9,6 +9,7 @@ const initialState = {
     provider: '',
     providerType: ProviderType.EVM,
     chainIds: '',
+    baseUrl: 'https://www.okx.com',
     feeConfig: '',
     tokenPair: '',
 }
@@ -47,6 +48,11 @@ const reducer = (state: typeof initialState, action: Action) => {
             return {
                 ...state,
                 chainIds: action.payload,
+            };
+        case 'baseUrl':
+            return {
+                ...state,
+                baseUrl: action.payload,
             };
         case 'feeConfig':
             return {
