@@ -21,7 +21,6 @@ const CommissionControls = () => {
                     multiline
                     fullWidth
                     label="feeConfig"
-                    type="number"
                     placeholder={JSON.stringify(
                         {
                             '1': {

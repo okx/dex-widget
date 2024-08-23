@@ -21,7 +21,6 @@ const TokenPairControls = () => {
                     multiline
                     fullWidth
                     label="TokenPair"
-                    type="number"
                     placeholder={JSON.stringify(
                         {
                             fromChain: 1,

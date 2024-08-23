@@ -58,12 +58,17 @@ const reducer = (state: typeof initialState, action: Action) => {
                 ...state,
                 lang: action.payload,
             };
+        case 'tokenPair':
+            return {
+                ...state,
+                tokenPair: action.payload
+            }
         default:
             return state;
     }
 }
 
-export const StoreContext = createContext<{ store: typeof initialState, dispatch: Dispatch<any>} | null>(null);
+export const StoreContext = createContext<{ store: typeof initialState, dispatch: Dispatch<any> } | null>(null);
 
 export const useStore = () => {
     return useContext(StoreContext).store;
@@ -74,7 +79,7 @@ export const useDispatch = () => {
 }
 
 export const StoreProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [state, dispatch ] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(reducer, initialState);
     return (
         <StoreContext.Provider value={{ store: state, dispatch }}>
             {children}
