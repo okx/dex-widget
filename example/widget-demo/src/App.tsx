@@ -116,7 +116,7 @@ export const handleFormData = (config) => {
   }
   return {
     appCode: '',
-    baseUrl: 'https://beta.okex.org',
+    // baseUrl: 'https://www.okx.com',
     providerType: providerType === 'unknown' ? undefined : providerType,
     chainIds: chainIds?.split(','),
     feeConfig: feeConfigObj,
@@ -179,9 +179,9 @@ export default function App(props: Props) {
     <div>
       <List>
         <ListItem>
-            <Button variant="contained" onClick={updateParams}>
-                Update width, lang, theme
-            </Button>
+          <Button variant="contained" onClick={updateParams}>
+            Update width, lang, theme
+          </Button>
         </ListItem>
         <ProviderTypeControls />
         <ProviderControls onNormalConnectWallet={onNormalConnectWallet} />
@@ -201,9 +201,9 @@ export default function App(props: Props) {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}>
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+        ml: { sm: `${drawerWidth}px` },
+      }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -222,21 +222,21 @@ export default function App(props: Props) {
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         <Drawer
-            container={container}
-            variant="temporary"
-            anchor="left"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            sx={{
-              display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
+          container={container}
+          variant="temporary"
+          anchor="left"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          {drawer}
+        </Drawer>
         <Drawer
           sx={{
             display: { xs: 'none', sm: 'block' },

@@ -9,7 +9,7 @@ import {
 } from './types';
 import { isSameChain, verifyWidgetParams } from './verifyParamsUtils';
 
-const DEFAULT_BASE_URL = 'https://beta.okex.org';
+const DEFAULT_BASE_URL = 'https://www.okx.com';
 
 export const WIDGET_ROUTE_CONSTANTS = {
     SWAP: 'web3/dex-widget',
