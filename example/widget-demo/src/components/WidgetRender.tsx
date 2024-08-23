@@ -9,10 +9,10 @@ import React, {
   import { useConnectModal } from '@rainbow-me/rainbowkit';
   import { useAccount } from 'wagmi';
   import {
-    createOkSwapWidget,
-    OkSwapWidgetHandler,
+    createOkxSwapWidget,
+    OkxSwapWidgetHandler,
     EthereumProvider,
-    OkEvents,
+    OkxEvents,
     ProviderType,
     ProviderEventMessage,
   } from '@okxweb3/dex-widget';
@@ -22,7 +22,7 @@ import React, {
       widgetInstance,
       config,
     }: {
-      widgetInstance: React.MutableRefObject<OkSwapWidgetHandler>;
+      widgetInstance: React.MutableRefObject<OkxSwapWidgetHandler>;
       config: any,
     },
     ref: React.Ref<any>
@@ -68,7 +68,7 @@ import React, {
             options,
             providerType
           );
-          widgetInstance.current = createOkSwapWidget(renderRef.current, {
+          widgetInstance.current = createOkxSwapWidget(renderRef.current, {
             params: {
               ...options,
               providerType: providerType || options.providerType,
@@ -76,7 +76,7 @@ import React, {
             provider: provider as any,
             listeners: [
               {
-                event: OkEvents.ON_PRESIGNED_ORDER,
+                event: OkxEvents.ON_PRESIGNED_ORDER,
                 handler: (payload) => {
                   console.log('Received data:', payload, window);
                 },
