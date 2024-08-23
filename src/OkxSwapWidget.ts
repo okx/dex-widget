@@ -236,6 +236,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     updateIframeStyle(iframe, { width });
 
     iframe.scrolling = 'no';
+    iframe.style.border = 'none';
 
     return iframe;
 }
