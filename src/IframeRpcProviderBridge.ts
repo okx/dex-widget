@@ -50,6 +50,7 @@ export class IframeRpcProviderBridge {
 
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
+    private connectListener: (...args) => void;
 
     /** Ticker for ensuring only use once on EVENTS_TO_FORWARD_TO_IFRAME */
     private isAllowAtomicForward = false;
@@ -85,6 +86,12 @@ export class IframeRpcProviderBridge {
             WidgetProviderEvents.PROVIDER_ON_EVENT,
             this.listener,
         );
+
+        stopListeningToMessageFromWindow(
+            window,
+            WidgetProviderEvents.PROVIDER_ON_EVENT_CONNECT,
+            this.connectListener,
+        )
     }
     /**
      * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
@@ -103,6 +110,11 @@ export class IframeRpcProviderBridge {
                 WidgetProviderEvents.PROVIDER_ON_EVENT,
                 this.prcessProviderEventFromWindow,
             );
+            this.connectListener = listenToMessageFromWindow(
+                window,
+                WidgetProviderEvents.PROVIDER_ON_EVENT_CONNECT,
+                this.processConnectEvent
+            )
         }
 
         // Save the provider
@@ -139,6 +151,74 @@ export class IframeRpcProviderBridge {
         }
     }
 
+    private processConnectEvent = async (args: ProviderEventMessage) => {
+        console.log('processConnectEvent connect', args);
+        const { id, mode, params, path, type } = args || {
+            params: null,
+            mode: null,
+            id: null,
+            path: null,
+            type: null,
+        };
+
+        try {
+            if (!this.ethereumProvider || mode === 'iframe') {
+                throw new Error('No Provider');
+            }
+
+            const {
+                method,
+                params: _requestArgs,
+            } = params[0] || { method: null };
+            console.log('_requestArgs:', _requestArgs)
+
+            if (type === 'solana') {
+                if (window && this.ethereumProvider) {
+                    const solana = this.ethereumProvider as SolanaProvider;
+                    if (!(solana && solana?.connect)) throw new Error('Not solana provider')
+
+                    if (method === 'connect') {
+                        solana?.connect()
+                            .then(key => {
+                                const publicKey = key.publicKey;
+                                this.forwardProviderEventToIframeConnect({
+                                    id,
+                                    mode: 'iframe',
+                                    data: publicKey.toBase58(),
+                                    path,
+                                    type,
+                                    success: true,
+                                });
+                            })
+                            .catch(error => {
+                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
+
+                                this.forwardProviderEventToIframeConnect({
+                                    id,
+                                    mode: 'iframe',
+                                    error: JSON.stringify(error),
+                                    path,
+                                    type,
+                                    success: false,
+                                });
+                            });
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.log('connect error:', error)
+            this.forwardProviderEventToIframeConnect({
+                id,
+                mode: 'iframe',
+                error: JSON.stringify(error),
+                path,
+                type,
+                success: false,
+            });
+        }
+    }
+
     private prcessProviderEventFromWindow = async (args: ProviderEventMessage) => {
         console.log('prcessProviderEventFromWindow', args);
         const { id, mode, params, path, type } = args || {
@@ -157,7 +237,7 @@ export class IframeRpcProviderBridge {
             const {
                 method,
                 params: requestArgs,
-            } = params[0] || { method: null, autoConnect: null };
+            } = params[0] || { method: null };
 
             const ALLOW_ATOMIC_FORWARD = ['wallet_switchEthereumChain'];
             // Avoid the multiple call of the same method, especially the event emitter of EVENTS_TO_FORWARD_TO_IFRAME
@@ -437,5 +517,9 @@ export class IframeRpcProviderBridge {
      */
     private forwardProviderEventToIframe(params: ProviderOnEventPayload) {
         postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, params);
+    }
+
+    private forwardProviderEventToIframeConnect(params: ProviderOnEventPayload) {
+        postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT_CONNECT, params);
     }
 }
