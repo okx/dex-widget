@@ -86,7 +86,6 @@ export class IframeRpcProviderBridge {
             this.listener,
         );
     }
-
     /**
      * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
      * @param newProvider - The Ethereum provider to connect.
@@ -129,15 +128,19 @@ export class IframeRpcProviderBridge {
 
             return;
         }
-        // Register in the provider, the events that need to be forwarded to the iFrame window
-        EVENTS_TO_FORWARD_TO_IFRAME.forEach(event => {
-            newProvider.on(event, (params: unknown) => {
-                return this.onProviderEvent(event, params);
+
+        if (this.providerType === ProviderType.EVM) {
+            // Register in the provider, the events that need to be forwarded to the iFrame window
+            EVENTS_TO_FORWARD_TO_IFRAME.forEach(event => {
+                newProvider.on(event, (params: unknown) => {
+                    return this.onProviderEvent(event, params);
+                });
             });
-        });
+        }
     }
 
     private prcessProviderEventFromWindow = async (args: ProviderEventMessage) => {
+        console.log('prcessProviderEventFromWindow', args);
         const { id, mode, params, path, type } = args || {
             params: null,
             mode: null,
@@ -221,6 +224,16 @@ export class IframeRpcProviderBridge {
 
                         if (onlyIfTrusted) {
                             // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            this.forwardProviderEventToIframe({
+                                id,
+                                mode: 'iframe',
+                                data: {
+                                    onlyIfTrusted: true
+                                },
+                                path,
+                                type,
+                                success: true,
+                            });
                             return;
                         }
 
@@ -280,6 +293,7 @@ export class IframeRpcProviderBridge {
                                     type,
                                     success: false,
                                 });
+                                console.log('sent error msg')
                             });
                     }
 
@@ -333,10 +347,10 @@ export class IframeRpcProviderBridge {
             }
 
             const requestPromise = (this.ethereumProvider as EthereumProvider).request(requestPara);
-            console.log('requestPromise:', requestPromise, requestPara, this.ethereumProvider);
+            console.log('ethereumProvider.request:', requestPromise, requestPara, this.ethereumProvider);
             requestPromise
                 .then(data => {
-                    console.log('request Promise:', data);
+                    console.log('ethereumProvider.request then:', data);
 
                     this.forwardProviderEventToIframe({
                         id,

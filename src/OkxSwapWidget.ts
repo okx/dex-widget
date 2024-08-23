@@ -73,7 +73,7 @@ export function createOkxSwapWidget(
 
     // 4. Handle widget height changes
     // todo: check this
-    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframe, currentParams));
+    windowListeners.push(...listenToHeightChanges(iframe, params.height), listenToDexLoadReady(iframeWindow, currentParams));
 
     // 5. Intercept deeplinks navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
@@ -104,7 +104,7 @@ export function createOkxSwapWidget(
     });
 
     // 9. Listen for messages from the iframe
-    const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow);
+    // const iframeSafeSdkBridge = new IframeSafeSdkBridge(window, iframeWindow);
 
     // 10. Return the handler, so the widget, listeners, and provider can be updated
     return {
@@ -129,7 +129,7 @@ export function createOkxSwapWidget(
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
-            iframeSafeSdkBridge.stopListening();
+            // iframeSafeSdkBridge.stopListening();
 
             provider = newProvider;
 
@@ -160,7 +160,7 @@ export function createOkxSwapWidget(
             windowListeners.forEach(listener => window.removeEventListener('message', listener));
 
             // Stop listening for SDK messages
-            iframeSafeSdkBridge.stopListening();
+            // iframeSafeSdkBridge.stopListening();
 
             // Destroy the iframe
             try {
@@ -201,6 +201,8 @@ function updateProvider(
         throw new Error('providerType is required');
     }
 
+    console.log('updateProvider iframeRpcProviderBridge===>', iframeRpcProviderBridge);
+
     // TODO: check provider
 
     // Disconnect from the previous provider bridge
@@ -234,6 +236,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     updateIframeStyle(iframe, { width });
 
     iframe.scrolling = 'no';
+    iframe.style.border = 'none';
 
     return iframe;
 }
@@ -307,11 +310,11 @@ function listenToHeightChanges(
 }
 
 function listenToDexLoadReady(
-    iframe: HTMLIFrameElement,
+    iframeWindow: Window,
     params: IWidgetProps,
 ): WindowListener {
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
-        updateParams(iframe.contentWindow, params);
+        updateParams(iframeWindow, params);
 
         stopListeningWindowListener(window, listener);
     });

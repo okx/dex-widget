@@ -36,7 +36,7 @@ export function postMessageToWindow(contentWindow: Window, method: string, paylo
         ...data,
     };
 
-    contentWindow.postMessage(
+    contentWindow?.postMessage(
         postPayload,
         '*', // TODO: Change to Okx specific origin in production.
     );

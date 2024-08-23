@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-beta.41](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.40...v1.1.0-beta.41) (2024-08-23)
+
+## [1.1.0-beta.40](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.39...v1.1.0-beta.40) (2024-08-23)
+
+## [1.1.0-beta.39](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.38...v1.1.0-beta.39) (2024-08-23)
+
+## [1.1.0-beta.38](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.37...v1.1.0-beta.38) (2024-08-23)
+
+## [1.1.0-beta.37](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.36...v1.1.0-beta.37) (2024-08-23)
+
+## [1.1.0-beta.36](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.35...v1.1.0-beta.36) (2024-08-23)
+
+## [1.1.0-beta.35](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.34...v1.1.0-beta.35) (2024-08-22)
+
+## [1.1.0-beta.34](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.33...v1.1.0-beta.34) (2024-08-22)
+
+## [1.1.0-beta.33](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.32...v1.1.0-beta.33) (2024-08-22)
+
+
+### Bug Fixes
+
+* repeat transcation ([08a5fff](https://gitlab.okg.com/okfe/tests/dex-widget/commit/08a5fff2b63d8af5008d180ead194f3ffc48364d))
+
+## [1.1.0-beta.32](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.31...v1.1.0-beta.32) (2024-08-22)
+
+## [1.1.0-beta.31](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.30...v1.1.0-beta.31) (2024-08-22)
+
+## [1.1.0-beta.30](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.29...v1.1.0-beta.30) (2024-08-22)
+
 ## [1.1.0-beta.29](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.27...v1.1.0-beta.29) (2024-08-22)
 
 

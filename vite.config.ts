@@ -16,7 +16,7 @@ export default defineConfig({
         lib: {
             entry: {
                 index: 'src/index.ts',
-                react: 'src/react.tsx',
+                DexWidgetProvider: 'src/DexWidgetProvider.tsx',
             },
             name: 'Dex-Widget',
             formats: ['es', 'cjs'],
