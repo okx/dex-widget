@@ -224,6 +224,16 @@ export class IframeRpcProviderBridge {
 
                         if (onlyIfTrusted) {
                             // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
+                            this.forwardProviderEventToIframe({
+                                id,
+                                mode: 'iframe',
+                                data: {
+                                    onlyIfTrusted: true
+                                },
+                                path,
+                                type,
+                                success: true,
+                            });
                             return;
                         }
 
@@ -283,6 +293,7 @@ export class IframeRpcProviderBridge {
                                     type,
                                     success: false,
                                 });
+                                console.log('sent error msg')
                             });
                     }
 
