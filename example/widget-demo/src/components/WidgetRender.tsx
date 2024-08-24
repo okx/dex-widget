@@ -89,56 +89,34 @@ import React, {
                 },
               },
               {
-                event: 'token_change',
-                handler: (payload: ProviderEventMessage[]) => {
-                  try {
-                    console.log('token_change===>', payload);
-                    const { params } = payload?.[0] || {
-                      params: ['{}'],
-                    };
-                    const argsStr = params?.[0];
-                    const args =
-                      typeof argsStr === 'string' ? JSON.parse(argsStr) : argsStr;
-                    const chainName = args?.chainName;
-                    const providerType2 = ['solana'].includes(
-                      chainName.toLowerCase()
-                    )
-                      ? ProviderType.SOLANA
-                      : ProviderType.EVM;
-  
-                    const [, providerFrom] =
-                    config.provider?.split('-') || [];
-  
-                    const providerMap = {
-                      [ProviderType.SOLANA]: window?.okexchain?.solana,
-                      [ProviderType.EVM]: window?.okexchain,
-                    };
-                    const providerInstance = providerMap[providerType2];
-  
-                    if (
-                      cacheChainName !== chainName &&
-                      providerType !== ProviderType.WALLET_CONNECT
-                    ) {
-                      console.log(
-                        'args===>',
-                        chainName,
-                        providerType2,
-                        providerInstance
-                      );
-  
-                      widgetInstance.current.updateProvider(
-                        providerInstance,
-                        providerType2
-                      );
-  
-                      cacheChainName = chainName;
+                event: 'onFromChainChange',
+                handler: (payload) => {
+                  const { params } = payload?.[0] || {
+                    params: ['{}'],
+                  };
+                  const argsStr = params?.[0];
+                  const args =
+                    typeof argsStr === 'string' ? JSON.parse(argsStr) : argsStr;
+
+                  console.log('onFromChainChange', args);
+
+                  const { token, preToken } = args;
+
+                  const providerMap = {
+                    [ProviderType.SOLANA]: window?.okexchain?.solana,
+                    [ProviderType.EVM]: window?.ethereum,
+                  };
+
+                  if (preToken && providerType !== ProviderType.WALLET_CONNECT) {
+                    if (Number(token.chainId) === 501) {
+                      console.log('update provider solana');
+                      widgetInstance.current?.updateProvider(providerMap[ProviderType.SOLANA], ProviderType.SOLANA);
+                    } else if (Number(preToken.chainId) === 501) {
+                      console.log('update provider evm');
+                      widgetInstance.current?.updateProvider(providerMap[ProviderType.EVM], ProviderType.EVM);
                     }
-                  } catch (e) {
-                    console.log('error===>', e);
                   }
-                  // TODO: change token
-                  // openConnectModal?.();
-                },
+                }
               },
             ],
           });
