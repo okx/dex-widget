@@ -82,14 +82,14 @@ import React, {
                 },
               },
               {
-                event: 'connect_wallet',
+                event: 'ON_CONNECT_WALLET',
                 handler: (payload: ProviderEventMessage) => {
                   console.log('NO_WALLET_CONNECT===>', payload);
                   openConnectModal?.();
                 },
               },
               {
-                event: 'onFromChainChange',
+                event: 'ON_FROM_CHAIN_CHANGE',
                 handler: (payload) => {
                   const { params } = payload?.[0] || {
                     params: ['{}'],
