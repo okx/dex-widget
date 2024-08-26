@@ -47,7 +47,7 @@ import React, {
     }, [connector]);
   
     const getProviderFromConnectorOrWindow = useCallback(async () => {
-      const providerFromWagmi = await connector?.getProvider();
+      const providerFromWagmi = await connector?.getProvider?.();
   
       console.log('log-providerFromWagmi.chainId', providerFromWagmi?.chainId);
   
