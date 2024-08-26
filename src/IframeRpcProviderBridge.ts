@@ -294,6 +294,7 @@ export class IframeRpcProviderBridge {
                             ? requestArgs
                             : [requestArgs];
 
+                        // TODO check right
                         if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
 
                         const message = solanaTransactionArgs[0];
@@ -302,6 +303,7 @@ export class IframeRpcProviderBridge {
                         const transaction = solanaTransactionArgs[0]?.transaction;
                         const okxType = solanaTransactionArgs[0]?.type;
 
+                        // TODO 干啥的？
                         if (onlyIfTrusted) {
                             // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
                             this.forwardProviderEventToIframe({
@@ -318,6 +320,7 @@ export class IframeRpcProviderBridge {
                         }
 
                         if (typeof message === 'string') {
+                            // TODO 明确 v0 v1 调用
                             try {
                                 const deserializeTransaction = Transaction.from(
                                     bs58.decode(message),
