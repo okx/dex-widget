@@ -190,7 +190,7 @@ export default function App(props: Props) {
         <WidthControls />
         <ThemeControls />
         <LanguageControls />
-        <BaseUrlControls />
+        {/* <BaseUrlControls /> */}
         <ChainConfigControls />
         <CommissionControls />
         <TokenPairControls />
