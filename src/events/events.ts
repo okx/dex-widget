@@ -22,7 +22,7 @@ export enum OkxEvents {
     ON_CHANGE_TRADE_PARAMS = 'ON_CHANGE_TRADE_PARAMS',
     NO_WALLET_CONNECT = "NO_WALLET_CONNECT",
     ON_CONNECT_WALLET = 'ON_CONNECT_WALLET',
-    ON_TOKEN_CHANGE = 'ON_TOKEN_CHANGE',
+    ON_FROM_CHAIN_CHANGE = 'ON_FROM_CHAIN_CHANGE',
 }
 
 // Define types for event payloads
@@ -37,7 +37,7 @@ export interface OkxEventPayloadMap {
     [OkxEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload;
     [OkxEvents.NO_WALLET_CONNECT]: ProviderEventMessage;
     [OkxEvents.ON_CONNECT_WALLET]: ProviderEventMessage;
-    [OkxEvents.ON_TOKEN_CHANGE]: ProviderEventMessage;
+    [OkxEvents.ON_FROM_CHAIN_CHANGE]: ProviderEventMessage;
 }
 
 export type OkxEventPayloads = OkxEventPayloadMap[OkxEvents];
