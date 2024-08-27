@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.44...v1.1.0) (2024-08-27)
+
+
+### Features
+
+* add demo components ([faf69c7](https://gitlab.okg.com/okfe/tests/dex-widget/commit/faf69c76b90268f2352507c9a90fb37bb80fdbc7))
+
+
+### Bug Fixes
+
+* add ON_FROM_CHAIN_CHANGE event ([2e009a4](https://gitlab.okg.com/okfe/tests/dex-widget/commit/2e009a497a49111aabf8eada4a1fa305884e04e1))
+
 ## [1.1.0-beta.44](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.43...v1.1.0-beta.44) (2024-08-23)
 
 ## [1.1.0-beta.43](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.42...v1.1.0-beta.43) (2024-08-23)
