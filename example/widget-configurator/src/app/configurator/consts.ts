@@ -1,7 +1,4 @@
-// import { CowEventListeners, CowEvents, ToastMessageType } from '@cowprotocol/events'
-// import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 import { TradeType } from "@okxweb3/dex-widget"
-// CoW DAO address
 export const TRADE_MODES = [TradeType.SWAP, TradeType.BRIDGE, TradeType.AUTO]
 
 // TODO: Move default palette to a new lib that only exposes the palette colors.

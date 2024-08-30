@@ -1,7 +1,5 @@
 import { StrictMode, useMemo } from 'react'
 
-// import { CowAnalyticsProvider } from '@cowprotocol/analytics'
-
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import { createTheme, PaletteOptions, ThemeProvider } from '@mui/material/styles'

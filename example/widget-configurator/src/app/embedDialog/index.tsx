@@ -109,7 +109,7 @@ export function EmbedDialog({ params, open, handleClose }: EmbedDialogProps) {
         open={open}
         onClose={handleClose}
       >
-        <DialogTitle id="scroll-dialog-title">Snippet for CoW Widget</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">Snippet for Okx Widget</DialogTitle>
 
         <DialogContent dividers={scroll === 'paper'}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
