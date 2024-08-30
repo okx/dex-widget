@@ -475,7 +475,7 @@ export class IframeRpcProviderBridge {
      */
     private onSolanaProviderEvent(event: string, params: PublicKey): void {
         console.log('on solana Provider Event:', event, params, this.isAllowAtomicForward);
-        if (this.isAllowAtomicForward) return;
+        // if (this.isAllowAtomicForward) return;
 
         const address = params?.toBase58();
 
@@ -500,7 +500,7 @@ export class IframeRpcProviderBridge {
      */
     private onProviderEvent(event: string, params: unknown): void {
         console.log('on Provider Event:', event, params, this.isAllowAtomicForward);
-        if (this.isAllowAtomicForward) return;
+        // if (this.isAllowAtomicForward) return;
 
         postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SATUS, {
             event,
