@@ -30,7 +30,7 @@ const langs: Array<string> = [
 
 const lable = 'Language';
 
-export const LanguageControl = ({ state }: { state: [string, Dispatch<SetStateAction<string>>] }) => {
+export const LanguageControl = ({ state, widgetHandler, params }: { state: [string, Dispatch<SetStateAction<string>>], widgetHandler: any, params: any }) => {
     const [lang, dispatch] = state;
     return (
         <FormControl fullWidth sx={{ width: '100%' }} >
@@ -39,7 +39,13 @@ export const LanguageControl = ({ state }: { state: [string, Dispatch<SetStateAc
                 labelId="Language-label"
                 fullWidth
                 label={lable}
-                onChange={(event) => dispatch(event.target.value)}
+                onChange={(event) => {
+                    const lang = event.target.value;
+                    dispatch(lang);
+                    setTimeout(() => {
+                        widgetHandler.current?.updateParams({ ...params, lang });
+                    })
+                }}
                 value={lang}
                 size="small"
             >

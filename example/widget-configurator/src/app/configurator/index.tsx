@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import CodeIcon from '@mui/icons-material/Code'
 import EditIcon from '@mui/icons-material/Edit'
@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
 import Typography from '@mui/material/Typography'
-import { ProviderType } from '@okxweb3/dex-widget';
+import { createOkxSwapWidget, ProviderType } from '@okxweb3/dex-widget';
 
 import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
 import { LanguageControl } from './controls/LanguageControl'
@@ -27,12 +27,7 @@ import CommissionControl from './controls/CommissionControl'
 import ProviderTypeControl from './controls/ProviderTypeControl'
 import ChainIdsControl from './controls/ChainConfigControl'
 import { DexWidget } from './DexWidget';
-
-declare global {
-  interface Window {
-    cowSwapWidgetParams?: Partial<any>
-  }
-}
+import { ProviderControl } from './controls/ProviderControl';
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -46,6 +41,9 @@ export function Configurator({ title }: { title: string }) {
   const providerTypeState = useState<ProviderType>(ProviderType.EVM)
   const [providerType] = providerTypeState
 
+  const providerState = useState<string>('');
+  const [provider] = providerState
+
   const chainIdsState = useState<string>('')
   const [chainIds] = chainIdsState
 
@@ -58,6 +56,8 @@ export function Configurator({ title }: { title: string }) {
   const feeConfigState = useState<string>('')
   const [feeConfig] = feeConfigState
 
+  const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
+
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
 
   const state: ConfiguratorState = {
@@ -68,6 +68,7 @@ export function Configurator({ title }: { title: string }) {
     lang,
     tokenPair,
     feeConfig,
+    provider
   }
 
   const params = useWidgetParams(state)
@@ -101,21 +102,23 @@ export function Configurator({ title }: { title: string }) {
 
         <Divider variant="middle">General</Divider>
 
-        <ThemeControl />
+        <ThemeControl widgetHandler={widgetHandler} params={params} />
 
-        <CurrentTradeTypeControl state={tradeTypeState} />
+        <CurrentTradeTypeControl state={tradeTypeState} widgetHandler={widgetHandler} params={params} />
 
-        <LanguageControl state={customLanguagesState} />
+        <LanguageControl state={customLanguagesState} widgetHandler={widgetHandler} params={params} />
 
-        <ProviderTypeControl state={providerTypeState} />
+        <ProviderTypeControl state={providerTypeState} widgetHandler={widgetHandler} params={params} />
 
-        <ChainIdsControl state={chainIdsState} />
+        <ProviderControl state={providerState} providerType={providerType} widgetHandler={widgetHandler} />
 
-        <TokenPairControl state={tokenPairState} />
+        <ChainIdsControl state={chainIdsState} widgetHandler={widgetHandler} params={params} />
+
+        <TokenPairControl state={tokenPairState} widgetHandler={widgetHandler} params={params} />
 
         <Divider variant="middle">Fee config</Divider>
 
-        <CommissionControl state={feeConfigState} />
+        <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
 
         {/* <Divider variant="middle">Other settings</Divider> */}
 
@@ -140,7 +143,7 @@ export function Configurator({ title }: { title: string }) {
               open={dialogOpen}
               handleClose={handleDialogClose}
             />
-            <DexWidget params={params} />
+            <DexWidget ref={widgetHandler} params={params} />
           </>
         )}
       </Box>

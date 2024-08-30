@@ -11,7 +11,7 @@ import { TRADE_MODES } from '../consts'
 
 const LABEL = 'Current trade type'
 
-export function CurrentTradeTypeControl({ state }: { state: [TradeType, Dispatch<SetStateAction<TradeType>>] }) {
+export function CurrentTradeTypeControl({ state, widgetHandler, params }: { state: [TradeType, Dispatch<SetStateAction<TradeType>>], widgetHandler: any, params: any }) {
   const [tradeType, setTradeType] = state
 
   return (
@@ -20,7 +20,13 @@ export function CurrentTradeTypeControl({ state }: { state: [TradeType, Dispatch
       <Select
         id="select-trade-type"
         value={tradeType}
-        onChange={(event) => setTradeType(event.target.value as TradeType)}
+        onChange={(event) => {
+          const selectedTradeType = event.target.value as TradeType
+          setTradeType(selectedTradeType)
+          setTimeout(() => {
+            widgetHandler.current?.reload({ ...params, tradeType: selectedTradeType })
+          })
+        }}
         fullWidth
         label={LABEL}
         size="small"

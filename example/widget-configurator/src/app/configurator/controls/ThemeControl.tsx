@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
@@ -8,26 +8,21 @@ import { THEME } from '@okxweb3/dex-widget';
 
 import { ColorModeContext } from '../../../theme/ColorModeContext'
 
-const AUTO = THEME.LIGHT
-
 const ThemeOptions = [
   { label: THEME.LIGHT, value: THEME.LIGHT },
   { label: THEME.DARK, value: THEME.DARK },
 ]
 
-export function ThemeControl() {
-  const { mode, toggleColorMode, setAutoMode } = useContext(ColorModeContext)
-  const [isAutoMode, setIsAutoMode] = useState(false)
+export function ThemeControl({ widgetHandler, params }: { widgetHandler: any, params: any}) {
+  const { mode, toggleColorMode} = useContext(ColorModeContext)
 
   const handleThemeChange = (event: SelectChangeEvent) => {
     const selectedTheme = event.target.value
-    if (selectedTheme === AUTO) {
-      setAutoMode()
-      setIsAutoMode(true)
-    } else {
-      toggleColorMode()
-      setIsAutoMode(false)
-    }
+    toggleColorMode();
+    console.log(selectedTheme);
+    setTimeout(() => {
+      widgetHandler.current?.updateParams({ ...params, theme: selectedTheme });
+    })
   }
 
   return (
@@ -36,7 +31,7 @@ export function ThemeControl() {
       <Select
         labelId="select-theme-label"
         id="select-theme"
-        value={isAutoMode ? AUTO : mode}
+        value={mode}
         onChange={handleThemeChange}
         fullWidth
         label="Theme"

@@ -1,15 +1,25 @@
-import { FC, useEffect, useRef } from "react";
-import { createOkxSwapWidget, OkxSwapWidgetProps } from '@okxweb3/dex-widget'
+import { FC, Ref, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from "react";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
+import { createOkxSwapWidget, OkxSwapWidgetProps, IWidgetConfig, ProviderType, ProviderEventMessage } from '@okxweb3/dex-widget'
+import { useProvider } from "./hooks/useProvider";
 
-const provider = window.ethereum;
+export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(({ params }, ref: Ref<any>) => {
 
-export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = ({ params }) => {
+    const { provider: currentProvider } = params;
     const widgetRef = useRef<HTMLDivElement>(null);
     const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
-    const { tradeType, chainIds, feeConfig, tokenPair } = params;
-    const chainIdsKey = chainIds.join(',');
-    const initialConfig = {
-        params,
+    const  provider = useProvider(currentProvider);
+    const { openConnectModal } = useConnectModal();
+    const { connector } = useAccount();
+    const config = useMemo(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { provider: currentProvider1, ...rest } = params;
+      return rest;
+    }, [params])
+    const initialConfig = useMemo(() => {
+      return {
+        params: config,
         provider,
         listeners: [
           {
@@ -18,27 +28,45 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = ({ params }
               provider.enable();
             },
           },
+          {
+            event: 'ON_CONNECT_WALLET',
+            handler: (payload: ProviderEventMessage) => {
+              console.log('NO_WALLET_CONNECT===>', payload);
+              openConnectModal?.();
+            },
+          },
         ],
     };
+    }, [provider, config]);
 
     useEffect(() => {
-        widgetHandler.current?.updateParams(params)
-    }, [params])
-
-    useEffect(() => {
-        console.log('111111');
-        
-        widgetHandler.current?.destroy();
-        widgetHandler.current = createOkxSwapWidget(widgetRef.current as HTMLDivElement, initialConfig);
-    }, [tradeType, feeConfig, chainIdsKey, tokenPair]);
-    
-    useEffect(() => {
-        widgetHandler.current = createOkxSwapWidget(widgetRef.current as HTMLDivElement, initialConfig);
-    
+      console.log(33333);
+        widgetHandler.current = createOkxSwapWidget(widgetRef.current as HTMLDivElement, initialConfig as unknown as IWidgetConfig);
         return () => {
           widgetHandler.current?.destroy();
         };
     }, []);
 
+    useImperativeHandle(ref, () => {
+      return {
+        updateParams: (newParams: OkxSwapWidgetProps['params']) => {
+          widgetHandler.current?.updateParams(newParams);
+        },
+        updateProvider: (newProvider: any, providerType: ProviderType) => {
+          widgetHandler.current?.updateProvider(newProvider, providerType);
+        },
+        destroy: () => {
+          widgetHandler.current?.destroy();
+        },
+        reload: (params: any) => {
+          widgetHandler.current?.destroy();
+          widgetHandler.current = createOkxSwapWidget(widgetRef.current as HTMLDivElement, {
+            ...initialConfig as unknown as IWidgetConfig,
+            params,
+          });
+        }
+      };
+    });
+
     return (<div ref={widgetRef} />);
-}
+})

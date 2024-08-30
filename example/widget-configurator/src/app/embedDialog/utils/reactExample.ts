@@ -7,7 +7,7 @@ export function reactExample(params: any): string {
 import { useEffect, useRef } from 'react'
 ${REACT_IMPORT_STATEMENT} from '@okxweb3/dex-widget'
 
-const params = ${formatParameters(params, 0, true)}
+const params = ${formatParameters(params, 0, false)}
 // ${PROVIDER_PARAM_COMMENT}
 const provider = window.ethereum
 

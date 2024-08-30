@@ -8,4 +8,5 @@ export interface ConfiguratorState {
   lang?: string,
   tokenPair?: string,
   feeConfig?: string,
+  provider?: string,
 }

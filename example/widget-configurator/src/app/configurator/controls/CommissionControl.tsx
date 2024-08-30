@@ -1,13 +1,32 @@
 import { Dispatch, SetStateAction } from 'react';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
+import debounce from '@mui/material/utils/debounce';
 
-const CommissionControl = ({ state }: { state: [string, Dispatch<SetStateAction<string>>] }) => {
+const CommissionControl = ({ state, widgetHandler, params }: { state: [string, Dispatch<SetStateAction<string>>], widgetHandler: any, params: any }) => {
     const [feeConfig, dispatch] = state;
+    const updateTokenPair = debounce((value) => {
+        if (!value) {
+            widgetHandler.current?.reload({ ...params, feeConfig: {} })
+            return;
+        }
+        try {
+            const feeConfigObj = JSON.parse(value)
+            widgetHandler.current?.reload({ ...params, feeConfig: feeConfigObj })
+        } catch (error) {
+            console.log(error);
+        }
+    }, 500)
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        dispatch(value)
+        updateTokenPair(value);
+    }
     return (
         <FormControl fullWidth>
             <TextField
-                onChange={(event) => dispatch(event.target.value)}
+                onChange={handleChange}
                 value={feeConfig}
                 maxRows={4}
                 multiline
