@@ -2,24 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.2.0-beta.0](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.16...v1.2.0-beta.0) (2024-08-30)
+## [1.2.0-beta.0](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.1...v1.2.0-beta.0) (2024-08-30)
 
 
 ### Features
 
-* add demo components ([faf69c7](https://gitlab.okg.com/okfe/tests/dex-widget/commit/faf69c76b90268f2352507c9a90fb37bb80fdbc7))
 * widget-configurator ([cca9796](https://gitlab.okg.com/okfe/tests/dex-widget/commit/cca97964a26e3b1a3fd035c799731d596536a48b))
 
 
 ### Bug Fixes
 
-* add ON_FROM_CHAIN_CHANGE event ([2e009a4](https://gitlab.okg.com/okfe/tests/dex-widget/commit/2e009a497a49111aabf8eada4a1fa305884e04e1))
-* connect-wallet first ([b11f957](https://gitlab.okg.com/okfe/tests/dex-widget/commit/b11f957564876844f89c21e0187af2df70cf149a))
-* demo issue ([fc50f28](https://gitlab.okg.com/okfe/tests/dex-widget/commit/fc50f282b1aaec262a9ece56be247c9ec3cc5089))
-* demo wallet-connect ([7b8449e](https://gitlab.okg.com/okfe/tests/dex-widget/commit/7b8449e8e88be2560d750b4af55f35e4a2f88d04))
 * remove isAllowAtomicForward ([7b7d30e](https://gitlab.okg.com/okfe/tests/dex-widget/commit/7b7d30e3c7d67c44d9132fef2c50c655a8a0a5f0))
-* repeat transcation ([08a5fff](https://gitlab.okg.com/okfe/tests/dex-widget/commit/08a5fff2b63d8af5008d180ead194f3ffc48364d))
-* wc return error ([2632925](https://gitlab.okg.com/okfe/tests/dex-widget/commit/263292579b17f657139f44dce765510a8efdadee))
 
 ### [1.1.1](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0...v1.1.1) (2024-08-27)
 
