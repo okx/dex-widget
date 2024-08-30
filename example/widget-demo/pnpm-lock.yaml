@@ -24,8 +24,8 @@ importers:
         specifier: ^5.16.7
         version: 5.16.7(@types/react@18.3.3)(react@18.3.1)
       '@okxweb3/dex-widget':
-        specifier: 1.2.0-beta.0
-        version: 1.2.0-beta.0(@tanstack/query-core@5.51.21)(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))
+        specifier: 1.2.0
+        version: 1.2.0(@tanstack/query-core@5.51.21)(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))
       '@rainbow-me/rainbowkit':
         specifier: ^2.1.4
         version: 2.1.4(@tanstack/react-query@5.51.23(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.5(@tanstack/query-core@5.51.21)(@tanstack/react-query@5.51.23(react@18.3.1))(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))
@@ -1371,8 +1371,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@okxweb3/dex-widget@1.2.0-beta.0':
-    resolution: {integrity: sha512-W6q1B0LSZ0jeVgMT7LOw1WG8vHylTsS3fS9+ZlFnj7VGqMkiEFxWeUfxfvOEgDVFA32m1DC71A/fARk558qNjQ==}
+  '@okxweb3/dex-widget@1.2.0':
+    resolution: {integrity: sha512-sZNDvYXiIU1OixhDQUfNkRD6DZYeZ8IU2YvnIH920gnOy0cqQQpTipb8LXZe95ngvIm/SZkkvwTv/y+4awozew==}
     peerDependencies:
       react: ^18.3.1
       react-dom: ^18.3.1
@@ -7298,7 +7298,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@okxweb3/dex-widget@1.2.0-beta.0(@tanstack/query-core@5.51.21)(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))':
+  '@okxweb3/dex-widget@1.2.0(@tanstack/query-core@5.51.21)(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))':
     dependencies:
       '@rainbow-me/rainbowkit': 2.1.4(@tanstack/react-query@5.51.23(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10))(wagmi@2.12.5(@tanstack/query-core@5.51.21)(@tanstack/react-query@5.51.23(react@18.3.1))(@types/react@18.3.3)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.75.1(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(@types/react@18.3.3)(bufferutil@4.0.8)(react@18.3.1)(typescript@5.5.4)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.20.0)(typescript@5.5.4)(utf-8-validate@5.0.10)(viem@2.19.6(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)))
       '@solana/web3.js': 1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
