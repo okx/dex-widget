@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0-beta.0](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.1...v1.2.0-beta.0) (2024-08-30)
+
+
+### Features
+
+* widget-configurator ([cca9796](https://gitlab.okg.com/okfe/tests/dex-widget/commit/cca97964a26e3b1a3fd035c799731d596536a48b))
+
+
+### Bug Fixes
+
+* remove isAllowAtomicForward ([7b7d30e](https://gitlab.okg.com/okfe/tests/dex-widget/commit/7b7d30e3c7d67c44d9132fef2c50c655a8a0a5f0))
+
 ### [1.1.1](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0...v1.1.1) (2024-08-27)
 
 ## [1.1.0](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.1.0-beta.44...v1.1.0) (2024-08-27)
