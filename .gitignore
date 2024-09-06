@@ -12,3 +12,6 @@ yarn.lock
 
 .eslintcache
 .prettiercache
+
+.yalc
+yalc.lock

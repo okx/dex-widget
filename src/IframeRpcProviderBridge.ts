@@ -220,7 +220,7 @@ export class IframeRpcProviderBridge {
     }
 
     private prcessProviderEventFromWindow = async (args: ProviderEventMessage) => {
-        console.log('prcessProviderEventFromWindow', args);
+        console.log('processProviderEventFromWindow::', args);
         const { id, mode, params, path, type } = args || {
             params: null,
             mode: null,
