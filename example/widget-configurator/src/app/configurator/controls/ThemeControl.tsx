@@ -19,7 +19,6 @@ export function ThemeControl({ widgetHandler, params }: { widgetHandler: any, pa
   const handleThemeChange = (event: SelectChangeEvent) => {
     const selectedTheme = event.target.value
     toggleColorMode();
-    console.log(selectedTheme);
     setTimeout(() => {
       widgetHandler.current?.updateParams({ ...params, theme: selectedTheme });
     })

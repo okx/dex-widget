@@ -28,6 +28,8 @@ import ProviderTypeControl from './controls/ProviderTypeControl'
 import ChainIdsControl from './controls/ChainConfigControl'
 import { DexWidget } from './DexWidget';
 import { ProviderControl } from './controls/ProviderControl';
+import { useDevMode } from './hooks/useDevMode';
+import { BaseUrlControl } from './controls/BaseUrlControl';
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -37,7 +39,7 @@ export function Configurator({ title }: { title: string }) {
   const tradeTypeState = useState<TradeType>(TradeType.AUTO)
   const [tradeType] = tradeTypeState
 
-  
+
   const providerTypeState = useState<ProviderType>(ProviderType.EVM)
   const [providerType] = providerTypeState
 
@@ -56,6 +58,9 @@ export function Configurator({ title }: { title: string }) {
   const feeConfigState = useState<string>('')
   const [feeConfig] = feeConfigState
 
+  const baseUrlState = useState<string>(import.meta.env.VITE_BASE_URL as string || 'https://www.okx.com');
+  const [baseUrl] = baseUrlState
+
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
@@ -68,10 +73,12 @@ export function Configurator({ title }: { title: string }) {
     lang,
     tokenPair,
     feeConfig,
-    provider
+    provider,
+    baseUrl,
   }
 
   const params = useWidgetParams(state)
+  const { isDevModeOpen, openDevMode } = useDevMode();
 
   return (
     <Box sx={WrapperStyled}>
@@ -91,7 +98,7 @@ export function Configurator({ title }: { title: string }) {
       )}
 
       <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
+        <Typography onClick={openDevMode} variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
 
@@ -99,6 +106,16 @@ export function Configurator({ title }: { title: string }) {
           showBalance={false}
           chainStatus="none"
         />
+
+        {
+          isDevModeOpen && (
+              <>
+                <Divider variant="middle">Dev mode</Divider>
+                <BaseUrlControl state={baseUrlState} widgetHandler={widgetHandler} params={params} />
+              </>
+            )
+        }
+
 
         <Divider variant="middle">General</Divider>
 
