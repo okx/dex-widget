@@ -7,7 +7,7 @@
     "types": "lib/index.d.ts",
     "scripts": {
         "build": "vite build",
-        "build:watch": "vite build --watch",
+        "build:watch": "vite build --watch --mode development",
         "pub:beta": "npm run release -- --prerelease beta && npm publish --access public --tag beta",
         "pub:patch": "npm run release -- --release-as patch && npm publish",
         "pub:minor": "npm run release -- --release-as minor && npm publish",

@@ -1,10 +1,5 @@
-import {
-    isObject,
-    isNumberOrNumberString,
-    verifyPercent,
-    checkFeeConfig,
-    createWidgetParams,
-} from '../widgetHelp';
+import { createWidgetParams } from '../widgetHelp';
+import { isNumberOrNumberString, checkFeeConfig, verifyPercent, isObject } from '../verifyParamsUtils';
 import { THEME, TradeType } from '../types';
 
 describe('widgetHelp', () => {
