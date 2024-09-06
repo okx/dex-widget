@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "switch:local": "yalc add @okxweb3/dex-widget",
-    "switch:prod": "yalc remove @okxweb3/dex-widget --retreat",
-    "push:lib": "cd ../.. && yalc push",
+    "switch:local": "yalc add @okxweb3/dex-widget && pnpm i",
+    "switch:prod": "yalc remove @okxweb3/dex-widget --retreat && pnpm i",
+    "push:lib": "cd ../.. && pnpm i  && yalc push",
     "dev:local": "npm run switch:local && npm run push:lib && concurrently \"cd ../.. && vite build --watch\" \"vite --mode development\"",
     "dev": "vite --mode development",
     "build": "vite build",
