@@ -4,7 +4,7 @@ let clickNum: number = 0;
 
 const CACHE_KEY = 'dev_mode_is_open';
 export const useDevMode = () => {
-    const [isDevModeOpen, setIsDevModeOpen] = useState<boolean>(false);
+    const [isDevModeOpen, setIsDevModeOpen] = useState<boolean>(import.meta.env.VITE_APP_ENV !== 'prod');
 
     useEffect(() => {
         const cacheValue = localStorage.getItem(CACHE_KEY);

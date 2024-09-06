@@ -58,7 +58,7 @@ export function Configurator({ title }: { title: string }) {
   const feeConfigState = useState<string>('')
   const [feeConfig] = feeConfigState
 
-  const baseUrlState = useState<string>(import.meta.env.VITE_BASE_URL as string || 'https://www.okx.com');
+  const baseUrlState = useState<string>(import.meta.env.VITE_APP_DEFAUL_BASE_URL as string || 'https://www.okx.com');
   const [baseUrl] = baseUrlState
 
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
