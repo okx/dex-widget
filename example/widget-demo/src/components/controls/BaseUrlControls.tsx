@@ -2,6 +2,7 @@ import ListItem from '@mui/material/ListItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 import { useDispatch, useStore } from '../../store';
 
 const BaseUrlControls = () => {
@@ -15,9 +16,11 @@ const BaseUrlControls = () => {
     return (
         <ListItem>
             <FormControl fullWidth>
+                <InputLabel id="base-url-label">Base URL</InputLabel>
                 <Select
                     value={store.baseUrl}
                     fullWidth
+                    labelId="base-url-label"
                     label="Base URL"
                     onChange={handleChange}
                 >

@@ -190,7 +190,7 @@ export default function App(props: Props) {
         <WidthControls />
         <ThemeControls />
         <LanguageControls />
-        {/* <BaseUrlControls /> */}
+        {import.meta.env.VITE_APP_ENV !== 'prod' && <BaseUrlControls />}
         <ChainConfigControls />
         <CommissionControls />
         <TokenPairControls />

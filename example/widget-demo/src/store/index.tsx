@@ -9,7 +9,7 @@ const initialState = {
     provider: '',
     providerType: ProviderType.EVM,
     chainIds: '',
-    baseUrl: 'https://www.okx.com',
+    baseUrl: import.meta.env.VITE_APP_DEFAUL_BASE_URL || 'https://www.okx.com',
     feeConfig: '',
     tokenPair: '',
 }
