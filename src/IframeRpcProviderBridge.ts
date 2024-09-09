@@ -44,9 +44,6 @@ export class IframeRpcProviderBridge {
     private listener: (...args) => void;
     private connectListener: (...args) => void;
 
-    /** Ticker for ensuring only use once on EVENTS_TO_FORWARD_TO_IFRAME */
-    private isAllowAtomicForward = false;
-
     private providerType: ProviderType;
 
     /**
@@ -106,9 +103,6 @@ export class IframeRpcProviderBridge {
 
         // Save the provider
         this.ethereumProvider = newProvider;
-
-        // Process pending requests
-        // this.processPendingRequests();
 
         this.listenerProviderEvent(newProvider);
     }
@@ -225,10 +219,6 @@ export class IframeRpcProviderBridge {
                 method,
                 params: requestArgs,
             } = params[0] || { method: null };
-
-            const ALLOW_ATOMIC_FORWARD = ['wallet_switchEthereumChain'];
-            // Avoid the multiple call of the same method, especially the event emitter of EVENTS_TO_FORWARD_TO_IFRAME
-            if (ALLOW_ATOMIC_FORWARD.includes(method)) this.isAllowAtomicForward = true;
 
             console.log(
                 `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
@@ -457,9 +447,6 @@ export class IframeRpcProviderBridge {
      * Listen the event of wallet changement of Dapp and forward it to the iFrame window.
      */
     private onSolanaProviderEvent(event: string, params: PublicKey): void {
-        console.log('on solana Provider Event:', event, params, this.isAllowAtomicForward);
-        // if (this.isAllowAtomicForward) return;
-
         const address = params?.toBase58();
 
         console.log('onSolanaProviderEvent====>');
@@ -482,8 +469,6 @@ export class IframeRpcProviderBridge {
      * Listen the event of wallet changement of Dapp and forward it to the iFrame window.
      */
     private onProviderEvent(event: string, params: unknown): void {
-        console.log('on Provider Event:', event, params, this.isAllowAtomicForward);
-
         postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SATUS, {
             event,
             params,
