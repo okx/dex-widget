@@ -41,8 +41,8 @@ export class IframeRpcProviderBridge {
     private ethereumProvider: EthereumProvider | SolanaProvider | null = null;
 
     /** Listener for Ethereum provider events */
-    private listener: (...args) => void;
-    private connectListener: (...args) => void;
+    private listener: (...args: any[]) => void;
+    private connectListener: (...args: any[]) => void;
 
     private providerType: ProviderType;
 
@@ -75,8 +75,9 @@ export class IframeRpcProviderBridge {
             window,
             WidgetProviderEvents.PROVIDER_ON_EVENT_CONNECT,
             this.connectListener,
-        )
+        );
     }
+
     /**
      * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
      * @param newProvider - The Ethereum provider to connect.
@@ -87,27 +88,30 @@ export class IframeRpcProviderBridge {
             this.disconnect();
         } else {
             // Listen for messages coming to the main window (from the iFrame window)
-            // listenToMessageFromWindow(window, WidgetMethodsEmit.PROVIDER_RPC_REQUEST, this.processRpcCallFromWindow)
             console.log('onConnect====>');
             this.listener = listenToMessageFromWindow(
                 window,
                 WidgetProviderEvents.PROVIDER_ON_EVENT,
-                this.prcessProviderEventFromWindow,
+                this.processProviderEventFromWindow,
             );
             this.connectListener = listenToMessageFromWindow(
                 window,
                 WidgetProviderEvents.PROVIDER_ON_EVENT_CONNECT,
                 this.processConnectEvent
-            )
+            );
         }
 
         // Save the provider
         this.ethereumProvider = newProvider;
 
-        this.listenerProviderEvent(newProvider);
+        // Register provider event listeners based on the type of provider (Solana or EVM)
+        this.registerProviderEventListeners(newProvider);
     }
 
-    private listenerProviderEvent(newProvider) {
+    /**
+     * Registers event listeners for the provider (Solana or EVM)
+     */
+    private registerProviderEventListeners(newProvider: EthereumProvider | SolanaProvider) {
         // cancel the register of all listener
         newProvider?.removeAllListeners?.();
 
@@ -118,12 +122,11 @@ export class IframeRpcProviderBridge {
                     return this.onSolanaProviderEvent(event, params);
                 });
             });
-
             return;
         }
 
+        // For EVM providers, register the necessary events
         if (this.providerType === ProviderType.EVM) {
-            // Register in the provider, the events that need to be forwarded to the iFrame window
             EVENTS_TO_FORWARD_TO_IFRAME.forEach(event => {
                 newProvider.on(event, (params: unknown) => {
                     return this.onProviderEvent(event, params);
@@ -132,6 +135,9 @@ export class IframeRpcProviderBridge {
         }
     }
 
+    /**
+     * Process connect event for Solana
+     */
     private processConnectEvent = async (args: ProviderEventMessage) => {
         console.log('processConnectEvent connect', args);
         const { id, mode, params, path, type } = args || {
@@ -147,32 +153,27 @@ export class IframeRpcProviderBridge {
                 throw new Error('No Provider');
             }
 
-            const {
-                method,
-                params: _requestArgs,
-            } = params[0] || { method: null };
-            console.log('_requestArgs:', _requestArgs)
+            const { method } = params[0] || { method: null };
 
             if (type === 'solana') {
                 if (window && this.ethereumProvider) {
                     const solana = this.ethereumProvider as SolanaProvider;
-                    if (!(solana && solana?.connect)) throw new Error('Not solana provider')
+                    if (!(solana && solana?.connect)) throw new Error('Not solana provider');
 
                     if (method === 'connect') {
                         solana?.connect()
                             .then(key => {
-                                const publicKey = key.publicKey;
                                 this.forwardProviderEventToIframeConnect({
                                     id,
                                     mode: 'iframe',
-                                    data: publicKey.toBase58(),
+                                    data: key.publicKey.toBase58(),
                                     path,
                                     type,
                                     success: true,
                                 });
                             })
                             .catch(error => {
-                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
+                                console.error('Error:', error);
 
                                 this.forwardProviderEventToIframeConnect({
                                     id,
@@ -188,7 +189,7 @@ export class IframeRpcProviderBridge {
             }
 
         } catch (error) {
-            console.log('connect error:', error)
+            console.log('connect error:', error);
             this.forwardProviderEventToIframeConnect({
                 id,
                 mode: 'iframe',
@@ -200,7 +201,10 @@ export class IframeRpcProviderBridge {
         }
     }
 
-    private prcessProviderEventFromWindow = async (args: ProviderEventMessage) => {
+    /**
+     * Process provider events coming from the window (from iFrame).
+     */
+    private processProviderEventFromWindow = async (args: ProviderEventMessage) => {
         console.log('processProviderEventFromWindow::', args);
         const { id, mode, params, path, type } = args || {
             params: null,
@@ -215,222 +219,43 @@ export class IframeRpcProviderBridge {
                 throw new Error('No Provider');
             }
 
-            const {
-                method,
-                params: requestArgs,
-            } = params[0] || { method: null };
+            const { method, params: requestArgs } = params[0] || { method: null };
 
             console.log(
-                `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
+                `Path: ${path} Type: ${type} Method: ${method}`,
             );
 
-
-            // Solana
+            // Handle Solana requests
             if (type === 'solana') {
                 if (window && this.ethereumProvider) {
                     const solana = this.ethereumProvider as SolanaProvider;
                     const publicKey = solana?.publicKey;
 
-                    if (!(solana && solana?.connect)) return
-                    if (!publicKey) {
-                        const pbk = await solana?.connect()
-                        console.log('pbk:', pbk.publicKey.toBase58());
+                    if (!(solana && solana?.connect)) return;
+                    if (!publicKey && method === 'connect') {
+                        const key = await solana.connect();
+                        console.log('pbk:', key.publicKey.toBase58());
+                        this.forwardProviderEventToIframe({
+                            id,
+                            mode: 'iframe',
+                            data: key.publicKey.toBase58(),
+                            path,
+                            type,
+                            success: true,
+                        });
+                        return;
                     }
 
-                    if (method === 'connect') {
-                        solana?.connect()
-                            .then(key => {
-                                const publicKey = key.publicKey;
-                                this.forwardProviderEventToIframe({
-                                    id,
-                                    mode: 'iframe',
-                                    data: publicKey.toBase58(),
-                                    path,
-                                    type,
-                                    success: true,
-                                });
-                            })
-                            .catch(error => {
-                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
-
-                                this.forwardProviderEventToIframe({
-                                    id,
-                                    mode: 'iframe',
-                                    error: JSON.stringify(error),
-                                    path,
-                                    type,
-                                    success: false,
-                                });
-                            });
-                    } else {
-                        console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestArgs);
-
-                        const solanaTransactionArgs = Array.isArray(requestArgs)
-                            ? requestArgs
-                            : [requestArgs];
-
-                        // TODO check right
-                        if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
-
-                        const message = solanaTransactionArgs[0];
-                        const onlyIfTrusted = solanaTransactionArgs[0]?.onlyIfTrusted;
-                        const okxArgs = solanaTransactionArgs[0]?.okxArgs;
-                        const transaction = solanaTransactionArgs[0]?.transaction;
-                        const okxType = solanaTransactionArgs[0]?.type;
-
-                        // TODO 干啥的？
-                        if (onlyIfTrusted) {
-                            // solanaTransactionArgs[0] = new VersionedTransaction(onlyIfTrusted);
-                            this.forwardProviderEventToIframe({
-                                id,
-                                mode: 'iframe',
-                                data: {
-                                    onlyIfTrusted: true
-                                },
-                                path,
-                                type,
-                                success: true,
-                            });
-                            return;
-                        }
-
-                        if (typeof message === 'string') {
-                            // TODO 明确 v0 v1 调用
-                            try {
-                                const deserializeTransaction = Transaction.from(
-                                    bs58.decode(message),
-                                );
-                                console.log('deserializeTransaction:', deserializeTransaction);
-                                solanaTransactionArgs[0] = deserializeTransaction
-                            } catch (err) {
-                                const deserializeTransaction = VersionedTransaction.deserialize(
-                                    bs58.decode(message),
-                                );
-                                console.log('new version deserializeTransaction:', deserializeTransaction);
-                                solanaTransactionArgs[0] = deserializeTransaction
-                            }
-                        }
-
-                        if (okxArgs && okxType && transaction) {
-                            const deserializeTransaction = VersionedTransaction.deserialize(
-                                bs58.decode(transaction),
-                            );
-                            const options = solanaTransactionArgs[0]?.options;
-
-                            solanaTransactionArgs[0] = deserializeTransaction;
-                            solanaTransactionArgs[1] = options;
-                            solanaTransactionArgs[2] = okxArgs;
-                        }
-
-                        console.log(
-                            'solana transaction solanaTransactionArgs:',
-                            solanaTransactionArgs,
-                        );
-
-                        solana[method](...solanaTransactionArgs)
-                            .then(data => {
-                                console.log('solana request:', data);
-
-                                this.forwardProviderEventToIframe({
-                                    id,
-                                    mode: 'iframe',
-                                    data,
-                                    path,
-                                    type,
-                                    success: true,
-                                });
-                            })
-                            .catch(error => {
-                                console.error('\x1b[41m\x1b[37mError:\x1b[0m\x1b[0m', error);
-
-                                this.forwardProviderEventToIframe({
-                                    id,
-                                    mode: 'iframe',
-                                    error: JSON.stringify(error),
-                                    path,
-                                    type,
-                                    success: false,
-                                });
-                                console.log('sent error msg')
-                            });
-                    }
-
+                    this.processSolanaTransaction(method, id, path, requestArgs, solana, type);
                     return;
                 }
             }
 
-            // EVM
-            const requestPara = { method, id: Number(id), params: requestArgs };
-            console.log('\x1b[46m\x1b[30mRequest Params:\x1b[0m', requestPara);
-            // Firstly, check the connection of business. If not connect, iframe needn't connect this wallet, and throw a error.
-            const isConneted =
-                (this.ethereumProvider as EthereumProvider).selectedAddress || (this.ethereumProvider as EthereumProvider)?.accounts?.[0];
-            if (!isConneted) {
-                await (this.ethereumProvider as EthereumProvider).request({
-                    method: 'eth_requestAccounts',
-                    id: Date.now(),
-                    params: []
-                });
-            }
+            // Handle EVM requests
+            this.processEVMTransaction(method, id, path, requestArgs, type);
 
-
-            if (method === 'eth_sendTransaction') {
-                try {
-                    // const web3Provider = new window.Web3(this.ethereumProvider);
-                    const web3Provider = new Web3(this.ethereumProvider as unknown as Web3['currentProvider']);
-                    web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
-                        this.forwardProviderEventToIframe({
-                            id,
-                            mode: 'iframe',
-                            data: hash,
-                            error: error && JSON.stringify(error),
-                            path,
-                            type,
-                            success: !!error,
-                        });
-                    });
-                } catch (error) {
-                    this.forwardProviderEventToIframe({
-                        id,
-                        mode: 'iframe',
-                        error: error && JSON.stringify(error),
-                        path,
-                        type,
-                        success: false,
-                    });
-                }
-                return;
-            }
-
-            const requestPromise = (this.ethereumProvider as EthereumProvider).request(requestPara);
-            console.log('ethereumProvider.request:', requestPromise, requestPara, this.ethereumProvider);
-            requestPromise
-                .then(data => {
-                    console.log('ethereumProvider.request then:', data);
-
-                    this.forwardProviderEventToIframe({
-                        id,
-                        mode: 'iframe',
-                        data,
-                        path,
-                        type,
-                        success: true,
-                    });
-                })
-                .catch(error => {
-                    console.error('Request Error:', error);
-
-                    this.forwardProviderEventToIframe({
-                        id,
-                        mode: 'iframe',
-                        error: JSON.stringify(error),
-                        path,
-                        type,
-                        success: false,
-                    });
-                });
         } catch (error) {
-            console.error('\x1b[45m\x1b[37mError:\x1b[0m\x1b[0m', error);
+            console.error('Error:', error);
 
             this.forwardProviderEventToIframe({
                 id,
@@ -442,6 +267,126 @@ export class IframeRpcProviderBridge {
             });
         }
     };
+
+    /**
+     * Processes Solana transactions or other requests.
+     */
+    private async processSolanaTransaction(method: string, id: string, path: string, requestArgs: any[], solana: SolanaProvider, type: string) {
+        try {
+            const solanaTransactionArgs = Array.isArray(requestArgs) ? requestArgs : [requestArgs];
+            if (solanaTransactionArgs?.length <= 0) throw new Error('No args');
+            const message = solanaTransactionArgs[0];
+
+            if (message?.onlyIfTrusted) {
+                this.forwardProviderEventToIframe({
+                    id,
+                    mode: 'iframe',
+                    data: {
+                        onlyIfTrusted: true
+                    },
+                    path,
+                    type,
+                    success: true,
+                });
+                return;
+            }
+
+            if (typeof message === 'string') {
+                try {
+                    const deserializeTransaction = Transaction.from(bs58.decode(message));
+                    solanaTransactionArgs[0] = deserializeTransaction;
+                } catch (err) {
+                    const deserializeTransaction = VersionedTransaction.deserialize(bs58.decode(message));
+                    solanaTransactionArgs[0] = deserializeTransaction;
+                }
+            }
+
+            if (message?.okxArgs && message?.okxType && message?.transaction) {
+                const deserializeTransaction = VersionedTransaction.deserialize(
+                    bs58.decode(message?.transaction),
+                );
+                const options = solanaTransactionArgs[0]?.options;
+
+                solanaTransactionArgs[0] = deserializeTransaction;
+                solanaTransactionArgs[1] = options;
+                solanaTransactionArgs[2] = message?.okxArgs;
+            }
+
+            console.log(
+                'solana transaction solanaTransactionArgs:',
+                solanaTransactionArgs,
+            );
+
+            const data = await solana[method](...solanaTransactionArgs);
+            console.log('solana request:', data);
+
+            this.forwardProviderEventToIframe({
+                id,
+                mode: 'iframe',
+                data,
+                path,
+                type,
+                success: true,
+            });
+        } catch (error) {
+            console.error('Error:', error);
+
+            this.forwardProviderEventToIframe({
+                id,
+                mode: 'iframe',
+                error: JSON.stringify(error),
+                path,
+                type,
+                success: false,
+            });
+        }
+    }
+
+    /**
+     * Processes EVM transactions or other requests.
+     */
+    private processEVMTransaction(method: string, id: string, path: string, requestArgs: any[], type: string) {
+        const requestPara = { method, id: Number(id), params: requestArgs };
+
+        if (method === 'eth_sendTransaction') {
+            const web3Provider = new Web3(this.ethereumProvider as unknown as Web3['currentProvider']);
+            web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
+                this.forwardProviderEventToIframe({
+                    id,
+                    mode: 'iframe',
+                    data: hash,
+                    error: error && JSON.stringify(error),
+                    path,
+                    type,
+                    success: !error,
+                });
+            });
+        } else {
+            (this.ethereumProvider as EthereumProvider).request(requestPara)
+                .then(data => {
+                    this.forwardProviderEventToIframe({
+                        id,
+                        mode: 'iframe',
+                        data,
+                        path,
+                        type,
+                        success: true,
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                    this.forwardProviderEventToIframe({
+                        id,
+                        mode: 'iframe',
+                        error: JSON.stringify(error),
+                        path,
+                        type,
+                        success: false,
+                    });
+                });
+        }
+    }
 
     /**
      * Listen the event of wallet changement of Dapp and forward it to the iFrame window.
