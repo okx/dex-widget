@@ -12,7 +12,6 @@ import {
     SolanaProvider,
     ProviderEventMessage,
     ProviderOnEventPayload,
-    ProviderRpcResponsePayload,
     ProviderType,
     WidgetMethodsListen,
     WidgetProviderEvents,
@@ -489,13 +488,6 @@ export class IframeRpcProviderBridge {
             event,
             params,
         });
-    }
-
-    /**
-     * Forward a JSON-RPC message to the content window.
-     */
-    private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
-        postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_RPC_RESPONSE, params);
     }
 
     /**
