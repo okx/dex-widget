@@ -9,7 +9,6 @@ import {
 } from './messages';
 import {
     EthereumProvider,
-    JsonRpcRequestMessage,
     SolanaProvider,
     ProviderEventMessage,
     ProviderOnEventPayload,
@@ -19,7 +18,6 @@ import {
     WidgetProviderEvents,
 } from './types';
 import { SOLANA_CHAIN_ID, WALLET_TYPE } from './widgetHelp';
-import Idempotence from './Idempetence';
 
 const EVENTS_TO_FORWARD_TO_IFRAME = [
     'connect',
@@ -42,11 +40,6 @@ export class IframeRpcProviderBridge {
      * When is null the JSON-RPC bridge is disconnected from the Ethereum provider.
      * */
     private ethereumProvider: EthereumProvider | SolanaProvider | null = null;
-
-    /** Stored JSON-RPC requests, to queue them when disconnected. */
-    private requestWaitingForConnection: {
-        [key: string]: JsonRpcRequestMessage;
-    } = {};
 
     /** Listener for Ethereum provider events */
     private listener: (...args) => void;
@@ -76,11 +69,6 @@ export class IframeRpcProviderBridge {
         // Disconnect provider
         this.ethereumProvider = null;
 
-        // stopListeningToMessageFromWindow(
-        //   window,
-        //   WidgetMethodsEmit.PROVIDER_RPC_REQUEST,
-        //   this.processRpcCallFromWindow
-        // );
         stopListeningToMessageFromWindow(
             window,
             WidgetProviderEvents.PROVIDER_ON_EVENT,
@@ -247,8 +235,6 @@ export class IframeRpcProviderBridge {
                 `\x1b[44m\x1b[37mPath: ${path}\x1b[0m\x1b[0m\x1b[42m\x1b[30mType: ${type} \x1b[0m\x1b[0m \x1b[43m\x1b[30mMethod: ${method} \x1b[0m\x1b[0m`,
             );
 
-            if (Idempotence.getInstance().getMessageQueue().has(id)) return
-            else Idempotence.getInstance().getMessageQueue().set(id, true);
 
             // Solana
             if (type === 'solana') {
@@ -390,8 +376,6 @@ export class IframeRpcProviderBridge {
             // Firstly, check the connection of business. If not connect, iframe needn't connect this wallet, and throw a error.
             const isConneted =
                 (this.ethereumProvider as EthereumProvider).selectedAddress || (this.ethereumProvider as EthereumProvider)?.accounts?.[0];
-            // console.log('isConneted:', isConneted, 'autoConnect:', autoConnect)
-            // if (!isConneted) throw new Error(`Please connect wallet first: ${isConneted}`);
             if (!isConneted) {
                 await (this.ethereumProvider as EthereumProvider).request({
                     method: 'eth_requestAccounts',
@@ -500,7 +484,6 @@ export class IframeRpcProviderBridge {
      */
     private onProviderEvent(event: string, params: unknown): void {
         console.log('on Provider Event:', event, params, this.isAllowAtomicForward);
-        // if (this.isAllowAtomicForward) return;
 
         postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ONEVENT_WALLET_SATUS, {
             event,

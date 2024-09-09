@@ -1,5 +1,3 @@
-import Idempotence from "./Idempetence";
-
 export class IframeSafeSdkBridge {
     forwardSdkMessage: (event: MessageEvent<any>) => void;
 
@@ -29,11 +27,9 @@ export class IframeSafeSdkBridge {
                 if (isAddition) {
                     const isIframe = data.mode === 'iframe';
                     if (isIframe) {
-                        Idempotence.getInstance().handlePostMessage(data.id, data, 'iframe', this.iframeWidow);
-                        // this.iframeWidow.postMessage(data, '*');
+                        this.iframeWidow.postMessage(data, '*');
                     } else {
-                        Idempotence.getInstance().handlePostMessage(data.id, data, 'window', this.appWindow);
-                        // this.appWindow.postMessage(data, '*');
+                        this.appWindow.postMessage(data, '*');
                     }
                 }
             }
