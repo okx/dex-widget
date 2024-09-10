@@ -1,7 +1,6 @@
 
 import {
     listenToMessageFromWindow,
-    postMessageToWindow,
     stopListeningToMessageFromWindow,
 } from './messages';
 import { TransactionProcessor } from './transactions/TransactionProcessor';
@@ -9,9 +8,7 @@ import {
     EthereumProvider,
     SolanaProvider,
     ProviderEventMessage,
-    ProviderOnEventPayload,
     ProviderType,
-    WidgetMethodsListen,
     WidgetProviderEvents,
 } from './types';
 
@@ -26,7 +23,7 @@ export class IframeRpcProviderBridge {
      * The Ethereum provider instance.
      * When is null the JSON-RPC bridge is disconnected from the Ethereum provider.
      * */
-    private ethereumProvider: EthereumProvider | SolanaProvider | null = null;
+    private provider: EthereumProvider | SolanaProvider | null = null;
 
     /** Listener for Ethereum provider events */
     private processor: TransactionProcessor;
@@ -46,13 +43,13 @@ export class IframeRpcProviderBridge {
     }
 
     disconnect() {
-        this.ethereumProvider = null;
+        this.provider = null;
         stopListeningToMessageFromWindow(window, WidgetProviderEvents.PROVIDER_ON_EVENT, this.listener);
         stopListeningToMessageFromWindow(window, WidgetProviderEvents.PROVIDER_ON_EVENT_CONNECT, this.connectListener);
     }
 
     onConnect(newProvider: EthereumProvider | SolanaProvider) {
-        if (this.ethereumProvider) {
+        if (this.provider) {
             this.disconnect();
         } else {
             // Listen for messages coming to the main window (from the iFrame window)
@@ -70,80 +67,26 @@ export class IframeRpcProviderBridge {
         }
 
         // Save the provider
-        this.ethereumProvider = newProvider;
+        this.provider = newProvider;
 
         // Register provider event listeners based on the type of provider (Solana or EVM)
         this.processor.registerProviderEventListeners(newProvider);
     }
 
     /**
-     * Process connect event for Solana
-     */
-    private processConnectEvent = async (args: ProviderEventMessage) => {
-        console.log('processConnectEvent connect', args);
-        const { id, mode, params, path, type } = args || { params: null, mode: null, id: null, path: null, type: null };
-
-        try {
-            if (!this.ethereumProvider || mode === 'iframe') {
-                throw new Error('No Provider');
-            }
-
-            const { method } = params[0] || { method: null };
-
-            if (type === 'solana') {
-                if (window && this.ethereumProvider) {
-                    const solana = this.ethereumProvider as SolanaProvider;
-                    if (!(solana && solana?.connect)) throw new Error('Not solana provider');
-
-                    if (method === 'connect') {
-                        solana?.connect()
-                            .then(key => {
-                                this.forwardProviderEventToIframeConnect({
-                                    id,
-                                    mode: 'iframe',
-                                    data: key.publicKey.toBase58(),
-                                    path,
-                                    type,
-                                    success: true,
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-
-                                this.forwardProviderEventToIframeConnect({
-                                    id,
-                                    mode: 'iframe',
-                                    error: JSON.stringify(error),
-                                    path,
-                                    type,
-                                    success: false,
-                                });
-                            });
-                    }
-                }
-            }
-
-        } catch (error) {
-            console.log('connect error:', error);
-            this.forwardProviderEventToIframeConnect({
-                id,
-                mode: 'iframe',
-                error: JSON.stringify(error),
-                path,
-                type,
-                success: false,
-            });
-        }
-    }
-    /**
      * Process provider events coming from the window (from iFrame).
      */
     private processProviderEventFromWindow = async (args: ProviderEventMessage) => {
-        const { method, params: requestArgs, type } = args.params[0];
-        await this.processor.processTransaction(method, args.id, args.path, requestArgs, this.ethereumProvider, type);
+        console.log('processProviderEventFromWindow:', args);
+        const { type } = args;
+        const { method, params: requestArgs } = args.params[0];
+        await this.processor.processTransaction(method, args.id, args.path, requestArgs, this.provider, type);
     }
 
-    private forwardProviderEventToIframeConnect(params: ProviderOnEventPayload) {
-        postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT_CONNECT, params);
+    /**
+    * Process connect event for Solana
+    */
+    private processConnectEvent = async (args: ProviderEventMessage) => {
+        await this.processor.processConnectEvent(args, this.provider);
     }
 }

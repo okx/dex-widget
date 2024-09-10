@@ -1,4 +1,4 @@
-import { ProviderType } from "../types";
+import { ProviderEventMessage, ProviderType, EthereumProvider, SolanaProvider } from "../types";
 
 import { EvmStrategy } from "./EvmStrategy";
 import { BlockchainStrategy } from "./IBlockchainStrategy";
@@ -25,10 +25,18 @@ export class TransactionProcessor {
     }
 
     async processTransaction(method: string, id: string, path: string, requestArgs: any[], provider: any, type: string) {
+        console.log('processTransaction:', { method, id, path, requestArgs, provider, type });
         await this.strategy.processTransaction(method, id, path, requestArgs, provider, type);
     }
 
     registerProviderEventListeners(provider: any) {
         this.strategy.registerProviderEventListeners(provider);
+    }
+
+    async processConnectEvent(args: ProviderEventMessage, provider: EthereumProvider | SolanaProvider | null) {
+        if (this.strategy instanceof SolanaStrategy) {
+            console.log('processConnectEvent:', this.strategy, { provider });
+            await this.strategy.processConnectEvent(args, provider as SolanaProvider);
+        }
     }
 }

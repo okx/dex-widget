@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 import { postMessageToWindow } from '../messages';
-import { WidgetMethodsListen } from '../types';
+import { WidgetMethodsListen, EthereumProvider } from '../types';
 
 import { BlockchainStrategy } from "./IBlockchainStrategy";
 
@@ -15,19 +15,34 @@ export class EvmStrategy implements BlockchainStrategy {
     async processTransaction(method: string, id: string, path: string, requestArgs: any[], provider: EthereumProvider, type: string) {
         const requestPara = { method, id: Number(id), params: requestArgs };
         try {
+            const isConneted =
+                provider?.selectedAddress || provider?.accounts?.[0];
+
+            if (!isConneted) {
+                await provider.request({
+                    method: 'eth_requestAccounts',
+                    id: Date.now(),
+                    params: []
+                });
+            }
+
             if (method === 'eth_sendTransaction') {
                 const web3Provider = new Web3(provider as unknown as Web3['currentProvider']);
-                const hash = await web3Provider.eth.sendTransaction(requestPara.params[0]);
-                postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
-                    id,
-                    mode: 'iframe',
-                    data: hash,
-                    path,
-                    type,
-                    success: true,
+                web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
+                    console.log('evm eth_sendTransaction:', hash);
+                    postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
+                        id,
+                        mode: 'iframe',
+                        data: hash,
+                        path,
+                        type,
+                        error: error && JSON.stringify(error),
+                        success: !!error,
+                    });
                 });
             } else {
                 const data = await provider.request(requestPara);
+                console.log('evm request:', data);
                 postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
                     id,
                     mode: 'iframe',
@@ -42,7 +57,7 @@ export class EvmStrategy implements BlockchainStrategy {
             postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
                 id,
                 mode: 'iframe',
-                error: JSON.stringify(error),
+                error: error && JSON.stringify(error),
                 path,
                 type,
                 success: false,
