@@ -19,7 +19,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "@okxweb3/dex-widget": "file:.yalc/@okxweb3/dex-widget",
+    "@okxweb3/dex-widget": "^1.2.0",
     "@rainbow-me/rainbowkit": "^2.1.4",
     "@tanstack/react-query": "^5.51.21",
     "@types/lodash-es": "^4.17.12",
