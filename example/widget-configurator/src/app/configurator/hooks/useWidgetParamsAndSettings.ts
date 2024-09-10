@@ -13,6 +13,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState) {
       tokenPair,
       feeConfig,
       provider,
+      baseUrl,
     } = configuratorState
     const params: any = {
       chainIds: chainIds ? chainIds.split(',') : [],
@@ -21,6 +22,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState) {
       providerType,
       lang,
       provider,
+      baseUrl,
     }
 
     let parseTokenPair, parseFeeConfig

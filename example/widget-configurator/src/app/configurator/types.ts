@@ -9,4 +9,5 @@ export interface ConfiguratorState {
   tokenPair?: string,
   feeConfig?: string,
   provider?: string,
+  baseUrl?: string,
 }
