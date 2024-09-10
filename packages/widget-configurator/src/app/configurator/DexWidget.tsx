@@ -1,8 +1,9 @@
-import { FC, Ref, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from "react";
+import { FC, Ref, useEffect, useMemo, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { createOkxSwapWidget, OkxSwapWidgetProps, IWidgetConfig, ProviderType, ProviderEventMessage } from '@okxweb3/dex-widget'
 
 import { useProvider } from "./hooks/useProvider";
+import { useAccount } from 'wagmi';
 
 export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(({ params }, ref: Ref<any>) => {
 
@@ -38,6 +39,28 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(
           widgetHandler.current?.destroy();
         };
     }, []);
+
+    const { connector } = useAccount();
+
+    const getProviderType = useCallback(() => {
+        console.log('getProviderType====>', connector);
+        const isWalletConnect =
+            connector?.id === 'walletConnect' || connector?.type === 'walletConnect';
+
+        if (!connector) {
+            return undefined;
+        }
+        const providerType = isWalletConnect
+            ? ProviderType.WALLET_CONNECT
+            : ProviderType.EVM;
+        return providerType;
+    }, [connector]);
+
+    useEffect(() => {
+        if (widgetHandler.current && provider) {
+            widgetHandler.current?.updateProvider(provider, getProviderType());
+        }
+    }, [provider, getProviderType]);
 
     useImperativeHandle(ref, () => {
       return {
