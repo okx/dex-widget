@@ -1,13 +1,30 @@
-name: Notify Lark after Vercel Deployment
+name: Notify Lark After Vercel Deployment
 
 on:
+  workflow_dispatch:
   deployment_status:
     types: [success, failure]
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   notify-lark:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract Deployment Info
+        id: extract-info
+        run: |
+          echo "Deployment status: ${{ github.event.deployment_status.state }}"
+          echo "Deployment URL: ${{ github.event.deployment_status.target_url }}"
+          echo "PROJECT_NAME=${{ github.repository }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT_URL=${{ github.event.deployment_status.target_url }}" >> $GITHUB_ENV
+
       - name: Send success notification to Lark
         if: ${{ github.event.deployment_status.state == 'success' }}
         run: |
@@ -16,7 +33,7 @@ jobs:
           -d '{
             "msg_type": "text",
             "content": {
-              "text": "Vercel 部署成功: ${GITHUB_REPOSITORY} 部署已完成，访问地址: ${{ secrets.VERCEL_DEPLOYMENT_URL }}"
+              "text": "Vercel 部署成功: ${{ env.PROJECT_NAME }} 项目已成功部署，访问地址： ${{ env.DEPLOYMENT_URL }}"
             }
           }'
 
@@ -28,6 +45,6 @@ jobs:
           -d '{
             "msg_type": "text",
             "content": {
-              "text": "Vercel 部署失败: ${GITHUB_REPOSITORY} 部署失败，请检查日志。"
+              "text": "Vercel 部署失败: ${{ env.PROJECT_NAME }} 部署失败，请检查日志。"
             }
           }'
