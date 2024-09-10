@@ -1,8 +1,10 @@
 name: Notify Lark After Vercel Deployment
 
 on:
-  repository_dispatch:  # 监听 Vercel 部署后触发的 repository_dispatch 事件
-    types: [vercel_deployment]
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   notify-lark:
@@ -13,7 +15,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Send success notification to Lark
-        if: ${{ github.event.client_payload.status == 'success' }}
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H 'Content-Type: application/json' \
@@ -21,17 +22,5 @@ jobs:
             "msg_type": "text",
             "content": {
               "text": "Vercel 发布中... ${{ env.PROJECT_NAME }} 项目已成功发布，等待3-5分钟，部署后访问地址： ${{ secrets.VERCEL_DEPLOYMENT_URL }}"
-            }
-          }'
-
-      - name: Send failure notification to Lark
-        if: ${{ github.event.client_payload.status == 'failure' }}
-        run: |
-          curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
-          -H 'Content-Type: application/json' \
-          -d '{
-            "msg_type": "text",
-            "content": {
-              "text": "发布失败: ${{ env.PROJECT_NAME }} 部署失败，请检查日志。"
             }
           }'
