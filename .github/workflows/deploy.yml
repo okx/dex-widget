@@ -1,0 +1,33 @@
+name: Notify Lark after Vercel Deployment
+
+on:
+  deployment_status:
+    types: [success, failure]
+
+jobs:
+  notify-lark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send success notification to Lark
+        if: ${{ github.event.deployment_status.state == 'success' }}
+        run: |
+          curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "msg_type": "text",
+            "content": {
+              "text": "Vercel 部署成功: ${GITHUB_REPOSITORY} 部署已完成，访问地址: ${{ secrets.VERCEL_DEPLOYMENT_URL }}"
+            }
+          }'
+
+      - name: Send failure notification to Lark
+        if: ${{ github.event.deployment_status.state == 'failure' }}
+        run: |
+          curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "msg_type": "text",
+            "content": {
+              "text": "Vercel 部署失败: ${GITHUB_REPOSITORY} 部署失败，请检查日志。"
+            }
+          }'
