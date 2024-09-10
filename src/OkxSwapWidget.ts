@@ -33,6 +33,7 @@ export interface OkxSwapWidgetHandler {
     updateListeners: (newListeners?: OkxEventListeners) => void;
     updateProvider: (newProvider: EthereumProvider, providerType: ProviderType) => void;
     destroy: () => void;
+    iframeWindow: Window;
 }
 
 /**
@@ -170,6 +171,7 @@ export function createOkxSwapWidget(
             }
             destroyStyleElement();
         },
+        iframeWindow,
     };
 }
 

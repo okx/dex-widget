@@ -1,6 +1,5 @@
 import { FC, Ref, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from "react";
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
 import { createOkxSwapWidget, OkxSwapWidgetProps, IWidgetConfig, ProviderType, ProviderEventMessage } from '@okxweb3/dex-widget'
 import { useProvider } from "./hooks/useProvider";
 
@@ -9,9 +8,8 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(
     const { provider: currentProvider } = params;
     const widgetRef = useRef<HTMLDivElement>(null);
     const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
-    const  provider = useProvider(currentProvider);
+    const  provider = useProvider(currentProvider, widgetHandler.current?.iframeWindow);
     const { openConnectModal } = useConnectModal();
-    const { connector } = useAccount();
     const config = useMemo(() => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { provider: currentProvider1, ...rest } = params;
@@ -24,12 +22,6 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(
         listeners: [
           {
             event: 'ON_CONNECT_WALLET',
-            handler: () => {
-              provider.enable();
-            },
-          },
-          {
-            event: 'ON_CONNECT_WALLET',
             handler: (payload: ProviderEventMessage) => {
               console.log('NO_WALLET_CONNECT===>', payload);
               openConnectModal?.();
@@ -40,7 +32,6 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(
     }, [provider, config]);
 
     useEffect(() => {
-      console.log(33333);
         widgetHandler.current = createOkxSwapWidget(widgetRef.current as HTMLDivElement, initialConfig as unknown as IWidgetConfig);
         return () => {
           widgetHandler.current?.destroy();
