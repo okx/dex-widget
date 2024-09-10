@@ -1,13 +1,8 @@
 name: Notify Lark After Vercel Deployment
 
 on:
-  workflow_dispatch:
-  deployment_status:
-    types: [success, failure]
-  push:
-    branches:
-      - main
-      - develop
+  repository_dispatch:  # 监听 Vercel 部署后触发的 repository_dispatch 事件
+    types: [vercel_deployment]
 
 jobs:
   notify-lark:
@@ -17,34 +12,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Extract Deployment Info
-        id: extract-info
-        run: |
-          echo "Deployment status: ${{ github.event.deployment_status.state }}"
-          echo "Deployment URL: ${{ github.event.deployment_status.target_url }}"
-          echo "PROJECT_NAME=${{ github.repository }}" >> $GITHUB_ENV
-          echo "DEPLOYMENT_URL=${{ github.event.deployment_status.target_url }}" >> $GITHUB_ENV
-
       - name: Send success notification to Lark
-        if: ${{ github.event.deployment_status.state == 'success' }}
+        if: ${{ github.event.client_payload.status == 'success' }}
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H 'Content-Type: application/json' \
           -d '{
             "msg_type": "text",
             "content": {
-              "text": "Vercel 部署成功: ${{ env.PROJECT_NAME }} 项目已成功部署，访问地址： ${{ env.DEPLOYMENT_URL }}"
+              "text": "Vercel 发布中... ${{ env.PROJECT_NAME }} 项目已成功发布，等待3-5分钟，部署后访问地址： ${{ secrets.VERCEL_DEPLOYMENT_URL }}"
             }
           }'
 
       - name: Send failure notification to Lark
-        if: ${{ github.event.deployment_status.state == 'failure' }}
+        if: ${{ github.event.client_payload.status == 'failure' }}
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H 'Content-Type: application/json' \
           -d '{
             "msg_type": "text",
             "content": {
-              "text": "Vercel 部署失败: ${{ env.PROJECT_NAME }} 部署失败，请检查日志。"
+              "text": "发布失败: ${{ env.PROJECT_NAME }} 部署失败，请检查日志。"
             }
           }'
