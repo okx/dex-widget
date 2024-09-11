@@ -10,6 +10,7 @@ import Fab from '@mui/material/Fab'
 import Typography from '@mui/material/Typography'
 import { createOkxSwapWidget, ProviderType } from '@okxweb3/dex-widget';
 import { TradeType } from '@okxweb3/dex-widget'
+import { Link } from '@mui/material';
 
 import { ColorModeContext } from '../../theme/ColorModeContext'
 import { EmbedDialog } from '../embedDialog'
@@ -108,11 +109,11 @@ export function Configurator({ title }: { title: string }) {
 
         {
           isDevModeOpen && (
-              <>
-                <Divider variant="middle">Dev mode</Divider>
-                <BaseUrlControl state={baseUrlState} widgetHandler={widgetHandler} params={params} />
-              </>
-            )
+            <>
+              <Divider variant="middle">Dev mode</Divider>
+              <BaseUrlControl state={baseUrlState} widgetHandler={widgetHandler} params={params} />
+            </>
+          )
         }
 
 
@@ -135,6 +136,12 @@ export function Configurator({ title }: { title: string }) {
         <Divider variant="middle">Fee config</Divider>
 
         <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
+
+        <Divider variant='middle'>More</Divider>
+
+        <Typography variant='body1' sx={{ width: '100%', textAlign: 'left', margin: '0 auto 1rem', }}>
+          Document: <Link href='https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget'>Dex Widget</Link>
+        </Typography>
 
         {/* <Divider variant="middle">Other settings</Divider> */}
 

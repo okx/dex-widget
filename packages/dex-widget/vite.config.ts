@@ -1,7 +1,9 @@
 import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+    const isDev = mode === 'development';
+
     return {
         define: {
             'process.env': {
@@ -21,7 +23,15 @@ export default defineConfig(() => {
                 },
                 name: 'Dex-Widget',
                 formats: ['es', 'cjs'],
-                fileName: (format, name) => `${name}.${format === 'es' ? 'mjs' : format}`,
+                fileName: (format) => {
+                    if (format === 'es') {
+                        return isDev ? '[name].mjs' : '[name].[hash].mjs';
+                    } else if (format === 'cjs') {
+                        return isDev ? '[name].js' : '[name].[hash].js';
+                    }
+
+                    return '[name].js';
+                },
             },
             rollupOptions: {
                 external: ['react', 'react-dom', 'web3', '@solana/web3.js'],
@@ -31,7 +41,7 @@ export default defineConfig(() => {
                         'react-dom': 'ReactDOM',
                         web3: 'Web3',
                         '@solana/web3.js': 'Web3',
-                    },
+                    }
                 },
             },
         },
