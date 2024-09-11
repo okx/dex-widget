@@ -60,20 +60,17 @@ import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
-);
+const { chains, provider } = configureChains([mainnet, polygon, optimism, arbitrum], [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]);
 
 const { connectors } = getDefaultWallets({
   appName: 'My App',
-  chains
+  chains,
 });
 
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
-  provider
+  provider,
 });
 
 const App = () => {
@@ -83,11 +80,11 @@ const App = () => {
   const config = {
     params: {
       appCode: 'my-app-code', // Replace with your actual app code
-      height: 500,            // Initial height of the widget iframe
+      height: 500, // Initial height of the widget iframe
       providerType: 'wallet', // Type of blockchain provider, e.g., 'wallet'
     },
-    provider: null,            // Blockchain provider, can be set here
-    listeners: {},             // Event listeners for widget events
+    provider: null, // Blockchain provider, can be set here
+    listeners: {}, // Event listeners for widget events
   };
 
   return (
@@ -144,13 +141,11 @@ const container = document.getElementById('widget-container');
 const initialConfig = {
   params: {
     appCode: 'my-app-code', // Unique identifier for your application
-    height: 500,            // Initial height of the widget iframe in pixels
+    height: 500, // Initial height of the widget iframe in pixels
     providerType: 'wallet', // Type of blockchain provider (e.g., 'wallet')
   },
-  provider: null,            // Initial blockchain provider (can be set later)
-  listeners: [
-    { event: OkEvents.ON_PRESIGNED_ORDER, handler: (payload) => {} },
-  ],
+  provider: null, // Initial blockchain provider (can be set later)
+  listeners: [{ event: OkEvents.ON_PRESIGNED_ORDER, handler: payload => {} }],
 };
 
 // Create the widget and inject it into the container
@@ -158,9 +153,9 @@ const widgetHandler = createOkSwapWidget(container, initialConfig);
 
 // Update widget parameters dynamically
 widgetHandler.updateParams({
-  width: '600px',      // Change the widget's width to 600 pixels
-  lang: 'en',          // Set the widget's language to English
-  theme: 'dark',       // Apply a dark theme to the widget
+  width: '600px', // Change the widget's width to 600 pixels
+  lang: 'en', // Set the widget's language to English
+  theme: 'dark', // Apply a dark theme to the widget
 });
 
 // Example: Updating the blockchain provider
@@ -168,9 +163,7 @@ const newProvider = new EthereumProvider(/* provider configuration here */);
 widgetHandler.updateProvider(newProvider, ProviderType.WALLET);
 
 // Example: Updating event listeners dynamically
-widgetHandler.updateListeners([
-    { event: OkEvents.ON_PRESIGNED_ORDER, handler: (payload) => {} },
-  ]);
+widgetHandler.updateListeners([{ event: OkEvents.ON_PRESIGNED_ORDER, handler: payload => {} }]);
 
 // Cleanup: Destroy the widget when it's no longer needed
 // This removes the iframe, disconnects listeners, and frees resources
@@ -180,12 +173,14 @@ widgetHandler.destroy();
 ### Detailed Explanation of Each Method
 
 1. **createOkSwapWidget(container, config):**
+
    - **Purpose:** This function initializes the widget and injects it into the specified container element. It returns a `widgetHandler` object that allows you to interact with the widget.
    - **Parameters:**
      - `container`: The DOM element where the widget iframe will be embedded.
      - `config`: The configuration object that includes parameters (`params`), the provider (`provider`), and event listeners (`listeners`).
 
 2. **updateParams(newParams):**
+
    - **Purpose:** Dynamically update the widget’s parameters without reloading it. This method can be used to change visual aspects like width, language, and theme.
    - **Example Usage:**
      ```javascript
@@ -199,6 +194,7 @@ widgetHandler.destroy();
      - `newParams`: An object containing the new parameters to apply to the widget.
 
 3. **updateProvider(newProvider, providerType):**
+
    - **Purpose:** Change the blockchain provider used by the widget. This is useful when the application supports multiple providers or needs to switch providers dynamically.
    - **Example Usage:**
      ```javascript
@@ -210,12 +206,11 @@ widgetHandler.destroy();
      - `providerType`: The type of provider (e.g., `ProviderType.WALLET`, `ProviderType.SOLANA`).
 
 4. **updateListeners(newListeners):**
+
    - **Purpose:** Update the event listeners attached to the widget. This allows you to change the event handling behavior dynamically.
    - **Example Usage:**
      ```javascript
-     widgetHandler.updateListeners([
-      { event: OkEvents.ON_PRESIGNED_ORDER, handler: (payload) => {} },
-    ]);
+     widgetHandler.updateListeners([{ event: OkEvents.ON_PRESIGNED_ORDER, handler: payload => {} }]);
      ```
    - **Parameters:**
      - `newListeners`: An Array Object.
@@ -246,9 +241,7 @@ widgetHandler.updateParams({
 widgetHandler.updateProvider(new EthereumProvider(), ProviderType.WALLET);
 
 // 4. Modify event listeners to handle new types of events
-widgetHandler.updateListeners([
-    { event: OkEvents.ON_PRESIGNED_ORDER, handler: (payload) => {} },
-  ]);
+widgetHandler.updateListeners([{ event: OkEvents.ON_PRESIGNED_ORDER, handler: payload => {} }]);
 
 // 5. Clean up when done
 widgetHandler.destroy();

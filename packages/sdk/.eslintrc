@@ -63,9 +63,9 @@
     "overrides": [
         {
             "files": [
-                "packages/**/*.ts",
-                "packages/**/*.tsx",
-                "packages/**/*.js"
+                "src/**/*.ts",
+                "src/**/*.tsx",
+                "src/**/*.js"
             ],
             "parser": "@typescript-eslint/parser",
         },
