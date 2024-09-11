@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(({ mode }) => {
     const isDev = mode === 'development';
+    let switchType = 'cjs';
 
     return {
         define: {
@@ -23,11 +24,13 @@ export default defineConfig(({ mode }) => {
                 },
                 name: 'Dex-Widget',
                 formats: ['es', 'cjs'],
-                fileName: (format) => {
+                fileName: (format, name) => {
+                    const nonHashName = isDev || name === 'index';
+
                     if (format === 'es') {
-                        return isDev ? '[name].mjs' : '[name].[hash].mjs';
+                        return nonHashName ? '[name].mjs' : '[name].[hash].mjs';
                     } else if (format === 'cjs') {
-                        return isDev ? '[name].js' : '[name].[hash].js';
+                        return nonHashName ? '[name].js' : '[name].[hash].js';
                     }
 
                     return '[name].js';
@@ -41,12 +44,17 @@ export default defineConfig(({ mode }) => {
                         'react-dom': 'ReactDOM',
                         web3: 'Web3',
                         '@solana/web3.js': 'Web3',
+                    },
+                    chunkFileNames: info => {
+                        const ext = info.type === 'chunk' && switchType === 'cjs' ? 'js' : 'mjs';
+                        switchType = 'es';
+                        return isDev ? `[name].${ext}` : `[name].[hash].${ext}`;
                     }
                 },
             },
         },
         optimizeDeps: {
-            exclude: ['./example/**/*'],
+            include: ['react', 'react-dom', 'web3', '@solana/web3.js'],
         },
         plugins: [
             dts({
