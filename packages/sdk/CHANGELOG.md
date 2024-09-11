@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1-beta.2](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.2.1-beta.1...v1.2.1-beta.2) (2024-09-11)
+
 ### [1.2.1-beta.1](https://gitlab.okg.com/okfe/tests/dex-widget/compare/v1.2.1-beta.0...v1.2.1-beta.1) (2024-09-10)
 
 ### Bug Fixes
