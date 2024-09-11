@@ -100,7 +100,7 @@ importers:
         specifier: ^0.22.0
         version: 0.22.0(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(less@4.2.0)(terser@5.32.0))
 
-  packages/sdk:
+  packages/dex-widget:
     dependencies:
       '@solana/web3.js':
         specifier: ^1.44.1
@@ -186,7 +186,7 @@ importers:
         version: 5.16.7(@emotion/react@11.13.3(@types/react@18.3.5)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.5)(react@18.3.1))(@types/react@18.3.5)(react@18.3.1))(@types/react@18.3.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@okxweb3/dex-widget':
         specifier: workspace:*
-        version: link:../sdk
+        version: link:../dex-widget
       inter-ui:
         specifier: ^4.0.2
         version: 4.0.2
@@ -229,7 +229,7 @@ importers:
         version: 5.16.7(@types/react@18.3.5)(react@18.3.1)
       '@okxweb3/dex-widget':
         specifier: workspace:*
-        version: link:../sdk
+        version: link:../dex-widget
 
 packages:
 
