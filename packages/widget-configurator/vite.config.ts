@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
         ],
         build: {
             sourcemap: false,
+            outDir: 'dist',
             rollupOptions: {
                 plugins: [
                     nodePolyfills({
@@ -44,6 +45,8 @@ export default defineConfig(({ mode }) => {
                     }),
                 ],
             },
+            assetsDir: '',
+            emptyOutDir: true,
         },
         server: {
             port: 4200,
