@@ -39,10 +39,13 @@ jobs:
           node-version: '20.11.1'
           cache: 'pnpm'
 
-      - name: Install pnpm and Dependencies
+      - name: Install pnpm
         run: |
           corepack enable
-          pnpm install
+          corepack prepare pnpm@latest --activate
+
+      - name: Install Dependencies
+        run: pnpm install
 
       - name: Build Project
         run: pnpm build
