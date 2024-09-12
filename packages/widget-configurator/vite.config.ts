@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
     const isDev = mode === 'development';
 
     return {
+        base: isDev ? '' : '/dex-widget/',
         define: {
             'process.env': {
                 isDev: isDev,
