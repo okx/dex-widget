@@ -1,6 +1,6 @@
 {
     "name": "@okxweb3/dex-widget",
-    "version": "1.3.0-beta.0",
+    "version": "1.3.0",
     "description": "## Prequilification",
     "main": "lib/index.cjs",
     "module": "lib/index.mjs",
