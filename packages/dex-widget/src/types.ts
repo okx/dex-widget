@@ -431,3 +431,22 @@ export interface IWidgetConfig {
 export interface UpdateParamsPayload {
     appParams: IWidgetProps;
 }
+
+export interface TransactionInput {
+    readonly [key: string]: unknown;
+    readonly to?: string; // If its a contract creation tx then no address wil be specified.
+    readonly from?: string;
+    readonly data?: string;
+    readonly input?: string;
+    readonly gas: string;
+    readonly gasLimit?: string;
+    readonly gasPrice?: string;
+    readonly maxPriorityFeePerGas?: string;
+    readonly maxFeePerGas?: string;
+    readonly nonce: string;
+    readonly value: string;
+    readonly blockNumber?: string;
+    readonly transactionIndex?: string;
+    readonly type?: string;
+    readonly chainId?: string;
+}

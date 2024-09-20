@@ -1,5 +1,7 @@
+import { isNullish, numberToHex } from 'web3-utils';
+
 import { WALLET_TYPE } from './widgetHelp';
-import { IFeeConfig, ITokenPair } from './types';
+import { IFeeConfig, ITokenPair, TransactionInput } from './types';
 
 export const ERROR_MSG = {
     INVALID_FEE_CONFIG: 'FeeConfig MUST be an object',
@@ -84,3 +86,15 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, p
     }
     return true;
 };
+
+export function txInputParamsFormatter(options: TransactionInput) {
+    const modifiedOptions = { ...options };
+    
+    ['gasPrice', 'gas', 'value', 'maxPriorityFeePerGas', 'maxFeePerGas', 'nonce', 'chainId']
+        .filter(key => !isNullish(modifiedOptions[key]))
+        .forEach(key => {
+            modifiedOptions[key] = numberToHex(modifiedOptions[key] as number | bigint | string);
+        });
+
+    return modifiedOptions;
+}

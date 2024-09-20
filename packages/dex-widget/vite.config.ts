@@ -37,12 +37,11 @@ export default defineConfig(({ mode }) => {
                 },
             },
             rollupOptions: {
-                external: ['react', 'react-dom', 'web3', '@solana/web3.js'],
+                external: ['react', 'react-dom', '@solana/web3.js'],
                 output: {
                     globals: {
                         react: 'React',
                         'react-dom': 'ReactDOM',
-                        web3: 'Web3',
                         '@solana/web3.js': 'Web3',
                     },
                     chunkFileNames: info => {
@@ -54,7 +53,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         optimizeDeps: {
-            include: ['react', 'react-dom', 'web3', '@solana/web3.js'],
+            include: ['react', 'react-dom', '@solana/web3.js'],
         },
         plugins: [
             dts({
