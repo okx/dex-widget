@@ -1,4 +1,5 @@
-import Web3 from 'web3';
+import Web3 from '@okxweb3/web3';
+import { provider } from '@okxweb3/web3';
 
 import { postMessageToWindow } from '../messages';
 import { WidgetMethodsListen, EthereumProvider } from '../types';
@@ -33,7 +34,8 @@ export class EvmStrategy implements BlockchainStrategy {
             }
 
             if (method === 'eth_sendTransaction') {
-                const web3Provider = new Web3(provider as unknown as Web3['currentProvider']);
+                // @ts-ignore
+                const web3Provider = new Web3(provider as unknown as provider);
                 web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
                     console.log('evm eth_sendTransaction:', hash);
                     postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {

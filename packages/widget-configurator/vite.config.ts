@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
             'process.env': {
                 isDev: isDev,
             },
+            global: "globalThis",
         },
         plugins: [
             react(),

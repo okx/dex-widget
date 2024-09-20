@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2019"
+    ],
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "strict": false
+  },
+  "include": [
+    "./src"
+  ]
+}

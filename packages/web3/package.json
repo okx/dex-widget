@@ -1,0 +1,119 @@
+{
+    "name": "@okxweb3/web3",
+    "private": true,
+    "description": "Ethereum JavaScript API wrapper repository",
+    "license": "LGPL-3.0",
+    "engines": {
+        "node": ">=11.0.0"
+    },
+    "main": "./packages/web3/src/index.js",
+    "types": "./packages/web3/types/index.d.ts",
+    "bundlesize": [
+        {
+            "path": "./packages/web3/dist/web3.min.js",
+            "maxSize": "1.5 mB",
+            "compression": "none"
+        }
+    ],
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "version": "npm run build",
+        "build": "pnpm -r compile && webpack && cp -r ./dist ./packages/web3",
+        "publish": "lerna publish",
+        "bootstrap": "lerna bootstrap --hoist",
+        "lint": "jshint *.js packages"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ethereum/web3.js.git"
+    },
+    "homepage": "https://github.com/ethereum/web3.js",
+    "bugs": {
+        "url": "https://github.com/ethereum/web3.js/issues"
+    },
+    "keywords": [
+        "Ethereum",
+        "JavaScript",
+        "API"
+    ],
+    "author": "ethereum.org",
+    "authors": [
+        {
+            "name": "Fabian Vogelsteller",
+            "email": "fabian@ethereum.org",
+            "homepage": "https://github.com/frozeman"
+        },
+        {
+            "name": "Marek Kotewicz",
+            "email": "marek@parity.io",
+            "url": "https://github.com/debris"
+        },
+        {
+            "name": "Marian Oancea",
+            "url": "https://github.com/cubedro"
+        },
+        {
+            "name": "Gav Wood",
+            "email": "g@parity.io",
+            "homepage": "http://gavwood.com"
+        },
+        {
+            "name": "Jeffery Wilcke",
+            "email": "jeffrey.wilcke@ethereum.org",
+            "url": "https://github.com/obscuren"
+        }
+    ],
+    "devDependencies": {
+        "@babel/cli": "^7.12.1",
+        "@babel/core": "^7.12.3",
+        "@babel/plugin-proposal-class-properties": "^7.12.1",
+        "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+        "@babel/plugin-transform-runtime": "^7.12.1",
+        "@babel/preset-env": "^7.12.1",
+        "@babel/preset-typescript": "^7.12.1",
+        "@babel/runtime": "^7.12.1",
+        "@chainsafe/geth-dev-assistant": "^0.1.10",
+        "@ensdomains/ens": "^0.6.0",
+        "@ensdomains/resolver": "^0.2.4",
+        "@types/bignumber.js": "^4.0.2",
+        "@types/bn.js": "^5.1.0",
+        "@types/node": "^22.5.5",
+        "@types/prettier": "2.6.0",
+        "babel-loader": "^8.1.0",
+        "bignumber.js": "^9.0.1",
+        "bn.js": "^5.2.1",
+        "browserify": "^16.5.2",
+        "buffer": "^4.9.2",
+        "bundlesize": "^0.18.0",
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
+        "clean-webpack-plugin": "^3.0.0",
+        "core-js": "^3.6.5",
+        "crypto-js": "^3.3.0",
+        "decache": "^4.6.0",
+        "dependency-check": "^4.1.0",
+        "ethereumjs-util": "^7.1.0",
+        "ethers": "^5.4.4",
+        "fetch-mock": "^9.11.0",
+        "ganache-cli": "^6.12.0",
+        "jshint": "^2.12.0",
+        "karma": "^6.3.19",
+        "karma-browserify": "^7.0.0",
+        "karma-chrome-launcher": "^3.1.0",
+        "karma-firefox-launcher": "^1.3.0",
+        "karma-mocha": "^2.0.1",
+        "karma-spec-reporter": "0.0.32",
+        "lerna": "^4.0.0",
+        "mocha": "^6.2.3",
+        "nyc": "^14.1.1",
+        "pify": "^4.0.1",
+        "rimraf": "^3.0.2",
+        "sandboxed-module": "^2.0.4",
+        "ts-node": "^9.0.0",
+        "wait-port": "^0.2.9",
+        "webpack": "^4.44.2",
+        "webpack-cli": "^4.9.1"
+    }
+}

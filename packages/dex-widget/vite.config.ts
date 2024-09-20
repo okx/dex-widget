@@ -1,5 +1,7 @@
 import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from '@rollup/plugin-commonjs'
 
 export default defineConfig(({ mode }) => {
     const isDev = mode === 'development';
@@ -10,6 +12,7 @@ export default defineConfig(({ mode }) => {
             'process.env': {
                 WIDGET_VERSION: '1',
             },
+            global: "globalThis"
         },
         build: {
             sourcemap: true,
@@ -36,14 +39,22 @@ export default defineConfig(({ mode }) => {
                     return '[name].js';
                 },
             },
+            commonjsOptions: {
+                include: [
+                    /node_modules/,
+                    /@okxweb3\/web3/
+                ],
+                transformMixedEsModules: true,
+                requireReturnsDefault: true,
+            },
             rollupOptions: {
-                external: ['react', 'react-dom', 'web3', '@solana/web3.js'],
+                external: ['react', 'react-dom', '@solana/web3.js'],
                 output: {
+                    exports: 'named',
                     globals: {
                         react: 'React',
                         'react-dom': 'ReactDOM',
-                        web3: 'Web3',
-                        '@solana/web3.js': 'Web3',
+                        '@solana/web3.js': 'SolanaWeb3',
                     },
                     chunkFileNames: info => {
                         const ext = info.type === 'chunk' && switchCount % 2 === 0 ? 'js' : 'mjs';
@@ -51,10 +62,21 @@ export default defineConfig(({ mode }) => {
                         return isDev ? `[name].${ext}` : `[name].[hash].${ext}`;
                     }
                 },
+                plugins: [
+                    nodePolyfills({
+                        include: ['stream'],
+                        globals: {
+                            Buffer: true,
+                            global: true,
+                            process: true,
+                        },
+                        protocolImports: true,
+                    }),
+                ],
             },
         },
         optimizeDeps: {
-            include: ['react', 'react-dom', 'web3', '@solana/web3.js'],
+            include: ['react', 'react-dom', 'SolanaWeb3'],
         },
         plugins: [
             dts({
@@ -62,6 +84,7 @@ export default defineConfig(({ mode }) => {
                 outDir: 'lib',
                 include: './src/**/*',
             }),
+            commonjs(),
         ],
     };
 });
