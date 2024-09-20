@@ -450,3 +450,30 @@ export interface TransactionInput {
     readonly type?: string;
     readonly chainId?: string;
 }
+
+// Make each attribute mutable by removing `readonly`
+export type Mutable<T> = {
+    -readonly [P in keyof T]: T[P];
+};
+
+export type HexString = string;
+export type Numbers = number | bigint | string | HexString;
+
+export type TransactionOutput = {
+    readonly [key: string]: unknown;
+    readonly to?: HexString; // If its a contract creation tx then no address wil be specified.
+    readonly from?: HexString;
+    readonly input: string;
+    readonly gas?: Numbers;
+    readonly gasLimit?: string;
+    readonly nonce: Numbers;
+    readonly value: Numbers;
+    readonly blockNumber?: Numbers;
+    readonly transactionIndex?: Numbers;
+} & (
+        | { maxPriorityFeePerGas: Numbers; maxFeePerGas: Numbers; gasPrice?: never }
+        | { maxPriorityFeePerGas?: never; maxFeePerGas?: never; gasPrice: Numbers }
+    );
+
+
+export type ValidInputTypes = Uint8Array | bigint | string | number | boolean;

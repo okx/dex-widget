@@ -32,15 +32,11 @@ export class EvmStrategy implements BlockchainStrategy {
             }
 
             if (method === 'eth_sendTransaction') {
-                // const value = Web3.utils.toHex(Web3.utils.toWei(requestPara.params[0].value, 'ether'));
-                // const value = Web3.utils.toHex(requestPara.params[0].value);
-                // requestPara.params[0].value = value;
-
                 const payload = txInputParamsFormatter(requestArgs[0] as unknown as TransactionInput);
-                
+
                 const requestPayload = { method, id: Number(id), params: [payload] };
 
-                console.log('eth_sendTransaction requestPara.params[0]', {requestPara, requestPayload});
+                console.log('eth_sendTransaction requestPara.params[0]', { requestPara, requestPayload });
 
                 const hash = await provider?.request?.(requestPayload as any);
 
@@ -55,20 +51,6 @@ export class EvmStrategy implements BlockchainStrategy {
                     error: null,
                     success: true,
                 });
-                // const web3Provider = new Web3(provider as unknown as Web3['currentProvider']);
-                // web3Provider.eth.sendTransaction(requestPara.params[0], (error, hash) => {
-                //     console.log('evm eth_sendTransaction:', hash);
-                
-                    // postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
-                    //     id,
-                    //     mode: 'iframe',
-                    //     data: res,
-                    //     path,
-                    //     type,
-                    //     error: res && JSON.stringify(res),
-                    //     success: !!res,
-                    // });
-                // });
             } else {
                 const data = await provider.request(requestPara);
                 console.log('sent evm transaction request:', data);
