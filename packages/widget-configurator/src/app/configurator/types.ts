@@ -10,4 +10,5 @@ export interface ConfiguratorState {
     feeConfig?: string;
     provider?: string;
     baseUrl?: string;
+    width?: string;
 }

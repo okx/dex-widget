@@ -31,6 +31,7 @@ import { DexWidget } from './DexWidget';
 import { ProviderControl } from './controls/ProviderControl';
 import { useDevMode } from './hooks/useDevMode';
 import { BaseUrlControl } from './controls/BaseUrlControl';
+import WidthControl from './controls/WidthControl';
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext)
@@ -62,6 +63,9 @@ export function Configurator({ title }: { title: string }) {
   const baseUrlState = useState<string>(import.meta.env.VITE_APP_DEFAUL_BASE_URL as string || 'https://www.okx.com');
   const [baseUrl] = baseUrlState
 
+  const widthState = useState('');
+  const [width] = widthState;
+
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
   const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
@@ -76,6 +80,7 @@ export function Configurator({ title }: { title: string }) {
     feeConfig,
     provider,
     baseUrl,
+    width,
   }
 
   const params = useWidgetParams(state)
@@ -131,6 +136,8 @@ export function Configurator({ title }: { title: string }) {
         <ProviderControl state={providerState} providerType={providerType} widgetHandler={widgetHandler} />
 
         <ChainIdsControl state={chainIdsState} widgetHandler={widgetHandler} params={params} />
+
+        <WidthControl state={widthState} widgetHandler={widgetHandler} params={params} />
 
         <TokenPairControl state={tokenPairState} widgetHandler={widgetHandler} params={params} />
 
