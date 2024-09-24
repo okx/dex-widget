@@ -4,6 +4,9 @@
 
 This project requires **Node.js version 16.x** or higher.
 
+**Notice**
+Recommand to upgrade or install the lastest version when you using this package: `npm i @okxweb3/dex-widget@latest`.
+
 ## Installation
 
 You can install the necessary dependencies using `yarn`, `npm`, or `pnpm`. Below are the installation commands for each package manager:
