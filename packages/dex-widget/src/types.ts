@@ -385,6 +385,7 @@ export interface IWidgetProps {
     providerType: ProviderType;
     walletType: WalletType;
     tokenPair?: IFormattedTokenPair;
+    bridgeTokenPair?: IFormattedTokenPair;
     lang?: string;
     chainIds?: string[];
 }
@@ -416,6 +417,8 @@ export interface IWidgetParams {
     providerType?: ProviderType;
 
     tokenPair?: ITokenPair;
+
+    bridgeTokenPair?: ITokenPair;
 
     lang?: string;
 
