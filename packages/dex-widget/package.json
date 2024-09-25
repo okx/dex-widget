@@ -2,7 +2,7 @@
     "name": "@okxweb3/dex-widget",
     "version": "1.3.1",
     "description": "## Prequilification",
-    "main": "lib/index.cjs",
+    "main": "lib/index.js",
     "module": "lib/index.mjs",
     "types": "lib/index.d.ts",
     "scripts": {
