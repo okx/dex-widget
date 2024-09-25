@@ -81,7 +81,7 @@ export const DexWidget: FC<{params: OkxSwapWidgetProps['params']}> = forwardRef(
           });
         }
       };
-    });
+    }, [openConnectModal]);
 
     return (<div ref={widgetRef} />);
 })
