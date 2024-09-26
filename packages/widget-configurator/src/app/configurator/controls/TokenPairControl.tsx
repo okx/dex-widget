@@ -3,16 +3,16 @@ import FormControl from '@mui/material/FormControl';
 import { Dispatch, SetStateAction } from 'react';
 import debounce from '@mui/material/utils/debounce';
 
-const TokenPairControl = ({ state, widgetHandler, params }: { state: [string, Dispatch<SetStateAction<string>>], params: any, widgetHandler: any }) => {
+const TokenPairControl = ({ state, widgetHandler, params, tokenPairKey }: { state: [string, Dispatch<SetStateAction<string>>], params: any, widgetHandler: any, tokenPairKey: 'tokenPair' | 'bridgeTokenPair' }) => {
     const [tokenPair, setTokenPair] = state;
     const updateTokenPair = debounce((value) => {
         if (!value) {
-            widgetHandler.current?.reload({ ...params, tokenPair: null })
+            widgetHandler.current?.reload({ ...params, [tokenPairKey]: null })
             return;
         }
         try {
             const tokenPairObj = JSON.parse(value)
-            widgetHandler.current?.reload({ ...params, tokenPair: tokenPairObj })
+            widgetHandler.current?.reload({ ...params, [tokenPairKey]: tokenPairObj })
         } catch (error) {
             console.log(error);
         }
@@ -31,7 +31,7 @@ const TokenPairControl = ({ state, widgetHandler, params }: { state: [string, Di
                 maxRows={4}
                 multiline
                 fullWidth
-                label="TokenPair"
+                label={tokenPairKey}
                 placeholder={JSON.stringify(
                     {
                         fromChain: 1,

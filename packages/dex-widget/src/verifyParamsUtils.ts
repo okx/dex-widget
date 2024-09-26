@@ -7,6 +7,7 @@ export const ERROR_MSG = {
     INVALID_FEE_CONFIG: 'FeeConfig MUST be an object',
     INVALID_FEE_PERCENT: 'FeePercent MUST be a number > 0 and <= 3',
     INVALID_TOKEN_PAIR: 'Invalid tokenPair',
+    INVALID_BRIDGE_TOKEN_PAIR: 'Invalid bridgeTokenPair',
     INVALID_PROVIDER_TYPE: 'Invalid providerType',
     INVALID_WIDGET_VERSION: 'WIDGET_VERSION IS REQUIRED',
 };
@@ -68,7 +69,7 @@ export const checkTokenPairChain = (tokenPair: ITokenPair) => {
     return verifyChainId(tokenPair?.fromChain) && verifyChainId(tokenPair?.toChain);
 };
 
-export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, providerType }) => {
+export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, bridgeTokenPair, providerType }) => {
     const walletType = WALLET_TYPE[providerType];
 
     if (!widgetVersion) {
@@ -79,6 +80,9 @@ export const verifyWidgetParams = ({ widgetVersion, feeConfig = {}, tokenPair, p
     }
     if (tokenPair && !checkTokenPairChain(tokenPair)) {
         throw new Error(ERROR_MSG.INVALID_TOKEN_PAIR);
+    }
+    if (bridgeTokenPair && !checkTokenPairChain(bridgeTokenPair)) {
+        throw new Error(ERROR_MSG.INVALID_BRIDGE_TOKEN_PAIR);
     }
     const errorTips = checkFeeConfig(feeConfig);
     if (errorTips) {

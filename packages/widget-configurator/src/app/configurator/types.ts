@@ -7,7 +7,9 @@ export interface ConfiguratorState {
     providerType: ProviderType;
     lang?: string;
     tokenPair?: string;
+    bridgeTokenPair?: string;
     feeConfig?: string;
     provider?: string;
     baseUrl?: string;
+    width?: string;
 }

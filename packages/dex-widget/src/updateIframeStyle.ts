@@ -71,7 +71,7 @@ function importWidthHeightStyle(width: number) {
 function updateIframeWidth(iframe: HTMLIFrameElement, width?: number) {
     const newWidth = Number(width);
     const { defaultClassName, specifiedClassName } = getStyleElementIdentifier();
-    if (width === undefined) {
+    if (!newWidth) {
         importWidthHeightStyle(DEFAULT_WIDTH);
         iframe.className = defaultClassName;
     } else {

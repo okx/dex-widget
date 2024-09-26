@@ -1,70 +1,86 @@
-import { useContext, useRef, useState } from 'react'
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import CodeIcon from '@mui/icons-material/Code'
-import EditIcon from '@mui/icons-material/Edit'
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Drawer from '@mui/material/Drawer'
-import Fab from '@mui/material/Fab'
-import Typography from '@mui/material/Typography'
+import { useContext, useRef, useState } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import CodeIcon from '@mui/icons-material/Code';
+import EditIcon from '@mui/icons-material/Edit';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import Fab from '@mui/material/Fab';
+import Typography from '@mui/material/Typography';
 import { createOkxSwapWidget, ProviderType } from '@okxweb3/dex-widget';
-import { TradeType } from '@okxweb3/dex-widget'
+import { TradeType } from '@okxweb3/dex-widget';
 import { Link } from '@mui/material';
 import { ChromeReaderMode } from '@mui/icons-material';
 
-import { ColorModeContext } from '../../theme/ColorModeContext'
-import { EmbedDialog } from '../embedDialog'
+import { ColorModeContext } from '../../theme/ColorModeContext';
+import { EmbedDialog } from '../embedDialog';
 
-import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl'
-import { LanguageControl } from './controls/LanguageControl'
-import { ThemeControl } from './controls/ThemeControl'
-import { useEmbedDialogState } from './hooks/useEmbedDialogState'
-import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
-import { ContentStyled, DrawerStyled, WrapperStyled } from './styled'
-import { ConfiguratorState } from './types'
-import TokenPairControl from './controls/TokenPairControl'
-import CommissionControl from './controls/CommissionControl'
-import ProviderTypeControl from './controls/ProviderTypeControl'
-import ChainIdsControl from './controls/ChainConfigControl'
+import { CurrentTradeTypeControl } from './controls/CurrentTradeTypeControl';
+import { LanguageControl } from './controls/LanguageControl';
+import { ThemeControl } from './controls/ThemeControl';
+import { useEmbedDialogState } from './hooks/useEmbedDialogState';
+import { useWidgetParams } from './hooks/useWidgetParamsAndSettings';
+import { ContentStyled, DrawerStyled, WrapperStyled } from './styled';
+import { ConfiguratorState } from './types';
+import TokenPairControl from './controls/TokenPairControl';
+import CommissionControl from './controls/CommissionControl';
+import ProviderTypeControl from './controls/ProviderTypeControl';
+import ChainIdsControl from './controls/ChainConfigControl';
 import { DexWidget } from './DexWidget';
 import { ProviderControl } from './controls/ProviderControl';
 import { useDevMode } from './hooks/useDevMode';
 import { BaseUrlControl } from './controls/BaseUrlControl';
+import WidthControl from './controls/WidthControl';
 
 export function Configurator({ title }: { title: string }) {
-  const { mode } = useContext(ColorModeContext)
+  const { mode } = useContext(ColorModeContext);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
-  const tradeTypeState = useState<TradeType>(TradeType.AUTO)
-  const [tradeType] = tradeTypeState
+  const tradeTypeState = useState<TradeType>(TradeType.AUTO);
+  const [tradeType] = tradeTypeState;
 
 
-  const providerTypeState = useState<ProviderType>(ProviderType.EVM)
-  const [providerType] = providerTypeState
+  const providerTypeState = useState<ProviderType>(ProviderType.EVM);
+  const [providerType] = providerTypeState;
 
   const providerState = useState<string>('');
-  const [provider] = providerState
+  const [provider] = providerState;
 
-  const chainIdsState = useState<string>('')
-  const [chainIds] = chainIdsState
+  const chainIdsState = useState<string>('');
+  const [chainIds] = chainIdsState;
 
-  const customLanguagesState = useState<string>('en_us')
-  const [lang] = customLanguagesState
+  const customLanguagesState = useState<string>('unknown');
+  const [lang] = customLanguagesState;
 
-  const tokenPairState = useState<string>('');
-  const [tokenPair] = tokenPairState
+  const tokenPairState = useState<string>(JSON.stringify({
+    fromChain: 1,
+    toChain: 1,
+    fromToken: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    toToken: '0xec21fbf8ca053699b5059ae81f72aa2293434c86',
+  }));
+  const [tokenPair] = tokenPairState;
 
-  const feeConfigState = useState<string>('')
-  const [feeConfig] = feeConfigState
+  const bridgeTokenPairState = useState<string>(JSON.stringify({
+    fromChain: 1,
+    toChain: 501,
+    fromToken: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    toToken: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  }));
+  const [bridgeTokenPair] = bridgeTokenPairState;
 
+  const feeConfigState = useState<string>('');
+  const [feeConfig] = feeConfigState;
   const baseUrlState = useState<string>(import.meta.env.VITE_APP_DEFAUL_BASE_URL as string || 'https://www.okx.com');
-  const [baseUrl] = baseUrlState
+  const [baseUrl] = baseUrlState;
+
+  const widthState = useState('');
+  const [width] = widthState;
 
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
-  const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState()
+  const { dialogOpen, handleDialogClose, handleDialogOpen } = useEmbedDialogState();
 
   const state: ConfiguratorState = {
     chainIds,
@@ -73,12 +89,14 @@ export function Configurator({ title }: { title: string }) {
     providerType,
     lang,
     tokenPair,
+    bridgeTokenPair,
     feeConfig,
     provider,
     baseUrl,
-  }
+    width,
+  };
 
-  const params = useWidgetParams(state)
+  const params = useWidgetParams(state);
   const { isDevModeOpen, openDevMode } = useDevMode();
 
   return (
@@ -89,8 +107,8 @@ export function Configurator({ title }: { title: string }) {
           color="secondary"
           aria-label="edit"
           onClick={(e) => {
-            e.stopPropagation()
-            setIsDrawerOpen(true)
+            e.stopPropagation();
+            setIsDrawerOpen(true);
           }}
           sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
         >
@@ -99,7 +117,8 @@ export function Configurator({ title }: { title: string }) {
       )}
 
       <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography onClick={openDevMode} variant="h6" sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
+        <Typography onClick={openDevMode} variant="h6"
+                    sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
 
@@ -132,17 +151,29 @@ export function Configurator({ title }: { title: string }) {
 
         <ChainIdsControl state={chainIdsState} widgetHandler={widgetHandler} params={params} />
 
-        <TokenPairControl state={tokenPairState} widgetHandler={widgetHandler} params={params} />
+        <WidthControl state={widthState} widgetHandler={widgetHandler} params={params} />
+
+        <TokenPairControl state={tokenPairState} widgetHandler={widgetHandler} params={params}
+                          tokenPairKey="tokenPair" />
+
+        <TokenPairControl state={bridgeTokenPairState} widgetHandler={widgetHandler} params={params}
+                          tokenPairKey="bridgeTokenPair" />
 
         <Divider variant="middle">Fee config</Divider>
 
         <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
 
-        <Divider variant='middle'>More</Divider>
+        <Divider variant="middle">More</Divider>
 
         <Box sx={{ padding: '1rem', textAlign: 'center', textTransform: 'capitalize' }}>
-          <Link href='https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget' sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
-            <ChromeReaderMode sx={{ width: 24, height: 24, }} />
+          <Link href="https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget" sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 2,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <ChromeReaderMode sx={{ width: 24, height: 24 }} />
             Developer Docs
           </Link>
         </Box>
@@ -186,5 +217,5 @@ export function Configurator({ title }: { title: string }) {
         View Embed Code
       </Fab>
     </Box>
-  )
+  );
 }

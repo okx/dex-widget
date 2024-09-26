@@ -24,34 +24,71 @@ export const WALLET_TYPE: TWalletTypeRecord = {
 
 export const SOLANA_CHAIN_ID = 501;
 
-export function getSupportTradeTypeAndRoute(
+
+export const formatTokenPair = (tokenPair?: ITokenPair): IFormattedTokenPair => {
+    return tokenPair
+        ? {
+            inputChain: tokenPair.fromChain,
+            outputChain: tokenPair.toChain,
+            inputCurrency: tokenPair.fromToken,
+            outputCurrency: tokenPair.toToken,
+        }
+        : null;
+};
+
+// this function is designed to determine the supported trade types and the appropriate route based on the provided trade type and token pairs.
+// It returns an object containing the supported trade types, the route, and formatted token pairs.
+export function formatDefaultConfig(
     tradeType: TradeType,
     tokenPair?: ITokenPair,
-): { supportTradeType: TradeType[]; route: string } {
-    let supportTradeType = [];
-    let route = '';
-    if (tradeType === TradeType.SWAP) {
-        supportTradeType = [TradeType.SWAP];
-        route = WIDGET_ROUTE_CONSTANTS.SWAP;
-    } else if (tradeType === TradeType.BRIDGE) {
-        supportTradeType = [TradeType.BRIDGE];
-        route = WIDGET_ROUTE_CONSTANTS.BRIDGE;
-    } else {
-        supportTradeType = [TradeType.SWAP, TradeType.BRIDGE];
+    bridgeTokenPair?: ITokenPair,
+): {
+    supportTradeType: TradeType[];
+    route: string;
+    defaultTokenPair?: IFormattedTokenPair,
+    formattedTokenPair?: IFormattedTokenPair,
+    formattedBridgeTokenPair?: IFormattedTokenPair
+} {
+    const formattedTokenPair = formatTokenPair(tokenPair);
+    const formattedBridgeTokenPair = formatTokenPair(bridgeTokenPair);
 
-        route =
-            !tokenPair || isSameChain(tokenPair)
-                ? WIDGET_ROUTE_CONSTANTS.SWAP
-                : WIDGET_ROUTE_CONSTANTS.BRIDGE;
+    if (tradeType === TradeType.SWAP) {
+        return {
+            supportTradeType: [TradeType.SWAP],
+            route: WIDGET_ROUTE_CONSTANTS.SWAP,
+            defaultTokenPair: formattedTokenPair,
+            formattedTokenPair,
+            formattedBridgeTokenPair: null,
+        };
     }
+
+    if (tradeType === TradeType.BRIDGE) {
+        return {
+            supportTradeType: [TradeType.BRIDGE],
+            route: WIDGET_ROUTE_CONSTANTS.BRIDGE,
+            defaultTokenPair: formattedBridgeTokenPair,
+            formattedTokenPair: null,
+            formattedBridgeTokenPair,
+        };
+    }
+
+    const defaultIsBridge = !formattedTokenPair && formattedBridgeTokenPair;
+    const route = defaultIsBridge
+        ? WIDGET_ROUTE_CONSTANTS.BRIDGE
+        : WIDGET_ROUTE_CONSTANTS.SWAP;
+    const defaultTokenPair = defaultIsBridge ? formattedBridgeTokenPair : formattedTokenPair;
+
     return {
-        supportTradeType,
+        supportTradeType: [TradeType.SWAP, TradeType.BRIDGE],
         route,
+        defaultTokenPair,
+        formattedTokenPair,
+        formattedBridgeTokenPair,
     };
 }
 
 export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidgetProps => {
-    const { baseUrl, feeConfig, tokenPair, providerType, tradeType, theme, lang, chainIds } =
+    const { baseUrl, feeConfig, tokenPair, bridgeTokenPair, providerType, tradeType, theme, lang, chainIds } =
         widgetParams;
 
     const widgetVersion = process.env.WIDGET_VERSION;
@@ -60,21 +97,18 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
         widgetVersion,
         feeConfig,
         tokenPair,
+        bridgeTokenPair,
         providerType,
     });
 
-    // get trade type config and route
-    const { supportTradeType, route } = getSupportTradeTypeAndRoute(tradeType, tokenPair);
-
-    // trans token pair params for dex
-    const tokenPairParams: IFormattedTokenPair = tokenPair
-        ? {
-              inputChain: tokenPair.fromChain,
-              outputChain: tokenPair.toChain,
-              inputCurrency: tokenPair.fromToken,
-              outputCurrency: tokenPair.toToken,
-          }
-        : {};
+    // get trade type config, route, default token pair and formatted tokenPair/bridgeTokenPair config
+    const {
+        supportTradeType,
+        route,
+        defaultTokenPair,
+        formattedTokenPair,
+        formattedBridgeTokenPair,
+    } = formatDefaultConfig(tradeType, tokenPair, bridgeTokenPair);
 
     // define initial params
     const initParams = {
@@ -89,7 +123,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     // add token info to url params
     const urlParams = {
         ...initParams,
-        ...tokenPairParams,
+        ...defaultTokenPair,
     };
     const params = new URLSearchParams();
     // Append non-empty key-value pairs to URLSearchParams
@@ -110,7 +144,8 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     // add tokenPair, feeConfig, providerType to generate data
     const data = {
         ...initParams,
-        tokenPair: tokenPairParams,
+        tokenPair: formattedTokenPair,
+        bridgeTokenPair: formattedBridgeTokenPair,
         feeConfig,
         providerType,
     };
