@@ -12,4 +12,5 @@ export interface ConfiguratorState {
     provider?: string;
     baseUrl?: string;
     width?: string;
+    extraParams?: any;
 }

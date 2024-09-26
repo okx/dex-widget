@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import CodeIcon from '@mui/icons-material/Code';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,6 +25,7 @@ import { ContentStyled, DrawerStyled, WrapperStyled } from './styled';
 import { ConfiguratorState } from './types';
 import TokenPairControl from './controls/TokenPairControl';
 import CommissionControl from './controls/CommissionControl';
+import CommonJsonControl from './controls/CommonJsonControl';
 import ProviderTypeControl from './controls/ProviderTypeControl';
 import ChainIdsControl from './controls/ChainConfigControl';
 import { DexWidget } from './DexWidget';
@@ -54,29 +55,23 @@ export function Configurator({ title }: { title: string }) {
   const customLanguagesState = useState<string>('unknown');
   const [lang] = customLanguagesState;
 
-  const tokenPairState = useState<string>(JSON.stringify({
-    fromChain: 1,
-    toChain: 1,
-    fromToken: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-    toToken: '0xec21fbf8ca053699b5059ae81f72aa2293434c86',
-  }));
+  const tokenPairState = useState<string>('');
   const [tokenPair] = tokenPairState;
 
-  const bridgeTokenPairState = useState<string>(JSON.stringify({
-    fromChain: 1,
-    toChain: 501,
-    fromToken: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-    toToken: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-  }));
+  const bridgeTokenPairState = useState<string>('');
   const [bridgeTokenPair] = bridgeTokenPairState;
 
   const feeConfigState = useState<string>('');
   const [feeConfig] = feeConfigState;
+
   const baseUrlState = useState<string>(import.meta.env.VITE_APP_DEFAUL_BASE_URL as string || 'https://www.okx.com');
   const [baseUrl] = baseUrlState;
 
   const widthState = useState('');
   const [width] = widthState;
+
+  const extraParamsState = useState<string>('');
+  const [extraParams] = extraParamsState;
 
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
@@ -94,6 +89,7 @@ export function Configurator({ title }: { title: string }) {
     provider,
     baseUrl,
     width,
+    extraParams,
   };
 
   const params = useWidgetParams(state);
@@ -164,6 +160,9 @@ export function Configurator({ title }: { title: string }) {
         <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
 
         <Divider variant="middle">More</Divider>
+
+        <CommonJsonControl state={extraParamsState} widgetHandler={widgetHandler} params={params}
+                           configKey="extraParams" />
 
         <Box sx={{ padding: '1rem', textAlign: 'center', textTransform: 'capitalize' }}>
           <Link href="https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget" sx={{

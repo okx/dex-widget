@@ -423,6 +423,8 @@ export interface IWidgetParams {
     lang?: string;
 
     chainIds?: string[];
+
+    extraParams?: any;
 }
 export interface IWidgetConfig {
     params: IWidgetParams;

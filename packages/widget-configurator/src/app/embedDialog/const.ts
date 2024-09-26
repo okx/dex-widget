@@ -9,6 +9,8 @@ export const COMMENTS_BY_PARAM_NAME: Record<string, string> = {
     tradeType: 'The type of transaction. It can be “swap”, “bridge”, or “auto”.',
     providerType:
         'ProviderType represents the type of the provider and corresponds to it one-to-one. For example, if the provider is Solana, then the providerType would be SOLANA.',
+    tokenPair: 'Set default swap tab token pair',
+    bridgeTokenPair: 'Set default bridge tab token pair',
 };
 
 export const COMMENTS_BY_PARAM_NAME_TYPESCRIPT: Record<string, string> = {
