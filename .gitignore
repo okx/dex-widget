@@ -18,3 +18,6 @@ yalc.lock
 .npmrc
 
 .env*
+uploadKey.txt
+deploy-static.sh
+output.tgz
