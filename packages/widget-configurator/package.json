@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build --mode production",
-    "build:aladdin": "vite build --mode aladdin --base /assets/dex-iframe-test/",
+    "dev": "VITE_APP_ENV=development vite",
+    "build": "vite build --mode production --base /dex-widget/",
+    "build:static": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

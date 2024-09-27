@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 let clickNum = 0;
 
 const CACHE_KEY = 'dev_mode_is_open';
+const isDev = ['aladdin', 'development'].includes(import.meta.env.VITE_APP_ENV);
 export const useDevMode = () => {
     const [isDevModeOpen, setIsDevModeOpen] = useState<boolean>(
-        import.meta.env.VITE_APP_ENV !== 'prod',
+        isDev
     );
 
     useEffect(() => {
@@ -16,7 +17,7 @@ export const useDevMode = () => {
     }, []);
 
     const openDevMode = () => {
-        if (isDevModeOpen) {
+        if (isDevModeOpen || !isDev) {
             return;
         }
         clickNum++;
