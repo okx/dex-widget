@@ -25,7 +25,6 @@ import { ContentStyled, DrawerStyled, WrapperStyled } from './styled';
 import { ConfiguratorState } from './types';
 import TokenPairControl from './controls/TokenPairControl';
 import CommissionControl from './controls/CommissionControl';
-import CommonJsonControl from './controls/CommonJsonControl';
 import ProviderTypeControl from './controls/ProviderTypeControl';
 import ChainIdsControl from './controls/ChainConfigControl';
 import { DexWidget } from './DexWidget';
@@ -70,8 +69,6 @@ export function Configurator({ title }: { title: string }) {
   const widthState = useState('');
   const [width] = widthState;
 
-  const extraParamsState = useState<string>('');
-  const [extraParams] = extraParamsState;
 
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
@@ -89,7 +86,6 @@ export function Configurator({ title }: { title: string }) {
     provider,
     baseUrl,
     width,
-    extraParams,
   };
 
   const params = useWidgetParams(state);
@@ -160,9 +156,6 @@ export function Configurator({ title }: { title: string }) {
         <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
 
         <Divider variant="middle">More</Divider>
-
-        <CommonJsonControl state={extraParamsState} widgetHandler={widgetHandler} params={params}
-                           configKey="extraParams" />
 
         <Box sx={{ padding: '1rem', textAlign: 'center', textTransform: 'capitalize' }}>
           <Link href="https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget" sx={{

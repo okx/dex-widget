@@ -16,7 +16,6 @@ export function useWidgetParams(configuratorState: ConfiguratorState) {
             provider,
             baseUrl,
             width,
-            extraParams,
         } = configuratorState;
         const params: any = {
             chainIds: chainIds ? chainIds.split(',') : [],
@@ -29,11 +28,10 @@ export function useWidgetParams(configuratorState: ConfiguratorState) {
             width,
         };
 
-        let parseTokenPair, parseBridgeTokenPair, parseFeeConfig, parseExtraParams;
+        let parseTokenPair, parseBridgeTokenPair, parseFeeConfig;
         try {
             parseTokenPair = tokenPair ? JSON.parse(tokenPair) : null;
             parseBridgeTokenPair = bridgeTokenPair ? JSON.parse(bridgeTokenPair) : null;
-            parseExtraParams = extraParams ? JSON.parse(extraParams) : null;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             parseTokenPair = null;
@@ -54,10 +52,6 @@ export function useWidgetParams(configuratorState: ConfiguratorState) {
 
         if (parseFeeConfig) {
             params.feeConfig = parseFeeConfig;
-        }
-
-        if (parseExtraParams) {
-            params.extraParams = parseExtraParams;
         }
 
         return params;
