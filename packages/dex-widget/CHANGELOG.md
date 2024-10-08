@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/okx/dex-widget/compare/v1.3.1-beta.0...v1.3.2) (2024-10-08)
+
+
+### Features
+
+* support config bridge tab default token pair ([1e8f6b7](https://github.com/okx/dex-widget/commit/1e8f6b79e04a7cc4d1d1b34840a89249aa32e1cf))
+
+
+### Bug Fixes
+
+* add connect function deps ([3059cc7](https://github.com/okx/dex-widget/commit/3059cc70ac5aba820cdda4adc1ab3132700e2b22))
+* fixup cjs main entry ([4ef7037](https://github.com/okx/dex-widget/commit/4ef7037cbe8061923d4c7843a03dd1afba409278))
+
 ### [1.3.1](https://github.com/okx/dex-widget/compare/v1.3.1-beta.0...v1.3.1) (2024-09-24)
 
 ### [1.3.1-beta.0](https://github.com/okx/dex-widget/compare/v1.3.0...v1.3.1-beta.0) (2024-09-20)
