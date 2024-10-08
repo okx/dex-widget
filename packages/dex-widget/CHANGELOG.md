@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+* Support Cross Bridge Token Pair Configuration.
+
 ### [1.3.2](https://github.com/okx/dex-widget/compare/v1.3.1-beta.0...v1.3.2) (2024-10-08)
 
 
