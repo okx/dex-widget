@@ -1,3 +1,5 @@
+import { isString, forEach, isObject } from 'lodash-es';
+
 import {
   TradeType,
   IWidgetParams,
@@ -199,4 +201,98 @@ export const getAddress = (provider: any, providerType: ProviderType) => {
     return provider?.publicKey?.toBase58();
   }
   return null;
+};
+
+/**
+ * Checks if a decoded URI component contains valid printable characters
+ * @param {string} str - The decoded string to check
+ * @returns {boolean} - Returns true if the string is valid, false if it contains "garbage" characters
+ */
+export const isPrintableString = (str: string): boolean => {
+  // Regular expression to match printable ASCII characters (from space to tilde)
+  const printablePattern = /^[\x20-\x7E]*$/;
+
+  // Check if the string contains only printable characters
+  return printablePattern.test(str);
+}
+
+/**
+ * Safely decodes a URI component, checking if it contains printable characters
+ * @param {string} value - The URI component to decode
+ * @returns {string} - The decoded value, or throws an error if the decoded value contains garbage characters
+ */
+export const safeDecodeURIComponent = (value: string): string => {
+  try {
+    // Decode the URI component
+    const decodedValue = decodeURIComponent(value);
+
+    // Check if the decoded string contains valid printable characters
+    if (!isPrintableString(decodedValue)) {
+      throw new Error(`Decoded value contains invalid characters: ${decodedValue}`);
+    }
+
+    return decodedValue;
+  } catch (e) {
+    throw new Error(`Failed to decode URI component: ${value}. Error: ${e.message}`);
+  }
+}
+
+/**
+ * Checks if all URL parameters are valid, and stops on the first invalid one
+ * @param {string} url - The URL string to check
+ * @returns An object containing valid parameters, or throws an error if any parameter is invalid
+ */
+export const checkUrlParam = (url: string): Record<string, string> => {
+  // Parse the URL to extract query string parameters
+  const urlObj = new URL(url);
+  const params = new URLSearchParams(urlObj.search);
+
+  // Object to store the result of valid parameters
+  const result = {};
+
+  // Iterate over all parameters in the URL
+  for (const [key, value] of params.entries()) {
+    // Safely decode the parameter value, stops execution if an error occurs
+    const decodedValue = safeDecodeURIComponent(value);
+
+    // You can add more validation logic here, if needed
+    result[key] = decodedValue;
+  }
+
+  return result;
+}
+
+/**
+ * Recursively validates the given parameters.
+ * If the value is a string, it checks if it's printable.
+ * If the value is an object, it recursively checks each key-value pair.
+ * 
+ * @param params - The object or string to validate
+ * @throws {Error} If any parameter is invalid or contains illegal characters
+ * @returns {boolean} - Returns true if all parameters are valid
+ */
+export const validateWidgetParams = (params: any): boolean => {
+  console.log('params:', params);
+  if (isString(params)) {
+    // If the parameter is a string, check if it's valid
+    if (!isPrintableString(params)) {
+      throw new Error(`Invalid string found: ${params}`);
+    }
+    return true;
+  }
+
+  if (isObject(params)) {
+    // If the parameter is an object, recursively validate its key-value pairs
+    forEach(params, (value, key) => {
+      // Validate both the key and the value
+      if (!isPrintableString(key)) {
+        throw new Error(`Invalid object key found: ${key}`);
+      }
+      validateWidgetParams(value); // Recursively validate the value
+    });
+    return true;
+  }
+
+  // If neither string nor object, assume it's valid (you can extend this logic as needed)
+  return true;
 };
