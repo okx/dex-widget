@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-* Support Cross Bridge Token Pair Configuration.
+### [1.3.3](https://github.com/okx/dex-widget/compare/v1.3.2...v1.3.3) (2024-10-15)
+
+
+### Bug Fixes
+
+* fixup search params malformed ([99469c0](https://github.com/okx/dex-widget/commit/99469c0a1fb72147ba23ab4911cf6fefba8153bd))
+* fixupn faas func error case ([d4206cf](https://github.com/okx/dex-widget/commit/d4206cf593bba3d78182bcc64f9dda787f433ffe))
 
 ### [1.3.2](https://github.com/okx/dex-widget/compare/v1.3.1-beta.0...v1.3.2) (2024-10-08)
 
