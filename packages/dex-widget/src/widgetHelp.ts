@@ -1,3 +1,5 @@
+import { isString, forEach, isObject } from 'lodash-es';
+
 import {
   TradeType,
   IWidgetParams,
@@ -259,3 +261,38 @@ export const checkUrlParam = (url: string): Record<string, string> => {
 
   return result;
 }
+
+/**
+ * Recursively validates the given parameters.
+ * If the value is a string, it checks if it's printable.
+ * If the value is an object, it recursively checks each key-value pair.
+ * 
+ * @param params - The object or string to validate
+ * @throws {Error} If any parameter is invalid or contains illegal characters
+ * @returns {boolean} - Returns true if all parameters are valid
+ */
+export const validateWidgetParams = (params: any): boolean => {
+  console.log('params:', params);
+  if (isString(params)) {
+    // If the parameter is a string, check if it's valid
+    if (!isPrintableString(params)) {
+      throw new Error(`Invalid string found: ${params}`);
+    }
+    return true;
+  }
+
+  if (isObject(params)) {
+    // If the parameter is an object, recursively validate its key-value pairs
+    forEach(params, (value, key) => {
+      // Validate both the key and the value
+      if (!isPrintableString(key)) {
+        throw new Error(`Invalid object key found: ${key}`);
+      }
+      validateWidgetParams(value); // Recursively validate the value
+    });
+    return true;
+  }
+
+  // If neither string nor object, assume it's valid (you can extend this logic as needed)
+  return true;
+};

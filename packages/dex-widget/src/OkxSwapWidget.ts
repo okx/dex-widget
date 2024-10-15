@@ -17,7 +17,7 @@ import {
     WidgetMethodsEmit,
     WidgetMethodsListen,
 } from './types';
-import { checkUrlParam, createWidgetParams, getAddress, getChainId, WALLET_TYPE } from './widgetHelp';
+import { checkUrlParam, createWidgetParams, getAddress, getChainId, validateWidgetParams, WALLET_TYPE } from './widgetHelp';
 import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
@@ -117,11 +117,14 @@ export function createOkxSwapWidget(
             };
             currentParams = createWidgetParams(nextParams).data;
 
+            validateWidgetParams(currentParams);
+
             updateParams(iframeWindow, currentParams);
         },
         updateListeners: (newListeners?: OkxEventListeners) =>
             iFrameOkxEventEmitter.updateListeners(newListeners),
         updateProvider: async (newProvider, providerType: ProviderType) => {
+            validateWidgetParams(providerType);
             console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
