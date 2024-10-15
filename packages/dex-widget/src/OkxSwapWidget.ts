@@ -17,7 +17,7 @@ import {
     WidgetMethodsEmit,
     WidgetMethodsListen,
 } from './types';
-import { createWidgetParams, getAddress, getChainId, WALLET_TYPE } from './widgetHelp';
+import { checkUrlParam, createWidgetParams, getAddress, getChainId, WALLET_TYPE } from './widgetHelp';
 import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
@@ -227,6 +227,9 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     const { width } = params;
 
     const iframe = document.createElement('iframe');
+
+    // Check if the URL is valid
+    checkUrlParam(url);
 
     iframe.src = url;
     // update iframe style
