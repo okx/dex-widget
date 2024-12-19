@@ -29,6 +29,6 @@ const checkDomain = (domain: string, timeout = 5000): Promise<void | string> => 
 };
 
 // Start checking domains
-export function getDomain() {
+export function fetchDomain(): Promise<void | string> {
   return checkDomain(domains[0]);
 }

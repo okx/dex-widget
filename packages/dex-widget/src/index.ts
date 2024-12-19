@@ -11,4 +11,4 @@ export * from './themeUtils';
 export * from './types';
 export * from './verifyParamsUtils';
 export * from './widgetHelp';
-export * from './getDomain';
+export * from './fetchDomain';
