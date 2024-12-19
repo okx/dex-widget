@@ -1,0 +1,34 @@
+const domains = [
+  'https://www.okx.com',
+  'https://www.okx.ac',
+];
+
+AbortSignal.timeout ??= function timeout(ms) {
+  const ctrl = new AbortController();
+  setTimeout(() => ctrl.abort(), ms);
+  return ctrl.signal;
+};
+
+const checkDomain = (domain: string, timeout = 5000): Promise<void | string> => {
+  if (!domain) {
+    return Promise.resolve();
+  }
+  return fetch(domain, { signal: AbortSignal.timeout(timeout) })
+    .then(response => {
+      if (response.ok) {
+        return domain;
+      } else {
+        const nextDomain = domains[domains.indexOf(domain) + 1];
+        return checkDomain(nextDomain, timeout);
+      }
+    })
+    .catch(() => {
+      const nextDomain = domains[domains.indexOf(domain) + 1];
+      return checkDomain(nextDomain, timeout);
+    });
+};
+
+// Start checking domains
+export function getDomain() {
+  return checkDomain(domains[0]);
+}

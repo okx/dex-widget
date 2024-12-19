@@ -1,8 +1,9 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import { getDomain } from '@okxweb3/dex-widget';
 
 const BASE_DEFAULT_URL = import.meta.env.VITE_BASE_DEFAULT_URL;
 
@@ -19,6 +20,19 @@ export const BaseUrlControl = ({ state, widgetHandler, params }: {
       widgetHandler.current?.reload({ ...params, baseUrl: url });
     });
   };
+
+  useEffect(() => {
+    getDomain().then((domain) => {
+      if (domain) {
+        setBaseUrl(domain);
+        setTimeout(() => {
+          widgetHandler.current?.reload({ ...params, baseUrl: domain });
+        });
+      }
+    });
+
+  }, []);
+
 
   return (
     <>
