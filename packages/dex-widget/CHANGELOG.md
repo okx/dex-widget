@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.3.4 (2024-12-19)
+
+
+### Features
+
+* support config bridge tab default token pair ([1e8f6b7](https://github.com/okx/dex-widget/commit/1e8f6b79e04a7cc4d1d1b34840a89249aa32e1cf))
+
+
+### Bug Fixes
+
+* add connect function deps ([3059cc7](https://github.com/okx/dex-widget/commit/3059cc70ac5aba820cdda4adc1ab3132700e2b22))
+* fix up abort signal function ([a9ecc9d](https://github.com/okx/dex-widget/commit/a9ecc9db6ce425dfd44a711ee3bfa67e943f7373))
+* fixup cjs main entry ([4ef7037](https://github.com/okx/dex-widget/commit/4ef7037cbe8061923d4c7843a03dd1afba409278))
+* fixup search params malformed ([99469c0](https://github.com/okx/dex-widget/commit/99469c0a1fb72147ba23ab4911cf6fefba8153bd))
+* fixupn faas func error case ([d4206cf](https://github.com/okx/dex-widget/commit/d4206cf593bba3d78182bcc64f9dda787f433ffe))
+
 ### [1.3.3](https://github.com/okx/dex-widget/compare/v1.3.2...v1.3.3) (2024-10-15)
 
 
