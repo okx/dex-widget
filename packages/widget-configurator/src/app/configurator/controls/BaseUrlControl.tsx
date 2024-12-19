@@ -3,7 +3,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import { getDomain } from '@okxweb3/dex-widget';
+import { fetchDomain } from '@okxweb3/dex-widget';
 
 const BASE_DEFAULT_URL = import.meta.env.VITE_BASE_DEFAULT_URL;
 
@@ -22,7 +22,7 @@ export const BaseUrlControl = ({ state, widgetHandler, params }: {
   };
 
   useEffect(() => {
-    getDomain().then((domain) => {
+    fetchDomain().then((domain) => {
       if (domain) {
         setBaseUrl(domain);
         setTimeout(() => {
