@@ -3,7 +3,7 @@ const domains = [
   'https://www.okx.ac',
 ];
 
-AbortSignal.timeout ??= function timeout(ms) {
+const abortSignalTimeout = (ms: number): AbortSignal => {
   const ctrl = new AbortController();
   setTimeout(() => ctrl.abort(), ms);
   return ctrl.signal;
@@ -13,7 +13,7 @@ const checkDomain = (domain: string, timeout = 5000): Promise<void | string> => 
   if (!domain) {
     return Promise.resolve();
   }
-  return fetch(domain, { signal: AbortSignal.timeout(timeout) })
+  return fetch(domain, { signal: abortSignalTimeout(timeout) })
     .then(response => {
       if (response.ok) {
         return domain;
