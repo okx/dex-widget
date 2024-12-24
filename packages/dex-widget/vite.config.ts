@@ -1,5 +1,7 @@
 import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vite';
+// @ts-ignore
+import { version } from './package.json';
 
 export default defineConfig(({ mode }) => {
     const isDev = mode === 'development';
@@ -9,6 +11,7 @@ export default defineConfig(({ mode }) => {
         define: {
             'process.env': {
                 WIDGET_VERSION: '1',
+                SDK_VERSION: version,
             },
         },
         build: {
