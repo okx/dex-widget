@@ -388,6 +388,7 @@ export interface IWidgetProps {
     bridgeTokenPair?: IFormattedTokenPair;
     lang?: string;
     chainIds?: string[];
+    sdkVersion?: string;
 }
 
 export interface IFormattedWidgetProps {

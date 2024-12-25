@@ -66,11 +66,17 @@ export function createOkxSwapWidget(
     // todo: check this
     // windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode));
 
+    const updateProviderCallback = () => {
+        const providerParams = getConnectWalletParams(provider, currentParams.providerType);
+        console.log('updateProviderEmitEvent====>dex-ready', providerParams, provider);
+        updateProviderEmitEvent(iframeWindow, providerParams, provider);
+    }
+
     // 4. Handle widget height changes
     // todo: check this
     windowListeners.push(
         ...listenToHeightChanges(iframe, params.height),
-        listenToDexLoadReady(iframeWindow, currentParams),
+        listenToDexLoadReady(iframeWindow, currentParams, updateProviderCallback),
     );
 
     // 5. Intercept deeplinks navigation in the iframe
@@ -84,18 +90,14 @@ export function createOkxSwapWidget(
 
     // 8. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
-        console.log('updateProvider====>load', provider, params);
-
+        console.log('updateParams====>load', provider, currentParams);
         updateParams(iframeWindow, currentParams);
-        if (provider && currentParams.providerType) {
-            const updateProviderParams = getConnectWalletParams(
-                provider,
-                currentParams.providerType,
-            );
-            console.log('updateProvider load', updateProviderParams, provider);
-
-            updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
-        }
+        const updateProviderParams = getConnectWalletParams(
+          provider,
+          currentParams.providerType,
+        );
+        console.log('updateProviderEmitEvent====>load', updateProviderParams, provider);
+        updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
     });
 
     // 9. Listen for messages from the iframe
@@ -118,14 +120,13 @@ export function createOkxSwapWidget(
             currentParams = createWidgetParams(nextParams).data;
 
             validateWidgetParams(currentParams);
-
+            console.log('updateParams====>updateParamsFunction', provider, params);
             updateParams(iframeWindow, currentParams);
         },
         updateListeners: (newListeners?: OkxEventListeners) =>
             iFrameOkxEventEmitter.updateListeners(newListeners),
         updateProvider: async (newProvider, providerType: ProviderType) => {
             validateWidgetParams(providerType);
-            console.log('updateProvider =====>', newProvider, providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
             // iframeSafeSdkBridge.stopListening();
@@ -135,7 +136,6 @@ export function createOkxSwapWidget(
             const updateProviderParams = getConnectWalletParams(provider, providerType);
 
             currentParams = { ...currentParams, ...updateProviderParams };
-            console.log('updateProvider ===> Params', { updateProviderParams, currentParams });
 
             iframeRpcProviderBridge = updateProvider(
                 iframeWindow,
@@ -143,7 +143,7 @@ export function createOkxSwapWidget(
                 newProvider,
                 providerType,
             );
-
+            console.log('updateProvider====>updateProviderFunction', newProvider, providerType);
             updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
 
             // updateParams(iframeWindow, currentParams, newProvider);
@@ -266,7 +266,7 @@ function updateProviderEmitEvent(
 ) {
     const hasProvider = !!provider;
 
-    console.log('updateProviderEmitEvent', params, contentWindow);
+    console.trace('updateProviderEmitEvent', params, provider);
 
     postMessageToWindow<WidgetMethodsListen.UPDATE_PROVIDER>(
         contentWindow,
@@ -284,6 +284,7 @@ function updateProviderEmitEvent(
  * @param contentWindow - Window object of the widget's iframe.
  */
 function updateParams(contentWindow: Window, props: IWidgetProps) {
+    console.log('updateParams====>end', props, contentWindow);
     postMessageToWindow(contentWindow, WidgetMethodsListen.UPDATE_PARAMS, {
         appParams: props,
     });
@@ -309,10 +310,13 @@ function listenToHeightChanges(
     ];
 }
 
-function listenToDexLoadReady(iframeWindow: Window, params: IWidgetProps): WindowListener {
+function listenToDexLoadReady(iframeWindow: Window, params: IWidgetProps, updateProviderCallback: Function): WindowListener {
     const listener = listenToMessageFromWindow(window, WidgetMethodsEmit.LOAD_READY, () => {
+        // updateParams again;
+        console.log('updateParams=====>dex-ready', iframeWindow, params);
         updateParams(iframeWindow, params);
-
+        // update provider again
+        updateProviderCallback();
         stopListeningWindowListener(window, listener);
     });
     return listener;

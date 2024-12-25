@@ -105,6 +105,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     widgetParams;
 
   const widgetVersion = process.env.WIDGET_VERSION;
+  const sdkVersion = process.env.SDK_VERSION;
   // verify widget params, if invalid, throw error
   verifyWidgetParams({
     widgetVersion,
@@ -130,6 +131,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     lang,
     walletType: WALLET_TYPE[providerType],
     widgetVersion,
+    sdkVersion,
     chainIds,
   };
 
