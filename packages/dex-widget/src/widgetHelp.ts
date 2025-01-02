@@ -172,7 +172,36 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
   };
 };
 
-export const getChainId = (provider: any, providerType: ProviderType) => {
+const requestChainId = async (provider: any) => {
+  try {
+    const chainId = await provider.request({ method: 'eth_chainId' });
+    // Convert hexadecimal to decimal
+    const decimalChainId = parseInt(chainId, 16);
+    console.log(`log-requestChainId => decimal number: ${decimalChainId}`);
+    return decimalChainId;
+  } catch (error) {
+    console.error('log-requestChainId => Failed to get chainId:', error);
+    return null;
+  }
+};
+
+const requestAddress = async (provider: any) => {
+  try {
+    const accounts = await provider.request({ method: 'eth_accounts' });
+    console.log(`log-requestAddress: ${accounts.join(',')}`);
+    return accounts[0];
+  } catch (error) {
+    console.log('log-requestAddress-Failed to get account:', error);
+    return null;
+  }
+};
+
+export const isEvmProvider = (providerType: ProviderType) => {
+  return providerType === ProviderType.EVM;
+};
+
+export const getChainId = async (provider: any, providerType: ProviderType) => {
+  console.log('log-getChainId-start', provider, providerType);
   let chainId = null;
 
   if (providerType === ProviderType.EVM && provider?.chainId) {
@@ -187,22 +216,36 @@ export const getChainId = (provider: any, providerType: ProviderType) => {
     chainId = SOLANA_CHAIN_ID;
   }
 
+  if (chainId === null && provider && isEvmProvider(providerType)) {
+    chainId = await requestChainId(provider);
+  }
+
+  console.log('log-getChainId-end', chainId);
+
   return chainId;
 };
 
-export const getAddress = (provider: any, providerType: ProviderType) => {
-  if (
-    (providerType === ProviderType.EVM || providerType === ProviderType.WALLET_CONNECT) &&
-    provider?.chainId
-  ) {
-    const accounts =
-      providerType === ProviderType.EVM ? provider.selectedAddress : provider.accounts[0];
-    return accounts;
+export const getAddress = async (provider: any, providerType: ProviderType) => {
+  console.log('log-getAddress-start', provider, providerType);
+  let account = null;
+
+  if (providerType === ProviderType.EVM && provider?.chainId) {
+    account = provider.selectedAddress;
   }
+
+  if (providerType === ProviderType.WALLET_CONNECT && provider?.chainId) {
+    account = provider.accounts?.[0];
+  }
+
+  if(!account && provider && isEvmProvider(providerType)) {
+    account = await requestAddress(provider);
+  }
+
   if (providerType === ProviderType.SOLANA) {
-    return provider?.publicKey?.toBase58();
+    account = provider?.publicKey?.toBase58();
   }
-  return null;
+  console.log('log-getAddress-end', account);
+  return account;
 };
 
 /**
@@ -216,7 +259,7 @@ export const isPrintableString = (str: string): boolean => {
 
   // Check if the string contains only printable characters
   return printablePattern.test(str);
-}
+};
 
 /**
  * Safely decodes a URI component, checking if it contains printable characters
@@ -237,7 +280,7 @@ export const safeDecodeURIComponent = (value: string): string => {
   } catch (e) {
     throw new Error(`Failed to decode URI component: ${value}. Error: ${e.message}`);
   }
-}
+};
 
 /**
  * Checks if all URL parameters are valid, and stops on the first invalid one
@@ -262,13 +305,13 @@ export const checkUrlParam = (url: string): Record<string, string> => {
   }
 
   return result;
-}
+};
 
 /**
  * Recursively validates the given parameters.
  * If the value is a string, it checks if it's printable.
  * If the value is an object, it recursively checks each key-value pair.
- * 
+ *
  * @param params - The object or string to validate
  * @throws {Error} If any parameter is invalid or contains illegal characters
  * @returns {boolean} - Returns true if all parameters are valid

@@ -31,6 +31,16 @@ export interface OkxSwapWidgetHandler {
     iframeWindow: Window;
 }
 
+const getConnectWalletParams = async (provider, providerType) => {
+    const updateProviderParams = {
+        providerType,
+        walletType: WALLET_TYPE[providerType],
+        chainId: await getChainId(provider, providerType),
+        address: await getAddress(provider, providerType),
+    };
+    return updateProviderParams;
+}
+
 /**
  * Generates and injects a Okx Swap Widget into the provided container.
  * @param container - The HTML element to inject the widget into.
@@ -66,8 +76,8 @@ export function createOkxSwapWidget(
     // todo: check this
     // windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode));
 
-    const updateProviderCallback = () => {
-        const providerParams = getConnectWalletParams(provider, currentParams.providerType);
+    const updateProviderCallback = async () => {
+        const providerParams = await getConnectWalletParams(provider, currentParams.providerType);
         console.log('updateProviderEmitEvent====>dex-ready', providerParams, provider);
         updateProviderEmitEvent(iframeWindow, providerParams, provider);
     }
@@ -92,12 +102,15 @@ export function createOkxSwapWidget(
     iframe.addEventListener('load', () => {
         console.log('updateParams====>load', provider, currentParams);
         updateParams(iframeWindow, currentParams);
-        const updateProviderParams = getConnectWalletParams(
+        getConnectWalletParams(
           provider,
           currentParams.providerType,
-        );
-        console.log('updateProviderEmitEvent====>load', updateProviderParams, provider);
-        updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
+        ).then((updateProviderParams) => {
+            console.log('updateProviderEmitEvent====>load-success', updateProviderParams, provider);
+            updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
+        }).catch((error) => {
+            console.log('updateProviderEmitEvent====>load-error', provider, error);
+        })
     });
 
     // 9. Listen for messages from the iframe
@@ -133,7 +146,7 @@ export function createOkxSwapWidget(
 
             provider = newProvider;
 
-            const updateProviderParams = getConnectWalletParams(provider, providerType);
+            const updateProviderParams = await getConnectWalletParams(provider, providerType);
 
             currentParams = { ...currentParams, ...updateProviderParams };
 
@@ -242,16 +255,6 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     iframe.style.border = 'none';
 
     return iframe;
-}
-
-function getConnectWalletParams(provider, providerType) {
-    const updateProviderParams = {
-        providerType,
-        walletType: WALLET_TYPE[providerType],
-        chainId: getChainId(provider, providerType),
-        address: getAddress(provider, providerType),
-    };
-    return updateProviderParams;
 }
 
 /**
