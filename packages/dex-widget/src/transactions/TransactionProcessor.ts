@@ -12,11 +12,12 @@ export class TransactionProcessor {
             case ProviderType.SOLANA:
                 this.strategy = new SolanaStrategy(iframeWindow);
                 break;
+            case ProviderType.WALLET_CONNECT:
             case ProviderType.EVM:
                 this.strategy = new EvmStrategy(iframeWindow);
                 break;
             default:
-                throw new Error('Unsupported provider type');
+                throw new Error('Unsupported provider type or network error', providerType);
         }
     }
 
