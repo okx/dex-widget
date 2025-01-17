@@ -51,13 +51,13 @@ export class SolanaStrategy implements BlockchainStrategy {
                 console.log('solana signAllTransactions newParams:', newParams);
                 // request
                 const resData = await provider[method](newParams);
-                // format response
+                // trans encode response
                 const data = resData.map((signedTransaction) => {
                     const signature =
                         signedTransaction?.signature || signedTransaction?.signatures[0];
-                    const signature1 = bs58.encode(signature);
+                    const encodeSignature = bs58.encode(signature);
                     const serializedTransaction = bs58.encode(signedTransaction.serialize());
-                    return {signature: signature1, serializedTransaction};
+                    return {signature: encodeSignature, serializedTransaction};
                 });
 
                 console.log('solana signAllTransactions request:', resData, data);
