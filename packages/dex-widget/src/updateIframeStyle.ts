@@ -1,4 +1,4 @@
-export const DEFAULT_HEIGHT = '487.5px';
+export const DEFAULT_HEIGHT = '480px';
 export const DEFAULT_WIDTH = 450;
 export const MIN_WIDTH = 375;
 

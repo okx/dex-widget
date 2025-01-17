@@ -7,6 +7,20 @@ import { SOLANA_CHAIN_ID, WALLET_TYPE } from '../widgetHelp';
 
 import { BlockchainStrategy } from './IBlockchainStrategy';
 
+
+
+const decodeMsg = (message) => {
+    try {
+        return Transaction.from(bs58.decode(message));
+    } catch (error) {
+        const deserializeTransaction = VersionedTransaction.deserialize(
+            bs58.decode(message),
+        );
+        console.log('new version deserializeTransaction:', deserializeTransaction);
+        return deserializeTransaction;
+    }
+}
+
 export class SolanaStrategy implements BlockchainStrategy {
     private iframeWindow: Window;
 
@@ -29,6 +43,35 @@ export class SolanaStrategy implements BlockchainStrategy {
             const okxArgs = solanaTransactionArgs[0]?.okxArgs;
             const transaction = solanaTransactionArgs[0]?.transaction;
             const okxType = solanaTransactionArgs[0]?.type;
+
+
+            if (method === 'signAllTransactions') {
+                // decodeMsg and create newParams;
+                const newParams = solanaTransactionArgs.map(decodeMsg);
+                console.log('solana signAllTransactions newParams:', newParams);
+                // request
+                const resData = await provider[method](newParams);
+                // encode response
+                const data = resData.map((signedTransaction) => {
+                    const signature =
+                        signedTransaction?.signature || signedTransaction?.signatures[0];
+                    const encodeSignature = bs58.encode(signature);
+                    const serializedTransaction = bs58.encode(signedTransaction.serialize());
+                    return {signature: encodeSignature, serializedTransaction};
+                });
+
+                console.log('solana signAllTransactions request:', resData, data);
+
+                postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
+                    id,
+                    mode: 'iframe',
+                    data,
+                    path,
+                    type,
+                    success: true,
+                });
+                return;
+            }
 
             if (onlyIfTrusted) {
                 postMessageToWindow(this.iframeWindow, WidgetMethodsListen.PROVIDER_ON_EVENT, {
