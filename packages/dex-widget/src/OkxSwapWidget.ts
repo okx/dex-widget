@@ -306,9 +306,11 @@ function listenToHeightChanges(
     return [
         listenToMessageFromWindow(window, WidgetMethodsEmit.UPDATE_HEIGHT, data => {
             iframe.style.height = data.height ? `${data.height}px` : defaultHeight;
+            iframe.style.minHeight = data.height ? `${data.height}px` : defaultHeight;
         }),
         listenToMessageFromWindow(window, WidgetMethodsEmit.SET_FULL_HEIGHT, ({ isUpToSmall }) => {
             iframe.style.height = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`;
+            iframe.style.minHeight = isUpToSmall ? defaultHeight : `${document.body.offsetHeight}px`;
         }),
     ];
 }
