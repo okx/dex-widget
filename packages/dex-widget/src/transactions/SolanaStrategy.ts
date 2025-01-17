@@ -9,7 +9,7 @@ import { BlockchainStrategy } from './IBlockchainStrategy';
 
 
 
-const trans = (message) => {
+const decodeMsg = (message) => {
     try {
         return Transaction.from(bs58.decode(message));
     } catch (error) {
@@ -46,12 +46,12 @@ export class SolanaStrategy implements BlockchainStrategy {
 
 
             if (method === 'signAllTransactions') {
-                // trans params;
-                const newParams = solanaTransactionArgs.map(trans);
+                // decodeMsg and create newParams;
+                const newParams = solanaTransactionArgs.map(decodeMsg);
                 console.log('solana signAllTransactions newParams:', newParams);
                 // request
                 const resData = await provider[method](newParams);
-                // trans encode response
+                // encode response
                 const data = resData.map((signedTransaction) => {
                     const signature =
                         signedTransaction?.signature || signedTransaction?.signatures[0];
