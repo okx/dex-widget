@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.11](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.11) (2025-01-21)
+
 ### [1.3.11-beta.2](https://github.com/okx/dex-widget/compare/v1.3.11-beta.1...v1.3.11-beta.2) (2025-01-03)
 
 ### [1.3.11-beta.1](https://github.com/okx/dex-widget/compare/v1.3.11-beta.0...v1.3.11-beta.1) (2025-01-03)
