@@ -52,6 +52,7 @@ export const BaseUrlControl = ({ state, widgetHandler, params }: {
             )
           }
           <MenuItem value="https://www.okx.com">https://www.okx.com</MenuItem>
+          <MenuItem value="https://web3.okx.com">https://web3.okx.com</MenuItem>
           <MenuItem value="http://127.0.0.1:3000">http://127.0.0.1:3000</MenuItem>
         </Select>
       </FormControl>
