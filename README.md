@@ -56,7 +56,7 @@ You can use RainbowKit within your React application along with the widget as sh
 
 ```tsx
 import React, { useRef } from 'react';
-import { DexWidgetProvider, useDexWidget } from '@ok/widget-bridge/lib/react';
+import { DexWidgetProvider, useDexWidget } from '@okxweb3/dex-widget';
 import { RainbowKitProvider, getDefaultWallets, connectorsForWallets } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
@@ -135,7 +135,7 @@ You might need to integrate this widget into a component library or directly wit
 ### Example: Using the Widget in a Component Library
 
 ```javascript
-import { createOkSwapWidget, EthereumProvider, ProviderType } from '@ok/widget-bridge';
+import { createOkSwapWidget, EthereumProvider, ProviderType } from '@okxweb3/dex-widget';
 
 // Select the container where you want to inject the widget
 const container = document.getElementById('widget-container');
