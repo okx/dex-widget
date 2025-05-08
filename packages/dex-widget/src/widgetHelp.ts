@@ -11,7 +11,7 @@ import {
 } from './types';
 import { verifyWidgetParams } from './verifyParamsUtils';
 
-const DEFAULT_BASE_URL = 'https://www.okx.com';
+const DEFAULT_BASE_URL = 'https://web3.okx.com';
 
 export const WIDGET_ROUTE_CONSTANTS = {
   SWAP: 'web3/dex-widget',
