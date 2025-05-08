@@ -14,8 +14,8 @@ import { verifyWidgetParams } from './verifyParamsUtils';
 const DEFAULT_BASE_URL = 'https://web3.okx.com';
 
 export const WIDGET_ROUTE_CONSTANTS = {
-  SWAP: 'web3/dex-widget',
-  BRIDGE: 'web3/dex-widget/bridge',
+  SWAP: 'dex-widget',
+  BRIDGE: 'dex-widget/bridge',
 };
 
 export const WALLET_TYPE: TWalletTypeRecord = {
@@ -164,6 +164,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     feeConfig,
     providerType,
     extraParams,
+    referrer: getReferrer(),
   };
 
   return {
@@ -341,3 +342,7 @@ export const validateWidgetParams = (params: any): boolean => {
   // If neither string nor object, assume it's valid (you can extend this logic as needed)
   return true;
 };
+
+export const getReferrer = () => {
+  return encodeURIComponent(window.location.origin);
+}

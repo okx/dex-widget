@@ -389,6 +389,7 @@ export interface IWidgetProps {
     lang?: string;
     chainIds?: string[];
     sdkVersion?: string;
+    referer?: string;
 }
 
 export interface IFormattedWidgetProps {
