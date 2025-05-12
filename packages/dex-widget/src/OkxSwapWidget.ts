@@ -247,6 +247,7 @@ function createIframe(params: IWidgetParams, url: string): HTMLIFrameElement {
     // Check if the URL is valid
     checkUrlParam(url);
 
+    console.log('log-url', url);
     iframe.src = url;
     // update iframe style
     updateIframeStyle(iframe, { width });

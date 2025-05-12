@@ -1,6 +1,6 @@
 const domains = [
-  'https://www.okx.com',
-  'https://www.okx.ac',
+  'https://web3.okx.com',
+  'https://web3.okx.ac',
 ];
 
 const abortSignalTimeout = (ms: number): AbortSignal => {
