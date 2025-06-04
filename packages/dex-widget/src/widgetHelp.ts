@@ -205,8 +205,11 @@ export const getChainId = async (provider: any, providerType: ProviderType) => {
   console.log('log-getChainId-start', provider, providerType);
   let chainId = null;
 
-  if (providerType === ProviderType.EVM && provider?.chainId) {
-    chainId = parseInt(provider.chainId, 16);
+  if (isEvmProvider(providerType)) {
+    chainId = await requestChainId(provider);
+    if (chainId === null) {
+      chainId = provider?.chainId ? parseInt(provider.chainId, 16) : null;
+    }
   }
 
   if (providerType === ProviderType.WALLET_CONNECT && provider?.chainId) {
@@ -217,11 +220,7 @@ export const getChainId = async (provider: any, providerType: ProviderType) => {
     chainId = SOLANA_CHAIN_ID;
   }
 
-  if (chainId === null && provider && isEvmProvider(providerType)) {
-    chainId = await requestChainId(provider);
-  }
-
-  console.log('log-getChainId-end', chainId);
+  console.log('log-getChainId-end', { chainId, providerChainId: provider?.chainId });
 
   return chainId;
 };
