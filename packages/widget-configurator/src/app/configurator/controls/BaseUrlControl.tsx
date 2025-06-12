@@ -1,11 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import { fetchDomain } from '@okxweb3/dex-widget';
-
-const BASE_DEFAULT_URL = import.meta.env.VITE_BASE_DEFAULT_URL;
+import TextField from '@mui/material/TextField';
 
 export const BaseUrlControl = ({ state, widgetHandler, params }: {
   state: [string, Dispatch<SetStateAction<string>>],
@@ -13,11 +9,10 @@ export const BaseUrlControl = ({ state, widgetHandler, params }: {
   widgetHandler: any
 }) => {
   const [baseUrl, setBaseUrl] = state;
-  const handleBaseUrlChange = (event: SelectChangeEvent) => {
-    const url = event.target.value;
-    setBaseUrl(url);
+  const handleBaseUrlChange = (e: any) => {
+    setBaseUrl(e.target.value);
     setTimeout(() => {
-      widgetHandler.current?.reload({ ...params, baseUrl: url });
+      widgetHandler.current?.reload({ ...params, baseUrl: e.target.value });
     });
   };
 
@@ -37,24 +32,13 @@ export const BaseUrlControl = ({ state, widgetHandler, params }: {
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel id="baseUrl-label">Base url</InputLabel>
-        <Select
-          value={baseUrl}
-          labelId="baseUrl-label"
-          fullWidth
-          label="Base url"
-          onChange={handleBaseUrlChange}
-          size="small"
-        >
-          {
-            BASE_DEFAULT_URL && (
-              <MenuItem value={BASE_DEFAULT_URL}>{BASE_DEFAULT_URL}</MenuItem>
-            )
-          }
-          <MenuItem value="https://www.okx.com">https://www.okx.com</MenuItem>
-          <MenuItem value="https://web3.okx.com">https://web3.okx.com</MenuItem>
-          <MenuItem value="http://127.0.0.1:3000">http://127.0.0.1:3000</MenuItem>
-        </Select>
+        <TextField
+            size='small'
+            value={baseUrl}
+            fullWidth
+            label='baseUrl'
+            onChange={handleBaseUrlChange}
+        />
       </FormControl>
     </>
   );

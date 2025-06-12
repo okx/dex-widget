@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 let clickNum = 0;
 
 const CACHE_KEY = 'dev_mode_is_open';
-const isDev = ['aladdin', 'development'].includes(import.meta.env.VITE_APP_ENV);
+// const isDev = ['aladdin', 'development'].includes(import.meta.env.VITE_APP_ENV);
+const isDev = true;
 export const useDevMode = () => {
     const [isDevModeOpen, setIsDevModeOpen] = useState<boolean>(
         isDev
