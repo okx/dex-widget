@@ -89,7 +89,7 @@ export function createOkxSwapWidget(
         listenToDexLoadReady(iframeWindow, currentParams, updateProviderCallback),
     );
 
-    // 5. Intercept deeplinks navigation in the iframe
+    // 5. Intercept deep links navigation in the iframe
     // windowListeners.push(interceptDeepLinks());
 
     // 6. Handle and forward widget events to the listeners
@@ -163,7 +163,7 @@ export function createOkxSwapWidget(
         },
 
         destroy: () => {
-            // Disconnet rpc provider and unsubscribe to events
+            // disconnect rpc provider and unsubscribe to events
             iframeRpcProviderBridge?.disconnect();
             // Stop listening for Okx events
             iFrameOkxEventEmitter.stopListeningIframe();
