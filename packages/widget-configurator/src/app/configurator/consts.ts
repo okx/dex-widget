@@ -1,5 +1,6 @@
-import { TradeType } from '@okxweb3/dex-widget';
+import { TradeTab, TradeType } from '@okxweb3/dex-widget';
 export const TRADE_MODES = [TradeType.SWAP, TradeType.BRIDGE, TradeType.AUTO];
+export const TRADE_TABS = [TradeTab.SWAP, TradeTab.BRIDGE];
 
 // TODO: Move default palette to a new lib that only exposes the palette colors.
 // This wayit can be consumed by both the configurator and the widget.

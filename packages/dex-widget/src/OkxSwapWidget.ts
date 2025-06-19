@@ -17,7 +17,15 @@ import {
     WidgetMethodsEmit,
     WidgetMethodsListen,
 } from './types';
-import { checkUrlParam, createWidgetParams, getAddress, getChainId, validateWidgetParams, WALLET_TYPE } from './widgetHelp';
+import {
+    checkUrlParam,
+    createWidgetParams,
+    getAddress,
+    getChainId,
+    getWalletInfo,
+    validateWidgetParams,
+    WALLET_TYPE,
+} from './widgetHelp';
 import { updateIframeStyle, DEFAULT_HEIGHT, destroyStyleElement } from './updateIframeStyle';
 
 /**
@@ -31,12 +39,13 @@ export interface OkxSwapWidgetHandler {
     iframeWindow: Window;
 }
 
-const getConnectWalletParams = async (provider, providerType) => {
+const getConnectWalletParams = async (provider, providerType, walletName) => {
     const updateProviderParams = {
         providerType,
         walletType: WALLET_TYPE[providerType],
         chainId: await getChainId(provider, providerType),
         address: await getAddress(provider, providerType),
+        walletInfo: getWalletInfo(walletName, provider),
     };
     return updateProviderParams;
 }
@@ -77,7 +86,7 @@ export function createOkxSwapWidget(
     // windowListeners.push(sendAppCodeOnActivation(iframeWindow, params.appCode));
 
     const updateProviderCallback = async () => {
-        const providerParams = await getConnectWalletParams(provider, currentParams.providerType);
+        const providerParams = await getConnectWalletParams(provider, currentParams.providerType, currentParams.walletName);
         console.log('updateProviderEmitEvent====>dex-ready', providerParams, provider);
         updateProviderEmitEvent(iframeWindow, providerParams, provider);
     }
@@ -105,6 +114,7 @@ export function createOkxSwapWidget(
         getConnectWalletParams(
           provider,
           currentParams.providerType,
+          currentParams.walletName,
         ).then((updateProviderParams) => {
             console.log('updateProviderEmitEvent====>load-success', updateProviderParams, provider);
             updateProviderEmitEvent(iframeWindow, updateProviderParams, provider);
@@ -138,7 +148,7 @@ export function createOkxSwapWidget(
         },
         updateListeners: (newListeners?: OkxEventListeners) =>
             iFrameOkxEventEmitter.updateListeners(newListeners),
-        updateProvider: async (newProvider, providerType: ProviderType) => {
+        updateProvider: async (newProvider, providerType: ProviderType, walletName?: string) => {
             validateWidgetParams(providerType);
             iframeRpcProviderBridge?.disconnect();
             provider?.removeAllListeners?.();
@@ -146,7 +156,7 @@ export function createOkxSwapWidget(
 
             provider = newProvider;
 
-            const updateProviderParams = await getConnectWalletParams(provider, providerType);
+            const updateProviderParams = await getConnectWalletParams(provider, providerType, walletName);
 
             currentParams = { ...currentParams, ...updateProviderParams };
 

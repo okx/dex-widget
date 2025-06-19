@@ -8,6 +8,7 @@ import {
   ProviderType,
   IFormattedTokenPair,
   IFormattedWidgetProps,
+  TradeTab,
 } from './types';
 import { verifyWidgetParams } from './verifyParamsUtils';
 
@@ -40,10 +41,15 @@ export const formatTokenPair = (tokenPair?: ITokenPair): IFormattedTokenPair => 
 
 // this function is designed to determine the supported trade types and the appropriate route based on the provided trade type and token pairs.
 // It returns an object containing the supported trade types, the route, and formatted token pairs.
+interface FormatDefaultConfigParams { 
+  tradeType: TradeType;
+  tokenPair?: ITokenPair;
+  bridgeTokenPair?: ITokenPair;
+  defaultTab?: TradeTab;
+}
+
 export function formatDefaultConfig(
-  tradeType: TradeType,
-  tokenPair?: ITokenPair,
-  bridgeTokenPair?: ITokenPair,
+  {tradeType, tokenPair, bridgeTokenPair, defaultTab}: FormatDefaultConfigParams
 ): {
   supportTradeType: TradeType[];
   route: string;
@@ -70,6 +76,26 @@ export function formatDefaultConfig(
       route: WIDGET_ROUTE_CONSTANTS.BRIDGE,
       defaultTokenPair: formattedBridgeTokenPair,
       formattedTokenPair: null,
+      formattedBridgeTokenPair,
+    };
+  }
+
+  if (defaultTab === TradeTab.SWAP) {
+    return {
+      supportTradeType: [TradeType.SWAP, TradeType.BRIDGE],
+      route: WIDGET_ROUTE_CONSTANTS.SWAP,
+      defaultTokenPair: formattedTokenPair,
+      formattedTokenPair,
+      formattedBridgeTokenPair,
+    };
+  }
+
+  if (defaultTab === TradeTab.BRIDGE) {
+    return {
+      supportTradeType: [TradeType.SWAP, TradeType.BRIDGE],
+      route: WIDGET_ROUTE_CONSTANTS.BRIDGE,
+      defaultTokenPair: formattedBridgeTokenPair,
+      formattedTokenPair,
       formattedBridgeTokenPair,
     };
   }
@@ -101,6 +127,8 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     lang,
     chainIds,
     extraParams,
+    walletName,
+    defaultTab,
   } =
     widgetParams;
 
@@ -122,7 +150,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     defaultTokenPair,
     formattedTokenPair,
     formattedBridgeTokenPair,
-  } = formatDefaultConfig(tradeType, tokenPair, bridgeTokenPair);
+  } = formatDefaultConfig({tradeType, tokenPair, bridgeTokenPair, defaultTab});
 
   // define initial params
   const initParams = {
@@ -165,6 +193,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     providerType,
     extraParams,
     referrer: getReferrer(),
+    walletName,
   };
 
   return {
@@ -344,4 +373,23 @@ export const validateWidgetParams = (params: any): boolean => {
 
 export const getReferrer = () => {
   return encodeURIComponent(window.location.origin);
+}
+
+export const getWalletInfo = (walletName: string, provider: any) => {
+  const walletInfo = {
+    walletName,
+  };
+  try {
+    Object.keys(provider).forEach((key) => {
+      if (key.startsWith('is')) {
+        const value = provider[key];
+        if (typeof value === 'boolean') {
+          walletInfo[key] = value;
+        }
+      }
+    })
+  } catch (e) {
+    console.error('Error getting wallet info:', e, provider);
+  }
+  return walletInfo;
 }
