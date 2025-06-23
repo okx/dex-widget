@@ -130,7 +130,7 @@ export function createOkxSwapWidget(
     return {
         updateParams: (newParams: IWidgetParams) => {
             // width, lang, theme
-            const { width, lang, theme, extraParams } = newParams;
+            const { width, lang, theme, walletName, extraParams } = newParams;
 
             updateIframeStyle(iframe, { width });
 
@@ -138,6 +138,7 @@ export function createOkxSwapWidget(
                 ...params,
                 lang,
                 theme,
+                walletName,
                 extraParams,
             };
             currentParams = createWidgetParams(nextParams).data;
