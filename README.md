@@ -85,9 +85,29 @@ const App = () => {
       appCode: 'my-app-code', // Replace with your actual app code
       height: 500, // Initial height of the widget iframe
       providerType: 'wallet', // Type of blockchain provider, e.g., 'wallet'
+      defaultTab: 'swap', // default tab
     },
     provider: null, // Blockchain provider, can be set here
-    listeners: {}, // Event listeners for widget events
+    listeners: [
+          {
+            event: 'ON_CONNECT_WALLET', // handler for connect wallet;
+            handler: (payload) => {
+              openConnectModal?.();
+            },
+          },
+          {
+            event: 'ON_SUBMIT_TX', // submit tx will return txHash and chainId;
+            handler: (res) => {
+              console.log(`Transaction submitted successfully, txHash: ${res.data.txHash}`);
+            },
+          },
+          {
+            event: 'ON_FROM_CHAIN_CHANGE', // if from token chainId has change
+            handler: (res: any) => {
+              console.log('ON_FROM_CHAIN_CHANGE===>', res.data);
+            },
+          },
+        ], // Event listeners for widget events
   };
 
   return (
