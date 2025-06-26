@@ -11,4 +11,3 @@
 /test/fixture-projects/**/cache
 CHANGELOG.md
 .nyc_output
-vite.config.ts

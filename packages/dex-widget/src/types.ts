@@ -95,6 +95,11 @@ export enum TradeType {
     AUTO = 'auto',
 }
 
+export enum TradeTab {
+    SWAP = 'swap',
+    BRIDGE = 'bridge',
+}
+
 export enum THEME {
     LIGHT = 'light',
     DARK = 'dark',
@@ -235,6 +240,7 @@ export interface UpdateProviderParams {
     walletType: WalletType;
     chainId: string | number;
     address: string;
+    walletName?: string;
 }
 
 export interface UpdateProviderPayload {
@@ -349,7 +355,7 @@ export interface IFeeConfig {
             [key: string]: {
                 feePercent: string | number;
             };
-        };
+        } | string;
     };
 }
 
@@ -373,8 +379,6 @@ export enum ProviderType {
     WALLET_CONNECT = 'WALLET_CONNECT',
 }
 
-export const ChainName = ProviderType;
-
 export type TWalletTypeRecord = Record<ProviderType, WalletType>;
 
 export interface IWidgetProps {
@@ -390,6 +394,7 @@ export interface IWidgetProps {
     chainIds?: string[];
     sdkVersion?: string;
     referer?: string;
+    walletName?: string;
 }
 
 export interface IFormattedWidgetProps {
@@ -425,6 +430,11 @@ export interface IWidgetParams {
     lang?: string;
 
     chainIds?: string[];
+
+    walletName?: string;
+
+    // The default tab of the widget. if setup, use this tab as default tab.
+    defaultTab?: TradeTab;
 
     extraParams?: any;
 }

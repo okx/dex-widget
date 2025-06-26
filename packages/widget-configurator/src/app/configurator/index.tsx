@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Fab from '@mui/material/Fab';
 import Typography from '@mui/material/Typography';
-import { createOkxSwapWidget, ProviderType } from '@okxweb3/dex-widget';
+import { createOkxSwapWidget, ProviderType, TradeTab } from '@okxweb3/dex-widget';
 import { TradeType } from '@okxweb3/dex-widget';
 import { Link } from '@mui/material';
 import { ChromeReaderMode } from '@mui/icons-material';
@@ -32,6 +32,7 @@ import { ProviderControl } from './controls/ProviderControl';
 import { useDevMode } from './hooks/useDevMode';
 import { BaseUrlControl } from './controls/BaseUrlControl';
 import WidthControl from './controls/WidthControl';
+import { DefaultTabControl } from './controls/DefaultTabControl';
 
 export function Configurator({ title }: { title: string }) {
   const { mode } = useContext(ColorModeContext);
@@ -41,6 +42,8 @@ export function Configurator({ title }: { title: string }) {
   const tradeTypeState = useState<TradeType>(TradeType.AUTO);
   const [tradeType] = tradeTypeState;
 
+  const defaultTabState = useState<TradeTab>(TradeTab.SWAP);
+  const [defaultTab] = defaultTabState;
 
   const providerTypeState = useState<ProviderType>(ProviderType.EVM);
   const [providerType] = providerTypeState;
@@ -63,12 +66,13 @@ export function Configurator({ title }: { title: string }) {
   const feeConfigState = useState<string>('');
   const [feeConfig] = feeConfigState;
 
-  const baseUrlState = useState<string>(import.meta.env.VITE_BASE_DEFAULT_URL as string || 'https://web3.okx.com');
+  const baseUrlState = useState<string>(
+    (import.meta.env.VITE_BASE_DEFAULT_URL as string) || 'https://web3.okx.com',
+  );
   const [baseUrl] = baseUrlState;
 
   const widthState = useState('');
   const [width] = widthState;
-
 
   const widgetHandler = useRef<ReturnType<typeof createOkxSwapWidget>>();
 
@@ -86,6 +90,7 @@ export function Configurator({ title }: { title: string }) {
     provider,
     baseUrl,
     width,
+    defaultTab,
   };
 
   const params = useWidgetParams(state);
@@ -95,76 +100,99 @@ export function Configurator({ title }: { title: string }) {
     <Box sx={WrapperStyled}>
       {!isDrawerOpen && (
         <Fab
-          size="medium"
-          color="secondary"
-          aria-label="edit"
-          onClick={(e) => {
+          size='medium'
+          color='secondary'
+          aria-label='edit'
+          onClick={e => {
             e.stopPropagation();
             setIsDrawerOpen(true);
           }}
-          sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}
-        >
+          sx={{ position: 'fixed', bottom: '1.6rem', left: '1.6rem' }}>
           <EditIcon />
         </Fab>
       )}
 
-      <Drawer sx={DrawerStyled} variant="persistent" anchor="left" open={isDrawerOpen}>
-        <Typography onClick={openDevMode} variant="h6"
-                    sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
+      <Drawer sx={DrawerStyled} variant='persistent' anchor='left' open={isDrawerOpen}>
+        <Typography
+          onClick={openDevMode}
+          variant='h6'
+          sx={{ width: '100%', textAlign: 'center', margin: '0 auto 1rem', fontWeight: 'bold' }}>
           {title}
         </Typography>
 
-        <ConnectButton
-          showBalance={false}
-          chainStatus="none"
-        />
+        <ConnectButton showBalance={false} chainStatus='none' />
 
-        {
-          isDevModeOpen && (
-            <>
-              <Divider variant="middle">Dev mode</Divider>
-              <BaseUrlControl state={baseUrlState} widgetHandler={widgetHandler} params={params} />
-            </>
-          )
-        }
+        {isDevModeOpen && (
+          <>
+            <Divider variant='middle'>Dev mode</Divider>
+            <BaseUrlControl state={baseUrlState} widgetHandler={widgetHandler} params={params} />
+          </>
+        )}
 
-
-        <Divider variant="middle">General</Divider>
+        <Divider variant='middle'>General</Divider>
 
         <ThemeControl widgetHandler={widgetHandler} params={params} />
 
-        <CurrentTradeTypeControl state={tradeTypeState} widgetHandler={widgetHandler} params={params} />
+        <CurrentTradeTypeControl
+          state={tradeTypeState}
+          widgetHandler={widgetHandler}
+          params={params}
+        />
 
-        <LanguageControl state={customLanguagesState} widgetHandler={widgetHandler} params={params} />
+        <DefaultTabControl state={defaultTabState} widgetHandler={widgetHandler} params={params} />
 
-        <ProviderTypeControl state={providerTypeState} widgetHandler={widgetHandler} params={params} />
+        <LanguageControl
+          state={customLanguagesState}
+          widgetHandler={widgetHandler}
+          params={params}
+        />
 
-        <ProviderControl state={providerState} providerType={providerType} widgetHandler={widgetHandler} />
+        <ProviderTypeControl
+          state={providerTypeState}
+          widgetHandler={widgetHandler}
+          params={params}
+        />
+
+        <ProviderControl
+          state={providerState}
+          providerType={providerType}
+          widgetHandler={widgetHandler}
+        />
 
         <ChainIdsControl state={chainIdsState} widgetHandler={widgetHandler} params={params} />
 
         <WidthControl state={widthState} widgetHandler={widgetHandler} params={params} />
 
-        <TokenPairControl state={tokenPairState} widgetHandler={widgetHandler} params={params}
-                          tokenPairKey="tokenPair" />
+        <TokenPairControl
+          state={tokenPairState}
+          widgetHandler={widgetHandler}
+          params={params}
+          tokenPairKey='tokenPair'
+        />
 
-        <TokenPairControl state={bridgeTokenPairState} widgetHandler={widgetHandler} params={params}
-                          tokenPairKey="bridgeTokenPair" />
+        <TokenPairControl
+          state={bridgeTokenPairState}
+          widgetHandler={widgetHandler}
+          params={params}
+          tokenPairKey='bridgeTokenPair'
+        />
 
-        <Divider variant="middle">Fee config</Divider>
+        <Divider variant='middle'>Fee config</Divider>
 
         <CommissionControl state={feeConfigState} widgetHandler={widgetHandler} params={params} />
 
-        <Divider variant="middle">More</Divider>
+        <Divider variant='middle'>More</Divider>
 
         <Box sx={{ padding: '1rem', textAlign: 'center', textTransform: 'capitalize' }}>
-          <Link href="https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget" sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 2,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <Link
+            href='https://www.okx.com/zh-hans/web3/build/docs/waas/dex-widget'
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <ChromeReaderMode sx={{ width: 24, height: 24 }} />
             Developer Docs
           </Link>
@@ -174,12 +202,11 @@ export function Configurator({ title }: { title: string }) {
 
         {isDrawerOpen && (
           <Fab
-            size="small"
-            color="primary"
-            aria-label="hide drawer"
+            size='small'
+            color='primary'
+            aria-label='hide drawer'
             onClick={() => setIsDrawerOpen(false)}
-            sx={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}
-          >
+            sx={{ position: 'fixed', top: '1.3rem', left: '26.7rem' }}>
             <KeyboardDoubleArrowLeftIcon />
           </Fab>
         )}
@@ -188,23 +215,18 @@ export function Configurator({ title }: { title: string }) {
       <Box sx={{ ...ContentStyled, pl: isDrawerOpen ? '290px' : 0 }}>
         {params && (
           <>
-            <EmbedDialog
-              params={params}
-              open={dialogOpen}
-              handleClose={handleDialogClose}
-            />
+            <EmbedDialog params={params} open={dialogOpen} handleClose={handleDialogClose} />
             <DexWidget ref={widgetHandler} params={params} />
           </>
         )}
       </Box>
 
       <Fab
-        color="primary"
-        size="large"
-        variant="extended"
+        color='primary'
+        size='large'
+        variant='extended'
         sx={{ position: 'fixed', bottom: '2rem', right: '1.6rem' }}
-        onClick={() => handleDialogOpen()}
-      >
+        onClick={() => handleDialogOpen()}>
         <CodeIcon sx={{ mr: 1 }} />
         View Embed Code
       </Fab>

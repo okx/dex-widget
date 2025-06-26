@@ -8,14 +8,17 @@ import {
   ProviderType,
   IFormattedTokenPair,
   IFormattedWidgetProps,
+  TradeTab,
 } from './types';
 import { verifyWidgetParams } from './verifyParamsUtils';
 
 const DEFAULT_BASE_URL = 'https://web3.okx.com';
 
+const ROUTER_PRE = (process.env.VITE_BASE_ROUTER_PREFIX as string) || '';
+
 export const WIDGET_ROUTE_CONSTANTS = {
-  SWAP: 'dex-widget',
-  BRIDGE: 'dex-widget/bridge',
+  SWAP: `${ROUTER_PRE}dex-widget`,
+  BRIDGE: `${ROUTER_PRE}dex-widget/bridge`,
 };
 
 export const WALLET_TYPE: TWalletTypeRecord = {
@@ -26,30 +29,37 @@ export const WALLET_TYPE: TWalletTypeRecord = {
 
 export const SOLANA_CHAIN_ID = 501;
 
-
 export const formatTokenPair = (tokenPair?: ITokenPair): IFormattedTokenPair => {
   return tokenPair
     ? {
-      inputChain: tokenPair.fromChain,
-      outputChain: tokenPair.toChain,
-      inputCurrency: tokenPair.fromToken,
-      outputCurrency: tokenPair.toToken,
-    }
+        inputChain: tokenPair.fromChain,
+        outputChain: tokenPair.toChain,
+        inputCurrency: tokenPair.fromToken,
+        outputCurrency: tokenPair.toToken,
+      }
     : null;
 };
 
 // this function is designed to determine the supported trade types and the appropriate route based on the provided trade type and token pairs.
 // It returns an object containing the supported trade types, the route, and formatted token pairs.
-export function formatDefaultConfig(
-  tradeType: TradeType,
-  tokenPair?: ITokenPair,
-  bridgeTokenPair?: ITokenPair,
-): {
+interface FormatDefaultConfigParams {
+  tradeType: TradeType;
+  tokenPair?: ITokenPair;
+  bridgeTokenPair?: ITokenPair;
+  defaultTab?: TradeTab;
+}
+
+export function formatDefaultConfig({
+  tradeType,
+  tokenPair,
+  bridgeTokenPair,
+  defaultTab,
+}: FormatDefaultConfigParams): {
   supportTradeType: TradeType[];
   route: string;
-  defaultTokenPair?: IFormattedTokenPair,
-  formattedTokenPair?: IFormattedTokenPair,
-  formattedBridgeTokenPair?: IFormattedTokenPair
+  defaultTokenPair?: IFormattedTokenPair;
+  formattedTokenPair?: IFormattedTokenPair;
+  formattedBridgeTokenPair?: IFormattedTokenPair;
 } {
   const formattedTokenPair = formatTokenPair(tokenPair);
   const formattedBridgeTokenPair = formatTokenPair(bridgeTokenPair);
@@ -74,10 +84,28 @@ export function formatDefaultConfig(
     };
   }
 
+  if (defaultTab === TradeTab.SWAP) {
+    return {
+      supportTradeType: [TradeType.SWAP, TradeType.BRIDGE],
+      route: WIDGET_ROUTE_CONSTANTS.SWAP,
+      defaultTokenPair: formattedTokenPair,
+      formattedTokenPair,
+      formattedBridgeTokenPair,
+    };
+  }
+
+  if (defaultTab === TradeTab.BRIDGE) {
+    return {
+      supportTradeType: [TradeType.SWAP, TradeType.BRIDGE],
+      route: WIDGET_ROUTE_CONSTANTS.BRIDGE,
+      defaultTokenPair: formattedBridgeTokenPair,
+      formattedTokenPair,
+      formattedBridgeTokenPair,
+    };
+  }
+
   const defaultIsBridge = !formattedTokenPair && formattedBridgeTokenPair;
-  const route = defaultIsBridge
-    ? WIDGET_ROUTE_CONSTANTS.BRIDGE
-    : WIDGET_ROUTE_CONSTANTS.SWAP;
+  const route = defaultIsBridge ? WIDGET_ROUTE_CONSTANTS.BRIDGE : WIDGET_ROUTE_CONSTANTS.SWAP;
   const defaultTokenPair = defaultIsBridge ? formattedBridgeTokenPair : formattedTokenPair;
 
   return {
@@ -101,8 +129,9 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     lang,
     chainIds,
     extraParams,
-  } =
-    widgetParams;
+    walletName,
+    defaultTab,
+  } = widgetParams;
 
   const widgetVersion = process.env.WIDGET_VERSION;
   const sdkVersion = process.env.SDK_VERSION;
@@ -122,7 +151,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     defaultTokenPair,
     formattedTokenPair,
     formattedBridgeTokenPair,
-  } = formatDefaultConfig(tradeType, tokenPair, bridgeTokenPair);
+  } = formatDefaultConfig({ tradeType, tokenPair, bridgeTokenPair, defaultTab });
 
   // define initial params
   const initParams = {
@@ -133,6 +162,7 @@ export const createWidgetParams = (widgetParams: IWidgetParams): IFormattedWidge
     widgetVersion,
     sdkVersion,
     chainIds,
+    walletName,
   };
 
   // add token info to url params
@@ -237,7 +267,7 @@ export const getAddress = async (provider: any, providerType: ProviderType) => {
     account = provider.accounts?.[0];
   }
 
-  if(!account && provider && isEvmProvider(providerType)) {
+  if (!account && provider && isEvmProvider(providerType)) {
     account = await requestAddress(provider);
   }
 
@@ -344,4 +374,24 @@ export const validateWidgetParams = (params: any): boolean => {
 
 export const getReferrer = () => {
   return encodeURIComponent(window.location.origin);
-}
+};
+
+export const getWalletInfo = (walletName: string, provider?: any) => {
+  const params = new URLSearchParams();
+  params.append('walletName', walletName);
+  try {
+    if (provider) {
+      Object.keys(provider).forEach(key => {
+        if (key.startsWith('is')) {
+          const value = provider[key];
+          if (typeof value === 'boolean') {
+            params.append(key, String(value));
+          }
+        }
+      });
+    }
+  } catch (e) {
+    console.error('Error getting wallet info:', e, provider);
+  }
+  return encodeURIComponent(params.toString());
+};
