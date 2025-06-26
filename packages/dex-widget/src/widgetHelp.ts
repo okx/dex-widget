@@ -377,16 +377,15 @@ export const getReferrer = () => {
 };
 
 export const getWalletInfo = (walletName: string, provider?: any) => {
-  const walletInfo = {
-    walletName,
-  };
+  const params = new URLSearchParams();
+  params.append('walletName', walletName);
   try {
     if (provider) {
       Object.keys(provider).forEach(key => {
         if (key.startsWith('is')) {
           const value = provider[key];
           if (typeof value === 'boolean') {
-            walletInfo[key] = value;
+            params.append(key, String(value));
           }
         }
       });
@@ -394,5 +393,5 @@ export const getWalletInfo = (walletName: string, provider?: any) => {
   } catch (e) {
     console.error('Error getting wallet info:', e, provider);
   }
-  return walletInfo;
+  return encodeURIComponent(params.toString());
 };
