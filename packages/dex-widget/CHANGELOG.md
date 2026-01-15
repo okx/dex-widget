@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.23](https://github.com/okx/dex-widget/compare/v1.3.22...v1.3.23) (2026-01-15)
+
+### [1.3.22](https://github.com/okx/dex-widget/compare/v1.3.21...v1.3.22) (2026-01-15)
+
+### [1.3.21](https://github.com/okx/dex-widget/compare/v1.3.20...v1.3.21) (2026-01-15)
+
+### [1.3.20](https://github.com/okx/dex-widget/compare/v1.3.19...v1.3.20) (2026-01-15)
+
+### [1.3.19](https://github.com/okx/dex-widget/compare/v1.3.18...v1.3.19) (2026-01-15)
+
+### [1.3.18](https://github.com/okx/dex-widget/compare/v1.3.17...v1.3.18) (2026-01-15)
+
+### 1.3.17 (2026-01-15)
+
+
+### Features
+
+* support config bridge tab default token pair ([1e8f6b7](https://github.com/okx/dex-widget/commit/1e8f6b79e04a7cc4d1d1b34840a89249aa32e1cf))
+
+
+### Bug Fixes
+
+* add connect function deps ([3059cc7](https://github.com/okx/dex-widget/commit/3059cc70ac5aba820cdda4adc1ab3132700e2b22))
+* fix up abort signal function ([a9ecc9d](https://github.com/okx/dex-widget/commit/a9ecc9db6ce425dfd44a711ee3bfa67e943f7373))
+* fixup cjs main entry ([4ef7037](https://github.com/okx/dex-widget/commit/4ef7037cbe8061923d4c7843a03dd1afba409278))
+* fixup search params malformed ([99469c0](https://github.com/okx/dex-widget/commit/99469c0a1fb72147ba23ab4911cf6fefba8153bd))
+* fixupn faas func error case ([d4206cf](https://github.com/okx/dex-widget/commit/d4206cf593bba3d78182bcc64f9dda787f433ffe))
+* txInputParamsFormatter add gasLimit ([96be17c](https://github.com/okx/dex-widget/commit/96be17c3f7bc6857ceb9ccf729abb4ecaf016a7e))
+
+### [1.3.16](https://github.com/okx/dex-widget/compare/v1.3.15...v1.3.16) (2025-06-26)
+
+### [1.3.15](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.15) (2025-06-26)
+
+### [1.3.15-beta.1](https://github.com/okx/dex-widget/compare/v1.3.15-beta.0...v1.3.15-beta.1) (2025-06-04)
+
+### [1.3.15-beta.0](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.15-beta.0) (2025-06-04)
+
+### [1.3.14](https://github.com/okx/dex-widget/compare/v1.3.13...v1.3.14) (2025-05-12)
+
+### [1.3.13](https://github.com/okx/dex-widget/compare/v1.3.12...v1.3.13) (2025-05-12)
+
+### [1.3.12](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.12) (2025-05-12)
+
+### [1.3.11](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.11) (2025-01-21)
+
+### [1.3.11-beta.2](https://github.com/okx/dex-widget/compare/v1.3.11-beta.1...v1.3.11-beta.2) (2025-01-03)
+
+### [1.3.11-beta.1](https://github.com/okx/dex-widget/compare/v1.3.11-beta.0...v1.3.11-beta.1) (2025-01-03)
+
+### [1.3.11-beta.0](https://github.com/okx/dex-widget/compare/v1.3.10...v1.3.11-beta.0) (2025-01-03)
+
+### [1.3.10](https://github.com/okx/dex-widget/compare/v1.3.9...v1.3.10) (2025-01-03)
+
 ### 1.3.9 (2024-12-25)
 
 

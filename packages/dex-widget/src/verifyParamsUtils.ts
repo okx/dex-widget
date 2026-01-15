@@ -103,7 +103,7 @@ export function txInputParamsFormatter(options: TransactionInput): Mutable<Trans
         delete modifiedOptions.gasPrice;
     }
 
-    ['gasPrice', 'gas', 'value', 'maxPriorityFeePerGas', 'maxFeePerGas', 'nonce', 'chainId']
+    ['gasPrice', 'gas', 'gasLimit', 'value', 'maxPriorityFeePerGas', 'maxFeePerGas', 'nonce', 'chainId']
         .filter(key => !isNullish(modifiedOptions[key]))
         .forEach(key => {
             modifiedOptions[key] = numberToHex(modifiedOptions[key] as Numbers);
